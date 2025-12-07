@@ -44,7 +44,7 @@ Scenario: A playlist module (like Spotify).
 ### Definition
 A linear collection of data elements called **nodes**.
 *   **Node Structure:** `[ Data | Next Pointer ]`
-*   **Visual:** `[Start] -> [10|->] -> [20|->] -> [30|X]`
+*   **Visual:** `[Start|Null] -> [10|->] -> [20|->] -> [30|X]`
 
 ### Pros & Cons
 
