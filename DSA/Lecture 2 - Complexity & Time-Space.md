@@ -1,9 +1,16 @@
+---
+course: CSE 4303 - Data Structures
+lecture: 1.2
+date: 2025-11-15
+instructor: Asaduzzaman Herok
+tags:
+  - algorithm
+  - complexity
+  - big-o
+  - cs-theory
+---
 
 # Complexity and Time-Space Trade-off
-
-
-**Source:** Lecture Slides by Asaduzzaman Herok, IUT (Aug 2023)
-**Tags:** #algorithm #complexity #big-o #cs-theory
 
 ---
 
@@ -13,10 +20,34 @@ Complexity analysis estimates the running time or space requirements of an algor
 ### Why do we care?
 *   Large input sizes require efficient algorithms.
 *   **Time-Space Trade-off:** Often, increasing memory usage (space) can reduce execution time, and vice-versa.
+
+```
+#Solution 1
+for i = 2 to n - 1
+	if i divides n
+		n is not a prime
+```
+
+```
+#Solution 2
+for i = 2 to sqrt(n)
+	if i divides n 
+		n is not a prime
+```
+
 *   *Example:* Checking if $n$ is prime.
     *   **Solution 1:** Loop 2 to $n-1$. Worst case: $n-2$ divisions.
     *   **Solution 2:** Loop 2 to $\sqrt{n}$. Worst case: $\sqrt{n}-1$ divisions.
     *   *Impact:* For $n=10^{10}$, Solution 1 takes ~115 days, Solution 2 takes ~1.66 mins.
+
+### Program Judgement:
+- Original specification of task
+- work correctly
+- Contains documentations
+- Code readability
+### Performance Judgement:
+- Efficient use of primary (RAM) and secondary (SSD/ HDD) storage.
+- Acceptable running time
 
 ---
 
@@ -26,7 +57,7 @@ Complexity analysis estimates the running time or space requirements of an algor
 Amount of memory needed to run the program to completion.
 $$S(P) = C + S_p(I)$$
 *   **Fixed Space ($C$):** Independent of input size (code size, constants, variables).
-*   **Variable Space ($S_p(I)$):** Depends on the particular instance $I$ of the problem (recursion stack, dynamic memory).
+*   **Variable Space ($S_p(I)$):** Depends on the particular instance $I$ of the problem $P$ (recursion stack, dynamic memory).
 
 ### Time Complexity
 Amount of computer time needed to run to completion.
@@ -47,7 +78,7 @@ Amount of computer time needed to run to completion.
 ```cpp
 sumOfList(A, n) {
     total = 0;          // 1 unit (once)
-    for i=0 to n-1      // n+1 checks
+    for i=0 to n-1      // n+1 checks (1 extra checking for breaking the condition)
         total += A[i];  // n iterations * 2 units
     return total;       // 1 unit
 }
@@ -66,7 +97,9 @@ sumOfList(A, n) {
 ---
 
 ## 4. Asymptotic Analysis
-Evaluating performance in terms of input size, specifically describing the "mathematical bound" of the curve.
+Evaluating performance in terms of input size (not on actual running time), specifically describing the "mathematical bound" of the curve.
+
+(An algorithm that is asymptotically more efficient will be the best choice for all but very small inputs)
 
 ### The Big 'O' Notation ($O$)
 *   **Upper Bound** (Worst Case).
