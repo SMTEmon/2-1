@@ -1,12 +1,14 @@
-
-***
-
-**Course:** CSE 4303: Data Structures
-**Lecture:** 2.2
-**Instructor:** Asaduzzaman Herok (Dept. of CSE, IUT)
-**Date:** November 2025
-**Tags:** #data-structures #linked-lists #cs-notes #iut
-
+---
+course: CSE 4303 - Data Structures
+lecture: 2.2
+instructor: Asaduzzaman Herok
+date: 2025-11-21
+tags:
+  - data-structures
+  - linked-lists
+  - cs-notes
+  - iut
+---
 ---
 
 ## 1. Limitation of Singly Linked Lists (SLL)

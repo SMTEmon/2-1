@@ -1,12 +1,14 @@
-***
-
-# Stack & Its Applications
-
-**Course:** CSE 4303: Data Structures  
-**Lecture:** 3  
-**Date:** November 24, 2025  
-**Tags:** #DataStructures #Stack #LIFO #Algorithms #CS
-
+---
+course: CSE 4303 - Data Structures
+lecture: 3
+date: 2025-11-21
+tags:
+  - data-structures
+  - Stack
+  - LIFO
+  - CS
+  - Algorithms
+---
 ---
 
 ## 1. Introduction to Stacks
