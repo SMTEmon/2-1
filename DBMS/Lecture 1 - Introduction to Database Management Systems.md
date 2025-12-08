@@ -2,9 +2,6 @@
 tags: [database, dbms, cse4307, lecture1, data_management]
 aliases: [DBMS Introduction, Database Management Systems, Data Abstraction]
 ---
-
-# 📚 Lecture 1: Introduction to Database Management Systems
-
 ## 1. The Problem with File Systems (Motivation)
 
 The "Kingdom of Kod" analogy highlights the inefficiencies of traditional, flat-file data management:
