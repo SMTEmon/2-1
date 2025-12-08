@@ -1,0 +1,209 @@
+---
+tags:
+  - programming/design-patterns
+  - software-engineering/principles
+  - solid
+aliases:
+  - SOLID Principles
+  - Object Oriented Design
+---
+
+# SOLID Design Principles
+
+**SOLID** is an acronym for the five most important design principles in Object-Oriented Programming (OOP), introduced by Robert C. Martin ("Uncle Bob").
+
+> [!abstract] Goal
+> To create software that is **maintainable**, **scalable**, and **easy to read**, avoiding "spaghetti code" as the project grows.
+
+---
+
+## 1. [[Single Responsibility Principle]] (SRP)
+
+> [!quote] Definition
+> **"A class should have one, and only one, reason to change."**
+
+**Concept:** Don't create "God Objects." If a class handles business logic, XML parsing, and Database SQL, it has 3 reasons to change. Split these into three classes.
+
+> [!failure] Violation
+> ```typescript
+> class UserSettings {
+>   changeUsername(user: User) { ... }
+>   saveToDatabase(user: User) { ... } // ❌ Persistence logic
+>   generateReport(user: User) { ... } // ❌ Reporting logic
+> }
+> ```
+
+> [!success] Solution
+> ```typescript
+> class UserAuth {
+>   changeUsername(user: User) { ... }
+> }
+>
+> class UserRepository {
+>   save(user: User) { ... }
+> }
+>
+> class UserReporter {
+>   generate(user: User) { ... }
+> }
+> ```
+
+---
+
+## 2. [[Open-Closed Principle]] (OCP)
+
+> [!quote] Definition
+> **"Software entities should be open for extension, but closed for modification."**
+
+**Concept:** You should be able to add new features without rewriting existing code. This prevents bugs in old features. Use **Polymorphism** (Interfaces/Inheritance) instead of giant `if/else` or `switch` statements.
+
+> [!failure] Violation
+> ```typescript
+> class AreaCalculator {
+>   calculate(shapes: any[]) {
+>     shapes.forEach(shape => {
+>       if (shape.type === 'circle') { /* ... */ }
+>       else if (shape.type === 'square') { /* ... */ }
+>       // ❌ If we add Triangle, we must modify this class!
+>     });
+>   }
+> }
+> ```
+
+> [!success] Solution
+> ```typescript
+> interface Shape {
+>   area(): number;
+> }
+>
+> class Circle implements Shape {
+>   area() { /* ... */ }
+> }
+>
+> class Square implements Shape {
+>   area() { /* ... */ }
+> }
+>
+> // ✅ Calculator doesn't care what shape it is.
+> // We can add Triangle without touching this code.
+> class AreaCalculator {
+>   calculate(shapes: Shape[]) {
+>     return shapes.reduce((acc, shape) => acc + shape.area(), 0);
+>   }
+> }
+> ```
+
+---
+
+## 3. [[Liskov Substitution Principle]] (LSP)
+
+> [!quote] Definition
+> **"Subtypes must be substitutable for their base types."**
+
+**Concept:** If `class B` inherits from `class A`, you should be able to swap `A` with `B` without crashing the application. A child class should not break the rules of the parent.
+
+> [!example] The Classic "Bird" Problem
+> If `Bird` has a `fly()` method, and `Penguin` extends `Bird`, the Penguin must fly. But Penguins can't fly. Therefore, Penguin should not extend that specific Bird class.
+
+> [!failure] Violation
+> ```typescript
+> class Bird {
+>   fly() { console.log("I am flying"); }
+> }
+>
+> class Penguin extends Bird {
+>   fly() {
+>     throw new Error("I cannot fly!"); // ❌ Breaks parent contract
+>   }
+> }
+> ```
+
+---
+
+## 4. [[Interface Segregation Principle]] (ISP)
+
+> [!quote] Definition
+> **"Clients should not be forced to depend on methods they do not use."**
+
+**Concept:** Avoid "Fat Interfaces." It is better to have many small, specific interfaces than one huge general-purpose one.
+
+> [!failure] Violation
+> ```typescript
+> interface Machine {
+>   print(): void;
+>   scan(): void;
+>   fax(): void;
+> }
+>
+> // OldPrinter is forced to implement scan/fax even if it can't do it
+> class OldPrinter implements Machine {
+>   print() { ... }
+>   scan() { throw new Error("Not supported"); } // ❌
+>   fax() { throw new Error("Not supported"); }  // ❌
+> }
+> ```
+
+> [!success] Solution
+> ```typescript
+> interface Printer { print(): void; }
+> interface Scanner { scan(): void; }
+>
+> // Only implements what it needs
+> class OldPrinter implements Printer {
+>   print() { ... }
+> }
+>
+> class ModernCopier implements Printer, Scanner {
+>   print() { ... }
+>   scan() { ... }
+> }
+> ```
+
+---
+
+## 5. [[Dependency Inversion Principle]] (DIP)
+
+> [!quote] Definition
+> **"High-level modules should not depend on low-level modules. Both should depend on abstractions."**
+
+**Concept:** Decouple your code. Don't hardcode dependencies (like a specific database driver) inside your business logic. Pass them in (Dependency Injection).
+
+> [!failure] Violation (Tightly Coupled)
+> ```typescript
+> class Store {
+>   private stripe: StripeAPI;
+>
+>   constructor() {
+>     // ❌ Hard dependency on Stripe. Hard to switch to PayPal later.
+>     this.stripe = new StripeAPI();
+>   }
+> }
+> ```
+
+> [!success] Solution (Loosely Coupled)
+> ```typescript
+> interface PaymentProcessor {
+>   processPayment(amount: number): void;
+> }
+>
+> class Store {
+>   private paymentProcessor: PaymentProcessor;
+>
+>   // ✅ We inject the dependency. Store doesn't care if it's Stripe or PayPal.
+>   constructor(paymentProcessor: PaymentProcessor) {
+>     this.paymentProcessor = paymentProcessor;
+>   }
+> }
+> ```
+
+---
+
+## Summary Cheat Sheet
+
+| Initial | Principle                 | Focus                                      |
+| :------ | :------------------------ | :----------------------------------------- |
+| **S**   | **Single Responsibility** | Code Organization / Separation of Concerns |
+| **O**   | **Open/Closed**           | Scalability / Adding Features safely       |
+| **L**   | **Liskov Substitution**   | Logic consistency in Inheritance           |
+| **I**   | **Interface Segregation** | efficient Interface design                 |
+| **D**   | **Dependency Inversion**  | Decoupling dependencies                    |

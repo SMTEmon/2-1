@@ -145,7 +145,9 @@ Check if an expression has balanced delimiters: `()`, `{}`, `[]`.
     *   If **Operator**:
         *   Pop operators from stack that have **$\ge$ precedence** than the current operator.
         *   Push current operator.
-        *   *Note on Associativity:* For **Right-to-Left** (`^`), if precedence is equal, **PUSH** (do not pop). For **Left-to-Right**, if precedence is equal, **POP**.
+        *   *Note on Associativity:* 
+	        * For **Right-to-Left** (`^`), if precedence is equal, **PUSH** (do not pop). 
+	        * For **Left-to-Right**, if precedence is equal, **POP**.
 
 > **Class Exercise:**
 > Convert: $A - (B / C + ( D \% E * F ) / G) * H$
