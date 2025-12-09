@@ -93,12 +93,13 @@ INNER JOIN Department D ON E.dept_id = D.dept_id;
 Returns **all** records from the left table, and the matched records from the right table.
 > [!NOTE] 
 > If there is no match, the right side will contain `NULL`.
+> ***By "Left", it means left table of "LEFT JOIN"***
 
 **Query:** Show all Departments and their associated Projects (if any).
 ```sql
 SELECT D.dept_id, D.dept_name, P.proj_name
-FROM Department D
-LEFT JOIN Project P ON D.dept_id = P.dept_id;
+FROM Department D LEFT JOIN Project P 
+ON D.dept_id = P.dept_id;
 ```
 *Result:* Department `D03` (BBA) has no project, so `proj_name` returns `NULL`.
 
