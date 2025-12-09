@@ -6,7 +6,7 @@ source: Lab Manual PDF on Google Classroom
 
 ## 1. Sample Database Schema
 
-To demonstrate Joins and Aggregation, the lab uses three tables: **Department**, **Employee**, and **Project**.
+Tables: **Department**, **Employee**, and **Project**.
 
 ### Tables
 | Table | Columns | Notes |
