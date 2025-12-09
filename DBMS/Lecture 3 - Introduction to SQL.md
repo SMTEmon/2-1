@@ -128,7 +128,7 @@ where T.salary > S.salary;
 
 ---
 
-## 3.5 Set Operations
+## 3.5 [[Set Operations]]
 
 SQL treats results as **Multisets** (bags), but set operations act differently depending on the keyword `ALL`.
 
@@ -143,7 +143,7 @@ SQL treats results as **Multisets** (bags), but set operations act differently d
 
 ---
 
-## 3.6 Null Values
+## 3.6 [[Null Values]]
 
 > [!INFO] Definition
 > NULL represents **unknown** or **missing** data. It is *not* zero and *not* an empty string.
