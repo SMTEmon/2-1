@@ -186,4 +186,3 @@ void testConsumeFuelMultipleTimes() {
     assertEquals(15.0, fuelTank.getFuelLevel(), 0.001);
 }
 ```
-```
