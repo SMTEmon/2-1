@@ -1,8 +1,4 @@
 
----
-
-# Clean Code (Java Edition)
-
 Source: [[Clean Code Book]] (Robert C. Martin) / Adapted from jbarroso/clean-code
 
 [[Clean Code - 2  | Free Code Camp Version]]
