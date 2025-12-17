@@ -1,4 +1,3 @@
-Here are the additional notes based on the **FreeCodeCamp Clean Code Guide**, adapted for Java. You can append this to your existing Obsidian note or create a linked note.
 
 ---
 
