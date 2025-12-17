@@ -164,4 +164,3 @@ Strategies to make tests pass:
 
 > [!quote] Robert C. Martin
 > "TDD is a discipline for programmers like double-entry bookkeeping is for accountants or sterile procedure is for surgeons."
-```
