@@ -180,23 +180,18 @@ A class should have one, and only one, reason to change.
 > ```
 > class UserSettings {
 >     private User user;
-> ```
-
-> ```
-> public void changeSettings(Settings settings) {
->     if (verifyCredentials()) {
->         // ...
->     }
-> }
-> ```
-
-> ```
-> public boolean verifyCredentials() {
->     // ...
-> }
-> ```
 > 
+> 	public void changeSettings(Settings settings) {
+> 	    if (verifyCredentials()) {
+> 	        // ...
+> 	    }
+> 	}
+>
+> 	public boolean verifyCredentials() {
+> 	    // ...
+> 	}
 > }
+> ```
 
 > [!success] Good
 > 
@@ -210,23 +205,19 @@ A class should have one, and only one, reason to change.
 >         // ...
 >     }
 > }
-> ```
-
+>
 > class UserSettings {
 > 
-> private User user;
-> 
-> private UserAuth auth;
-
-> ```
-> public void changeSettings(Settings settings) {
->     if (auth.verifyCredentials()) {
->         // ...
->     }
+> 	private User user;
+> 	
+> 	private UserAuth auth;
+> 	public void changeSettings(Settings settings) {
+> 	    if (auth.verifyCredentials()) {
+> 	        // ...
+> 		  }
+> 	} 
 > }
-> ```
-> 
-> }
+>  ```
 
 ### Composition over Inheritance
 
@@ -347,9 +338,7 @@ Depend on abstractions, not on concretions. High-level modules should not depend
 > ```
 > class PasswordReminder {
 >     private MySQLConnection dbConnection; // Dependent on specific DB implementation
-> ```
-
-> ```
+> 
 > public PasswordReminder(MySQLConnection dbConnection) {
 >     this.dbConnection = dbConnection;
 > }
@@ -364,9 +353,7 @@ Depend on abstractions, not on concretions. High-level modules should not depend
 > ```
 > class PasswordReminder {
 >     private DBConnectionInterface dbConnection; // Dependent on abstraction
-> ```
-
-> ```
+> 
 > public PasswordReminder(DBConnectionInterface dbConnection) {
 >     this.dbConnection = dbConnection;
 > }
