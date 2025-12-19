@@ -1,264 +1,489 @@
----
-course: "CSE 4307: Database Management Systems"
-instructor: Md. Tariquzzaman
-tags:
-  - sql
-  - database
-  - dbms
-  - CS
----
+# L3: Introduction to SQL
+
+*Date: December 19, 2025*
+*Course: CSE 4307: Database Management Systems*
+*Lecturer: Md. Tariquzzaman*
+
 ---
 
-## 3.1 Overview of SQL Language
-SQL is split into specific functionalities:
+## 3.1 Overview of the SQL Query Language
 
-*   **DML (Data Manipulation Language):** The "hands" of the DB. Used to `INSERT`, `DELETE`, `UPDATE`, and `QUERY` data.
-*   **DDL (Data Definition Language):** The "architect's blueprint". Defines schema, constraints, and views.
-*   **Integrity Constraints:** Rules to keep data accurate (e.g., no negative ages).
-*   **View Definition:** Custom windows into data (virtual tables).
-*   **Transaction Control:** Manages atomicity (`BEGIN`, `COMMIT`, `ROLLBACK`).
-*   **Embedded/Dynamic SQL:** Mixing SQL with languages like C, Java, Python.
-*   **Authorization:** Permissions and access control.
+SQL (Structured Query Language) is the standard language for relational database management systems. It's composed of several sub-languages.
+
+-   **Data Manipulation Language (DML)**: The "hands" that work with the data.
+    -   `SELECT`: To query (search or read) data.
+    -   `INSERT`: To add new data.
+    -   `UPDATE`: To change existing data.
+    -   `DELETE`: To remove data.
+-   **Data Definition Language (DDL)**: The "architect's blueprint" for the database structure.
+    -   `CREATE`: To build new tables, views, and other database objects.
+    -   `ALTER`: To modify the structure of existing objects.
+    -   `DROP`: To delete objects.
+-   **Transaction Control Language (TCL)**: Manages transactions to ensure data integrity.
+    -   `BEGIN`: To start a transaction.
+    -   `COMMIT`: To save the changes of a transaction.
+    -   `ROLLBACK`: To undo the changes of a transaction.
+-   **Data Control Language (DCL)**: Defines "who can do what" through authorization and permissions.
+    -   `GRANT`: To give user permissions.
+    -   `REVOKE`: To take user permissions away.
 
 ---
 
 ## 3.2 SQL Data Definition (DDL)
 
-DDL defines the **Schema** (structure), **Types**, **Constraints**, **Indices**, and **Storage**.
+DDL is used to define, create, and manage the structure of database objects, primarily tables.
 
-### Domain Types (Data Types)
-| Type | Description | Example | Note |
-| :--- | :--- | :--- | :--- |
-| `char(n)` | Fixed length | `char(10)` | Pads with spaces if shorter. |
-| `varchar(n)` | Variable length | `varchar(10)` | Stores only actual length. **Preferred.** |
-| `int` | Integer | | Machine dependent. |
-| `smallint` | Small Integer | | Efficient for small numbers. |
-| `numeric(p,d)` | Fixed-point | `numeric(3,1)` | Total `p` digits, `d` after decimal. (e.g., 44.5) |
-| `float(n)` | Floating point | | Precision of at least `n` digits. |
+### 3.2.1 Domain Types (Data Types)
 
-### Creating Tables
+These are SQL's building blocks, defining the kind of data each column can hold.
+
+| Data Type             | Description                                                                                               | Example                               | 
+| --------------------- | --------------------------------------------------------------------------------------------------------- | ------------------------------------- |
+| `char(n)`             | **Fixed-length** character string. Always uses `n` bytes of storage. Shorter strings are padded with spaces. | `char(10)` storing "Avi" becomes "Avi " |
+| `varchar(n)`          | **Variable-length** character string up to `n` characters. Stores only the actual text length.             | `varchar(10)` storing "Avi" uses 3 chars |
+| `int` or `integer`    | Integer values. The range depends on the database system.                                                 | `12345`                               |
+| `smallint`            | A smaller integer, uses less storage. Efficient for smaller numeric values.                               | `123`                                 |
+| `numeric(p, d)`       | Fixed-point number with `p` total digits and `d` digits after the decimal point. Exact value.             | `numeric(5, 2)` can hold `123.45`       |
+| `real`, `double precision` | Floating-point numbers. These are approximations and can have rounding errors.                          | `123.45678`                           |
+| `float(n)`            | Floating-point number with at least `n` digits of precision.                                              | `float(8)`                            |
+
+> **Pro Tip**: Use `varchar` instead of `char` in most cases to save space and avoid issues with trailing spaces during string comparison. For multilingual data (like names in different languages), use `nvarchar` if your database supports it.
+
+### 3.2.2 Basic Schema Definition (`CREATE TABLE`)
+
+The `CREATE TABLE` command defines a new relation (table).
+
+**General Form**:
+
 ```sql
-create table instructor (
-    ID char(5),
-    name varchar(20) not null,
-    dept_name varchar(20),
-    salary numeric(8,2),
-    primary key (ID),
-    foreign key (dept_name) references department(dept_name)
+CREATE TABLE table_name (
+    attribute_1 data_type_1 <constraint_1>,
+    attribute_2 data_type_2 <constraint_2>,
+    ...
+    <table_constraint_1>,
+    <table_constraint_2>
 );
 ```
 
-### Integrity Constraints
-1.  **Primary Key:** Unique and Not Null. Identifies a row.
-2.  **Foreign Key:** Ensures referential integrity (links to another table).
-3.  **Not Null:** Prevents missing values.
+**Integrity Constraints**:
 
-> [!WARNING] Constraint Violations
-> SQL automatically blocks updates or insertions that violate constraints (e.g., duplicate primary keys or invalid foreign keys).
+-   **`PRIMARY KEY`**: Ensures each record is unique and not null. A table can have only one primary key.
+-   **`FOREIGN KEY`**: Links one table to another, ensuring referential integrity. The values in the foreign key column must exist in the primary key column of the referenced table.
+-   **`NOT NULL`**: Prevents a column from having missing (`NULL`) values.
 
-### Modifying Relations
-*   **Insert:** `insert into table values (...);`
-*   **Delete:** `delete from table;` (Deletes rows, keeps structure).
-*   **Drop:** `drop table r;` (Removes rows AND structure).
-*   **Alter:**
-    *   `alter table r add A D;` (Add column).
-    *   `alter table r drop A;` (Remove column).
+**Example**: Creating `instructor` and `department` tables.
+
+```sql
+CREATE TABLE department (
+    dept_name VARCHAR(20),
+    building VARCHAR(15),
+    budget NUMERIC(12, 2),
+    PRIMARY KEY (dept_name)
+);
+
+CREATE TABLE instructor (
+    ID CHAR(5),
+    name VARCHAR(20) NOT NULL,
+    dept_name VARCHAR(20),
+    salary NUMERIC(8, 2),
+    PRIMARY KEY (ID),
+    FOREIGN KEY (dept_name) REFERENCES department(dept_name)
+);
+```
+
+### 3.2.3 Modifying and Deleting Tables
+
+-   **`INSERT`**: Add a new row.
+    ```sql
+    INSERT INTO instructor VALUES ('10211', 'Smith', 'Biology', 66000);
+    ```
+-   **`DELETE FROM`**: Remove rows from a table. **Warning**: Without a `WHERE` clause, it deletes **all** rows.
+    ```sql
+    DELETE FROM student WHERE name = 'Smith';
+    ```
+-   **`DROP TABLE`**: Removes the entire table structure (schema) and all its data. This action is irreversible.
+    ```sql
+    DROP TABLE student;
+    ```
+-   **`ALTER TABLE`**: Modifies a table's structure.
+    ```sql
+    -- Adds a new column (existing rows will have NULL for this column)
+    ALTER TABLE instructor ADD phone_number VARCHAR(15);
+
+    -- Removes a column
+    ALTER TABLE instructor DROP COLUMN phone_number;
+    ```
 
 ---
 
 ## 3.3 Basic Structure of SQL Queries
 
-Standard Structure:
+A typical SQL query has the form `SELECT... FROM... WHERE...`.
+
+-   **`SELECT`**: Lists the attributes (columns) to be returned. (Relational Algebra: Projection π)
+-   **`FROM`**: Lists the relations (tables) involved in the query. (Relational Algebra: Cartesian Product ×)
+-   **`WHERE`**: Specifies conditions to filter the results. (Relational Algebra: Selection σ)
+
+**Logical Order of Operations**: `FROM` -> `WHERE` -> `SELECT`.
+
+### The `SELECT` Clause
+
+-   Use `*` to denote "all attributes".
+    ```sql
+    SELECT * FROM instructor;
+    ```
+-   Use `DISTINCT` to eliminate duplicate rows from the result. `ALL` is the default.
+    ```sql
+    -- Find the department names of all instructors, and remove duplicates
+    SELECT DISTINCT dept_name FROM instructor;
+    ```
+-   Can contain arithmetic expressions (`+`, `-`, `*`, `/`) or literals.
+-   Use the `AS` clause to rename attributes for clarity, especially for expressions.
+    ```sql
+    SELECT ID, name, salary/12 AS monthly_salary FROM instructor;
+    ```
+
+### The `WHERE` Clause
+
+-   Filters rows based on a specified condition (predicate).
+-   Allows logical connectives `AND`, `OR`, `NOT`.
+-   Supports comparison operators: `<`, `<=`, `>`, `>=`, `=`, `<>`.
+
 ```sql
-SELECT A1, A2 ...      -- Projection (Columns)
-FROM r1, r2 ...        -- Cartesian Product (Relations)
-WHERE P;               -- Selection (Predicate/Filter)
+-- Find all instructors in the Computer Science department with a salary > 70000
+SELECT name
+FROM instructor
+WHERE dept_name = 'Comp. Sci.' AND salary > 70000;
 ```
 
-### Key Concepts
-*   **Duplicates:** SQL allows duplicates (Multiset/Bag semantics).
-    *   Use `DISTINCT` to remove duplicates: `select distinct dept_name ...`
-    *   Use `ALL` to explicitly keep them (default).
-*   **Literals:** Can select literals: `select '437' as FOO`.
-*   **Arithmetic:** Allowed in select clause: `select salary/12 ...`
-*   **Where Clause:** Supports logical connectives (`AND`, `OR`, `NOT`) and comparison (`<`, `<=`, `>`, `>=`, `=`, `<>`).
+### The `FROM` Clause and Joins
 
-### Multi-Table Queries (Joins)
-Queries dealing with multiple tables in the `FROM` clause generate a **Cartesian Product**.
+-   When multiple tables are listed, a **Cartesian Product** is formed.
+-   A `WHERE` clause is then used to specify the join condition, filtering out meaningless combinations.
+
 ```sql
--- Join with condition
-select name, course_id
-from instructor, teaches
-where instructor.ID = teaches.ID;
+-- Old syntax for a join (less readable)
+SELECT name, course_id
+FROM instructor, teaches
+WHERE instructor.ID = teaches.ID;
 ```
 
-**Self Join:** Using aliases to compare rows within the same table.
-```sql
--- Find supervisors
-select E1.person as employee, E2.supervisor as boss
-from emp_super as E1, emp_super as E2
-where E1.supervisor = E2.person;
-```
+> **Best Practice**: Always use the explicit `JOIN` syntax (`INNER JOIN`, `LEFT JOIN`, etc.) instead of the old comma-separated `FROM` clause. It is more readable and less prone to errors. This is covered in Lecture 4.
 
 ---
 
 ## 3.4 Additional Basic Operations
 
-### Rename (`AS`)
-Used for attributes or relations (aliases).
+### 3.4.1 The Rename Operation (`AS`)
+
+The `AS` clause is used to rename relations (table aliases) and attributes (column aliases).
+
+-   **Why Rename?**
+    1.  **Clarity**: Give meaningful names to computed columns (`salary/12 AS monthly_salary`).
+    2.  **Brevity**: Create short aliases for long table names (`instructor AS i`).
+    3.  **Self-Joins**: Disambiguate when a table is joined with itself.
+
+-   **Relation Alias Example**:
+    ```sql
+    -- 'T' and 'S' are aliases for the instructor and teaches tables
+    SELECT T.name, S.course_id
+    FROM instructor AS T, teaches AS S
+    WHERE T.ID = S.ID;
+    ```
+    *The `AS` keyword is optional for table aliases.*
+
+### 3.4.2 String Operations
+
+-   Strings are enclosed in single quotes: `'Computer'`.
+-   To include a single quote within a string, double it: `'It''s right'`.
+-   **Pattern Matching with `LIKE`**:
+    -   `%`: Matches any substring (zero or more characters).
+    -   `_`: Matches any single character.
+    -   `ESCAPE`: Used to search for the literal `%` or `_` characters.
+        `LIKE 'ab%cd%' ESCAPE '\'` matches the literal string `ab%cd`.
+
+-   **`LIKE` Examples**:
+    -   `'Intro%'`: Matches `'Intro to CS'`.
+    -   `'%Comp%'`: Matches `'Intro to Computer'` and `'Computational Bio'`.
+    -   `'___'`: Matches any 3-character string.
+    -   `'CS-1__ '`: Matches 100-level CS courses like `'CS-101'`.
+
+-   **Other String Functions**: `||` (concatenation), `UPPER()`, `LOWER()`, `TRIM()`. *Note: Functions can vary by database system.*
+
+### 3.4.3 Ordering the Display of Tuples (`ORDER BY`)
+
+-   Sorts the result set based on one or more columns.
+-   `ASC`: Ascending order (default).
+-   `DESC`: Descending order.
+-   The `ORDER BY` clause is executed **last** in a query.
+
 ```sql
-select T.name 
-from instructor as T, instructor as S
-where T.salary > S.salary;
+-- Primary sort by salary (descending), secondary sort by name (ascending)
+SELECT name, dept_name, salary
+FROM instructor
+ORDER BY salary DESC, name ASC;
 ```
 
-### String Operations (`LIKE`)
-*   **%**: Matches any substring.
-*   **_**: Matches any single character.
-*   **Escape characters:** Used to match literal `%` or `_`. e.g., `like 'ab\%cd%' escape '\'`.
-*   **Functions:** `upper()`, `lower()`, `trim()`, `||` (concatenation).
+### 3.4.4 `BETWEEN` Operator
 
-### Ordering
-*   `ORDER BY attribute [ASC | DESC]`
-*   Can sort by multiple attributes: `order by salary desc, name asc`.
+-   A shorthand for a range check, inclusive of the endpoints.
 
-### Between & Tuple Comparison
-*   `WHERE salary BETWEEN 90000 AND 100000`
-*   **Row Constructor:** `WHERE (instructor.ID, dept_name) = (teaches.ID, 'Biology')`
+```sql
+-- Using BETWEEN
+SELECT name FROM instructor WHERE salary BETWEEN 90000 AND 100000;
+
+-- Equivalent to:
+SELECT name FROM instructor WHERE salary >= 90000 AND salary <= 100000;
+```
 
 ---
 
-## 3.5 [[Set Operations]]
+## 3.5 Set Operations
 
-SQL treats results as **Multisets** (bags), but set operations act differently depending on the keyword `ALL`.
+Set operations combine the results of two compatible queries into a single result set.
 
-| Operation | Description | Analogy | Handling Duplicates |
-| :--- | :--- | :--- | :--- |
-| **UNION** | Items in A OR B | Combined guest list | Removes duplicates |
-| **UNION ALL** | Items in A OR B | Combined list | Keeps duplicates (Sum of counts) |
-| **INTERSECT** | Items in A AND B | Guests at both parties | Removes duplicates |
-| **INTERSECT ALL**| Items in A AND B | | Keeps duplicates (Min of counts) |
-| **EXCEPT** | In A but NOT B | Exclusive guests | Removes duplicates |
-| **EXCEPT ALL** | In A but NOT B | | Keeps duplicates (Count A - Count B) |
+-   `UNION`: Combines results and **removes duplicates**.
+-   `UNION ALL`: Combines results and **keeps all duplicates**.
+-   `INTERSECT`: Returns only rows that appear in **both** query results, removing duplicates.
+-   `INTERSECT ALL`: Returns common rows, keeping the minimum number of duplicate occurrences from both sides.
+-   `EXCEPT`: Returns rows from the first query that are **not** in the second query, removing duplicates.
+-   `EXCEPT ALL`: Performs set difference while tracking duplicates.
+
+**Example**: Find courses taught in Fall 2017 or Spring 2018.
+```sql
+(SELECT course_id FROM section WHERE semester = 'Fall' AND year = 2017)
+UNION
+(SELECT course_id FROM section WHERE semester = 'Spring' AND year = 2018);
+```
+> `UNION ALL` is faster than `UNION` because it doesn't need to check for and remove duplicates. Use it if you know there are no duplicates or if duplicates are acceptable.
 
 ---
 
-## 3.6 [[Null Values]]
+## 3.6 Null Values
 
-> [!INFO] Definition
-> NULL represents **unknown** or **missing** data. It is *not* zero and *not* an empty string.
+-   **What is `NULL`?**: It represents **unknown** or **missing** data. It is not zero (`0`) or an empty string (`''`).
+-   **Arithmetic**: Any arithmetic operation with `NULL` produces `NULL` (e.g., `5 + NULL` is `NULL`).
+-   **Comparisons**: Comparisons with `NULL` yield a third logical value: `UNKNOWN`.
+    -   The `WHERE` clause only includes rows that evaluate to `TRUE`. `FALSE` and `UNKNOWN` are excluded.
+-   **Testing for `NULL`**: You cannot use `= NULL`. You must use `IS NULL` or `IS NOT NULL`.
+    -   **Wrong**: `WHERE salary = NULL` (This will never be true).
+    -   **Correct**: `WHERE salary IS NULL`.
 
-### Logic with NULL
-*   **Arithmetic:** `5 + NULL = NULL`
-*   **Comparison:** `5 > NULL` yields **UNKNOWN**.
-*   **Three-Valued Logic:** TRUE, FALSE, UNKNOWN.
-    *   `OR`: (Unknown OR True) = True. (Unknown OR False) = Unknown.
-    *   `AND`: (True AND Unknown) = Unknown. (False AND Unknown) = False.
-    *   `NOT`: (NOT Unknown) = Unknown.
-
-### Testing for NULL
-*   **Wrong:** `where salary = NULL`
-*   **Correct:** `where salary IS NULL`
+-   **Three-Valued Logic**:
+    -   `TRUE AND UNKNOWN` -> `UNKNOWN`
+    -   `FALSE AND UNKNOWN` -> `FALSE`
+    -   `TRUE OR UNKNOWN` -> `TRUE`
+    -   `FALSE OR UNKNOWN` -> `UNKNOWN`
+    -   `NOT UNKNOWN` -> `UNKNOWN`
 
 ---
 
 ## 3.7 Aggregate Functions
 
-Functions that take a collection of values and return a single value.
+Aggregate functions take a collection of values as input and return a single value as output.
 
-1.  `AVG()`: Average (Input must be numeric).
-2.  `SUM()`: Total (Input must be numeric).
-3.  `MIN()`: Minimum.
-4.  `MAX()`: Maximum.
-5.  `COUNT()`: Number of values.
+-   **`AVG()`**: Average value.
+-   **`MIN()`**: Minimum value.
+-   **`MAX()`**: Maximum value.
+-   **`SUM()`**: Total sum.
+-   **`COUNT()`**: Number of values.
 
-### Important Rules
-*   **NULL Handling:** All aggregates **ignore** NULLs, except `COUNT(*)`.
-*   **Empty Sets:** `COUNT` returns 0; others return NULL.
-*   **Distinct:** `COUNT(DISTINCT ID)` counts unique values.
+**NULL Handling**: All aggregate functions except `COUNT(*)` ignore `NULL` values.
+-   `COUNT(salary)`: Counts only the rows where `salary` is not `NULL`.
+-   `COUNT(*)`: Counts all rows in the group, regardless of `NULL`s.
+-   `AVG(salary)`: `SUM(salary) / COUNT(salary)`. Since both ignore `NULL`s, the average is calculated correctly over the known values.
 
-### Grouping (`GROUP BY` & `HAVING`)
-*   **GROUP BY:** Aggregates data per group.
-    *   *Rule:* Attributes in `SELECT` must be either grouped or aggregated.
-*   **HAVING:** Filters **groups** (applied *after* aggregation).
-    *   *Rule:* Attributes in `HAVING` must be grouped or aggregated.
+### `GROUP BY` Clause
 
-> [!TIP] Query Processing Order
-> 1. `FROM` (Get tables)
-> 2. `WHERE` (Filter rows)
-> 3. `GROUP BY` (Make groups)
-> 4. `HAVING` (Filter groups)
-> 5. `SELECT` (Return columns/aggregates)
+-   Divides the table into groups based on specified attributes.
+-   Computes an aggregate function for each group separately.
+-   Returns one result row per group.
+
+**Core Rule**: When using `GROUP BY`, every attribute in the `SELECT` clause must be either:
+1.  Listed in the `GROUP BY` clause, **OR**
+2.  Wrapped inside an aggregate function.
+
+**Wrong Query**:
+```sql
+/* Error: ID is not grouped or aggregated */
+SELECT dept_name, ID FROM instructor GROUP BY dept_name;
+```
+*Why is this wrong? After grouping by `dept_name`, a single department group (e.g., 'Comp. Sci.') contains multiple instructors with different `ID`s. SQL doesn't know which `ID` to show for the group.*
+
+**Correct Query**:
+```sql
+-- Find the average salary for each department
+SELECT dept_name, AVG(salary)
+FROM instructor
+GROUP BY dept_name;
+```
+
+### `HAVING` Clause
+
+-   Filters **groups** after they have been formed by `GROUP BY`.
+-   `WHERE` filters individual **rows** *before* grouping.
+
+| Clause  | Filters...      | When it's applied    | Can use aggregates? |
+| ------- | --------------- | -------------------- | ------------------- |
+| `WHERE` | Individual Rows | Before `GROUP BY`    | No                  |
+| `HAVING`| Groups          | After `GROUP BY`     | Yes                 |
+
+**Example**: Find departments with an average salary greater than $42,000.
+```sql
+SELECT dept_name, AVG(salary) AS avg_salary
+FROM instructor
+GROUP BY dept_name
+HAVING AVG(salary) > 42000;
+```
+
+### SQL Query Processing Order (Logical)
+1.  **`FROM`**: Assembles the initial set of data (including joins).
+2.  **`WHERE`**: Filters individual rows.
+3.  **`GROUP BY`**: Arranges the filtered rows into groups.
+4.  **`HAVING`**: Filters entire groups.
+5.  **`SELECT`**: Computes expressions and determines the final columns.
+6.  **`ORDER BY`**: Sorts the final result set.
+7.  **`LIMIT` / `OFFSET`**: Paginates the sorted result set.
 
 ---
 
 ## 3.8 Nested Subqueries
 
-Subqueries can be nested in `WHERE`, `FROM`, `SELECT`, and `HAVING`.
+A **subquery** is a `SELECT` statement nested inside another query.
 
-### 1. Set Membership (`IN`, `NOT IN`)
-Checks if a value exists in a set generated by a subquery.
+-   **Uncorrelated**: The inner query runs once and produces a result that the outer query uses.
+-   **Correlated**: The inner query runs once for each row of the outer query, using values from the outer query's current row.
+
+### Subqueries in the `WHERE` Clause
+
+-   **`IN` / `NOT IN` (Set Membership)**: Checks if a value is in the set produced by a subquery.
+    ```sql
+    -- Find courses taught in Fall 2017 but NOT in Spring 2018
+    SELECT DISTINCT course_id
+    FROM section
+    WHERE semester = 'Fall' AND year = 2017 AND course_id NOT IN (
+        SELECT course_id FROM section WHERE semester = 'Spring' AND year = 2018
+    );
+    ```
+-   **`SOME` / `ALL` (Set Comparison)**:
+    -   `> SOME`: Greater than at least one value in the set (i.e., greater than the minimum).
+    -   `> ALL`: Greater than every value in the set (i.e., greater than the maximum).
+    -   *Note: `= SOME` is identical to `IN`.*
+-   **`EXISTS` (Test for Empty Relations)**: Returns `TRUE` if the subquery returns one or more rows. Often used with correlated subqueries.
+    ```sql
+    -- Find courses taught in BOTH Fall 2017 and Spring 2018 (correlated subquery)
+    SELECT course_id
+    FROM section S
+    WHERE S.semester = 'Fall' AND S.year = 2017 AND EXISTS (
+        SELECT * FROM section T
+        WHERE T.semester = 'Spring' AND T.year = 2018 AND S.course_id = T.course_id
+    );
+    ```
+-   **`UNIQUE` (Test for Duplicates)**: Returns `TRUE` if the subquery has no duplicate tuples. An empty set is considered unique.
+
+### Subqueries in the `FROM` Clause
+
+-   The subquery creates a temporary table (a **derived table**) that the outer query can select from.
+-   Most database systems require you to give this temporary table an alias.
+
 ```sql
--- Courses in Fall 2017 AND Spring 2018
-select course_id from section where ...
-AND course_id IN (select course_id from section where ...);
+-- Find departments with an average salary > 42000 (alternative to HAVING)
+SELECT dept_name, avg_salary
+FROM (
+    SELECT dept_name, AVG(salary) AS avg_salary
+    FROM instructor
+    GROUP BY dept_name
+) AS dept_averages -- Alias is required
+WHERE avg_salary > 42000;
 ```
 
-### 2. Set Comparison (`SOME`, `ALL`)
-*   **> SOME:** Greater than at least one value (Equivalent to `> MIN`).
-*   **> ALL:** Greater than all values (Equivalent to `> MAX`).
-*   **<> ALL:** Equivalent to `NOT IN`.
+### The `WITH` Clause (Common Table Expressions - CTEs)
 
-### 3. Existence (`EXISTS`, `NOT EXISTS`)
-Checks if the subquery returns *any* rows.
-*   Often used with **Correlated Subqueries** (inner query references outer query variables).
-*   `NOT EXISTS` (A except B) can be used to check for set containment (subset/superset).
+-   Creates one or more named temporary tables that exist only for the duration of the query.
+-   Breaks complex logic into small, readable steps. Much easier to read than deeply nested subqueries.
 
-### 4. Uniqueness (`UNIQUE`)
-Checks if the subquery contains duplicate tuples (returns TRUE if no duplicates).
-
-### 5. Subqueries in FROM Clause
-Creates a temporary, derived table.
 ```sql
-select ... from (select avg(salary) ... ) as dept_avg ...
-```
-*   *Note:* In MySQL/PostgreSQL, derived tables **must** be named (aliased).
-
-### 6. The `WITH` Clause
-Defines a temporary relation (Common Table Expression - CTE) valid only for the query. Improves readability.
-```sql
-WITH max_budget(value) AS (
-    SELECT MAX(budget) FROM department
-)
-SELECT ... FROM department, max_budget ...
+WITH
+  -- Step 1: Create a temp table of departmental salary sums
+  dept_total(dept_name, total_salary) AS (
+    SELECT dept_name, SUM(salary)
+    FROM instructor
+    GROUP BY dept_name
+  ),
+  -- Step 2: Create a temp table with the overall average of those sums
+  avg_total(avg_value) AS (
+    SELECT AVG(total_salary)
+    FROM dept_total
+  )
+-- Final Query: Compare the sum of each dept to the overall average
+SELECT dept_name
+FROM dept_total, avg_total
+WHERE dept_total.total_salary > avg_total.avg_value;
 ```
 
-### 7. Scalar Subqueries
-Subqueries that return exactly **one row and one column**. Can be used wherever a value is valid (e.g., in `SELECT` list, arithmetic expressions).
+### Scalar Subqueries
+
+-   A subquery that returns exactly **one value** (one row, one column).
+-   Can be used almost anywhere a single value is expected (in `SELECT`, `WHERE`, `HAVING`).
+-   Causes a runtime error if it returns more than one row.
+
+```sql
+-- List departments with their instructor count (scalar subquery in SELECT)
+SELECT
+    dept_name,
+    (SELECT COUNT(*) FROM instructor WHERE department.dept_name = instructor.dept_name) AS num_instructors
+FROM department;
+```
 
 ---
 
 ## 3.9 Modification of the Database
 
-### Deletion
-*   `delete from table where P;`
-*   > [!DANGER] Omitting WHERE
-    > `delete from table;` deletes **all** rows in the table.
+### `DELETE`
 
-### Insertion
-*   **Simple:** `insert into table values (v1, v2...);`
-*   **Safe:** `insert into table (col1, col2) values (v1, v2);` (Order independent).
-*   **From Query:** `insert into table select ...`
-    *   *Infinite Loop Risk:* Inserting into a table while selecting from it. SQL ensures select completes before insert starts.
-
-### Updates
-*   `update table set col = new_value where P;`
-*   **CASE Statement:** Useful for conditional updates to avoid order-of-execution errors.
+-   Deletes whole tuples (rows).
+-   The subquery is evaluated **once** before any deletions occur.
     ```sql
-    update instructor
-    set salary = case
-        when salary <= 100000 then salary * 1.05
-        else salary * 1.03
-    end;
+    -- Delete instructors with a salary below the average
+    DELETE FROM instructor
+    WHERE salary < (SELECT AVG(salary) FROM instructor);
     ```
-*   **Handling Nulls in Updates:** Use `COALESCE(value, 0)` to convert NULLs to a usable value (like 0) during calculation.
+
+### `INSERT`
+
+-   **Positional**: `INSERT INTO course VALUES ('CS-437', 'DB Systems', ...)` (Dangerous if schema changes).
+-   **Named Attributes**: `INSERT INTO course(course_id, title, ...) VALUES ('CS-437', ...)` (Safer).
+-   **From a Query**: Insert the result of a `SELECT` statement. The `SELECT` is fully evaluated before insertion begins.
+    ```sql
+    INSERT INTO instructor
+    SELECT ID, name, dept_name, 18000
+    FROM student
+    WHERE dept_name = 'Music' AND tot_cred > 144;
+    ```
+
+### `UPDATE`
+
+-   Modifies attributes of existing tuples.
+-   Use a `CASE` statement for conditional updates to avoid the "order problem" where one update affects rows that a subsequent update also targets.
+
+**`CASE` statement for safe updates**:
+```sql
+-- Give a 3% raise to salaries > 100k and a 5% raise to others
+UPDATE instructor
+SET salary = CASE
+    WHEN salary <= 100000 THEN salary * 1.05
+    ELSE salary * 1.03
+END;
+```
+
+**Handling `NULL`s from Aggregates**: If a subquery aggregate (like `SUM`) can return `NULL` (e.g., for a student who has taken no courses), it can cause an update to fail or set a value to `NULL`. Use `COALESCE` or `CASE` to handle this.
+
+```sql
+-- Coalesce returns the first non-null value in its argument list
+UPDATE student S
+SET tot_cred = (
+    SELECT COALESCE(SUM(credits), 0)
+    FROM takes
+    WHERE takes.ID = S.ID
+);
+```
