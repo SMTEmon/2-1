@@ -87,24 +87,74 @@ FROM student NATURAL JOIN takes;
 
 `NATURAL JOIN` equates **all** common attributes. This can lead to critical logic errors if schemas share unrelated attribute names.
 
-**The Trap Query**: Imagine a `course` table also has a `dept_name` column.
+#### Natural Join Trap: A Concrete Example
+
+Let's imagine our university database has these three tables. Notice that `student` and `course` both have a `dept_name` column.
+
+**`student` table:**
+| id  | name  | dept_name |
+|:----|:------|:----------|
+| 101 | Alice | CS        |
+| 102 | Bob   | EE        |
+
+**`course` table:**
+| course_id | title        | dept_name |
+|:----------|:-------------|:----------|
+| CS-101    | Intro to CS  | CS        |
+| EE-200    | Circuits     | EE        |
+| MUS-101   | Music Theory | Music     |
+
+**`takes` table:**
+| id  | course_id |
+|:----|:----------|
+| 101 | CS-101    |
+| 101 | MUS-101   |
+| 102 | EE-200    |
+
+Now, let's run the "trap query." The goal is to see which courses each student takes.
 
 ```sql
--- DO NOT DO THIS (in most cases)
+-- This query contains a hidden trap!
 SELECT name, title
 FROM student
 NATURAL JOIN takes
 NATURAL JOIN course;
 ```
 
-**Why is this dangerous?**
+**How the Trap Springs:**
+1.  `student` is correctly joined with `takes` using the common `id` column.
+2.  The result is then joined with `course`. The database sees two common columns: `course_id` and `dept_name`.
+3.  It therefore joins where **both** columns match: `result.course_id = course.course_id` AND `result.dept_name = course.dept_name`.
 
--   `student` and `takes` join correctly on `ID`.
--   `takes` and `course` join correctly on `course_id`.
--   **BUT**: `student` and `course` BOTH have a `dept_name` column.
+**The Incorrect Result:**
 
-**The Consequence (Logic Error)**:
-The query incorrectly requires the **Student's Department** to be exactly the same as the **Course's Department**. If a CS student takes a Music elective, that row will be excluded from the result, hiding valid data.
+| name  | title       |
+|:------|:------------|
+| Alice | Intro to CS |
+| Bob   | Circuits    |
+
+Alice's enrollment in "Music Theory" (`MUS-101`) has vanished! This is because her department (`CS`) does not match the course's department (`Music`), so the `NATURAL JOIN` condition fails and the row is silently discarded.
+
+**The Correct Query and Result:**
+
+By using an explicit `JOIN ON` clause, we tell the database exactly how to link the tables, avoiding the unintended `dept_name` match.
+
+```sql
+SELECT s.name, c.title
+FROM student s
+JOIN takes t ON s.id = t.id
+JOIN course c ON t.course_id = c.course_id;
+```
+
+**Correct Result:**
+
+| name  | title        |
+|:------|:-------------|
+| Alice | Intro to CS  |
+| **Alice** | **Music Theory** |
+| Bob   | Circuits     |
+
+This result is correct and complete, demonstrating why explicit joins are safer.
 
 ### 1.4 The `USING` Clause
 
@@ -164,12 +214,6 @@ INNER JOIN takes ON student.id = takes.id;
 1.  **`LEFT OUTER JOIN`**: Preserves all tuples from the **left** relation.
 2.  **`RIGHT OUTER JOIN`**: Preserves all tuples from the **right** relation.
 3.  **`FULL OUTER JOIN`**: Preserves all tuples from **both** relations.
-
-**Visual Representation**:
-
-| Left Outer Join                                | Right Outer Join                                 | Full Outer Join                                  |
-| ---------------------------------------------- | ------------------------------------------------ | ------------------------------------------------ |
-| ![Left Join](https://i.imgur.com/7D2Q3Xg.png) | ![Right Join](https://i.imgur.com/aNUo72E.png) | ![Full Join](https://i.imgur.com/DoqA00R.png) |
 
 #### `LEFT OUTER JOIN` Example
 
@@ -325,10 +369,6 @@ GROUP BY dept;
 REFRESH MATERIALIZED VIEW dept_stats;
 ```
 
-This refresh can be scheduled to run periodically using tools like `cron` or database job schedulers.
-
-![Materialized View Diagram](https://i.imgur.com/G3t3qR0.png)
-
 ---
 
 ## 3. Transactions
@@ -421,11 +461,6 @@ CREATE TABLE instructors (
 -   `ON DELETE SET NULL`: Sets the referencing foreign key column in the child rows to `NULL`.
 
 #### Cascading Delete Example
-
-![Cascading Delete Diagram Before](https://i.imgur.com/k6p1K7J.png)
-*If we delete the 'EEE' department...*
-![Cascading Delete Diagram After](https://i.imgur.com/v82iPqA.png)
-*...all 'EEE' students and their grades are automatically deleted.*
 
 **Scenario**: If a Department is deleted, delete all its Courses automatically.
 
