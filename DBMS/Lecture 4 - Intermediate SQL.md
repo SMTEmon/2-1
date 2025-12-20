@@ -129,6 +129,14 @@ FROM student NATURAL JOIN takes;
 > 2.  The result is then joined with `course`. The database sees two common columns: `course_id` and `dept_name`.
 > 3.  It therefore joins where **both** columns match: `result.course_id = course.course_id` AND `result.dept_name = course.dept_name`.
 >
+> > [!info] Understanding the "Result" Table
+> > You might wonder: *"Where is this 'result' table coming from?"*
+> > In step 2, `result` refers to the **intermediate table** created by the first part of the query `(student NATURAL JOIN takes)`.
+> > 
+> > 1.  **Step 1:** The database runs `student NATURAL JOIN takes`. This creates a temporary, invisible table (let's call it **Intermediate Table A**) with columns: `id`, `name`, `dept_name` (from student), and `course_id` (from takes).
+> > 2.  **Step 2:** It then joins **Intermediate Table A** with the `course` table. It finds **two** matching column names: `course_id` and `dept_name`.
+> > 3.  Because Alice is a "CS" student (her `dept_name` is CS), but the Music Theory course belongs to the "Music" department, the second condition (`CS = Music`) fails, and the row is dropped.
+>
 > **The Incorrect Result:**
 >
 > | name  | title       |
