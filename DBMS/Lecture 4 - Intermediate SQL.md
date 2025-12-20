@@ -81,59 +81,62 @@ FROM student NATURAL JOIN takes;
 | Alice | CS-102 |
 | Bob   | EE-200 |
 
-> **Warning**: `NATURAL JOIN` can be dangerous and is often avoided in production code.
+> [!warning] 
+> `NATURAL JOIN` can be dangerous and is often avoided in production code.
 
 ### 1.3 The Trap of Natural Join
 
 `NATURAL JOIN` equates **all** common attributes. This can lead to critical logic errors if schemas share unrelated attribute names.
 
-#### Natural Join Trap: A Concrete Example
-
-Let's imagine our university database has these three tables. Notice that `student` and `course` both have a `dept_name` column.
-
-**`student` table:**
-| id  | name  | dept_name |
-|:----|:------|:----------|
-| 101 | Alice | CS        |
-| 102 | Bob   | EE        |
-
-**`course` table:**
-| course_id | title        | dept_name |
-|:----------|:-------------|:----------|
-| CS-101    | Intro to CS  | CS        |
-| EE-200    | Circuits     | EE        |
-| MUS-101   | Music Theory | Music     |
-
-**`takes` table:**
-| id  | course_id |
-|:----|:----------|
-| 101 | CS-101    |
-| 101 | MUS-101   |
-| 102 | EE-200    |
-
-Now, let's run the "trap query." The goal is to see which courses each student takes.
-
-```sql
--- This query contains a hidden trap!
-SELECT name, title
-FROM student
-NATURAL JOIN takes
-NATURAL JOIN course;
-```
-
-**How the Trap Springs:**
-1.  `student` is correctly joined with `takes` using the common `id` column.
-2.  The result is then joined with `course`. The database sees two common columns: `course_id` and `dept_name`.
-3.  It therefore joins where **both** columns match: `result.course_id = course.course_id` AND `result.dept_name = course.dept_name`.
-
-**The Incorrect Result:**
-
-| name  | title       |
-|:------|:------------|
-| Alice | Intro to CS |
-| Bob   | Circuits    |
-
-Alice's enrollment in "Music Theory" (`MUS-101`) has vanished! This is because her department (`CS`) does not match the course's department (`Music`), so the `NATURAL JOIN` condition fails and the row is silently discarded.
+> [!error] Natural Join Trap: A Concrete Example
+> Let's imagine our university database has these three tables. Notice that `student` and `course` both have a `dept_name` column.
+>
+> **`student` table:**
+> 
+> | id  | name  | dept_name |
+> | :-- | :---- | :-------- |
+> | 101 | Alice | CS        |
+> | 102 | Bob   | EE        |
+>
+> **`course` table:**
+> 
+> | course_id | title        | dept_name |
+> | :--------- | :----------- | :--------- |
+> | CS-101    | Intro to CS  | CS        |
+> | EE-200    | Circuits     | EE        |
+> | MUS-101   | Music Theory | Music     |
+>
+> **`takes` table:**
+> 
+> | id  | course_id |
+> | :-- | :--------- |
+> | 101 | CS-101    |
+> | 101 | MUS-101   |
+> | 102 | EE-200    |
+>
+> Now, let's run the "trap query." The goal is to see which courses each student takes.
+>
+> ```sql
+> -- This query contains a hidden trap!
+> SELECT name, title
+> FROM student
+> NATURAL JOIN takes
+> NATURAL JOIN course;
+> ```
+>
+> **How the Trap Springs:**
+> 1.  `student` is correctly joined with `takes` using the common `id` column.
+> 2.  The result is then joined with `course`. The database sees two common columns: `course_id` and `dept_name`.
+> 3.  It therefore joins where **both** columns match: `result.course_id = course.course_id` AND `result.dept_name = course.dept_name`.
+>
+> **The Incorrect Result:**
+>
+> | name  | title       |
+> | :---- | :---------- |
+> | Alice | Intro to CS |
+> | Bob   | Circuits    |
+>
+> Alice's enrollment in "Music Theory" (`MUS-101`) has vanished! This is because her department (`CS`) does not match the course's department (`Music`), so the `NATURAL JOIN` condition fails and the row is silently discarded.
 
 **The Correct Query and Result:**
 
@@ -201,7 +204,8 @@ INNER JOIN takes ON student.id = takes.id;
 | Alice | CS-102 | B     |
 | Bob   | EE-200 | A     |
 
-> *Note: Dave (ID 104) is missing because he has no matching ID in the `takes` table. This is expected data loss in an inner join.*
+> [!note] 
+> Dave (ID 104) is missing because he has no matching ID in the `takes` table. This is expected data loss in an inner join.
 
 ### 1.6 Outer Joins
 
@@ -273,7 +277,9 @@ SELECT A.name AS Student1, B.name AS Student2, A.dept
 FROM student A
 JOIN student B ON A.dept = B.dept AND A.id < B.id;
 ```
-> *The `A.id < B.id` condition prevents duplicate pairs (Alice, Carol) and (Carol, Alice) and prevents a student from being paired with themselves.*
+
+> [!tip] 
+> The `A.id < B.id` condition prevents duplicate pairs (Alice, Carol) and (Carol, Alice) and prevents a student from being paired with themselves.
 
 #### Cross Join
 
@@ -401,7 +407,8 @@ UPDATE accounts SET balance = balance - 100
 WHERE id = 1;
 ```
 
-> **System Crash Risk**: If the power fails here, money is deducted from Account A but not added to Account B. The bank has lost money. **Atomicity** prevents this.
+> [!danger] System Crash Risk
+> If the power fails here, money is deducted from Account A but not added to Account B. The bank has lost money. **Atomicity** prevents this.
 
 **Step 2: Add and Commit**
 
@@ -448,6 +455,7 @@ CREATE TABLE instructors (
 );
 ```
 
+> [!warning] 
 > Attempting to insert a negative salary (`-5000`) or an invalid department (`'Music'`) will trigger a database error.
 
 ### 4.3 Referential Integrity (Foreign Keys)
