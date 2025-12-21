@@ -501,6 +501,22 @@ GROUP BY dept;
 REFRESH MATERIALIZED VIEW dept_stats;
 ```
 
+> [!example] Standard View vs. Materialized View
+>
+> **Scenario**: A university dashboard needs to show the total number of students per department. This involves counting thousands of rows in the `student` table.
+>
+> **1. Using a Standard View**
+> *   **Query**: `SELECT * FROM dept_counts_view;`
+> *   **What happens**: The database runs the expensive `COUNT(*)` query **every single time** a user loads the dashboard.
+> *   **Pros**: Data is always real-time.
+> *   **Cons**: Slow performance if the table is huge.
+>
+> **2. Using a Materialized View**
+> *   **Query**: `SELECT * FROM dept_counts_mat_view;`
+> *   **What happens**: The database reads the pre-calculated counts from disk. It's instant (O(1) lookup).
+> *   **Pros**: Extremely fast read performance.
+> *   **Cons**: Data is a "snapshot". If a new student joins 5 minutes later, the materialized view won't show it until you run `REFRESH MATERIALIZED VIEW`.
+
 ---
 
 ## 3. Transactions
