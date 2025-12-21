@@ -19,27 +19,64 @@ This lecture covers more complex forms of SQL queries and essential database man
 
 ---
 
-## Sample Data Used in This Lecture
+## Reference: Tables Used in This Lecture
 
-To understand Joins and Views, we will refer to these two tables throughout the lecture.
+The examples in this lecture use different sets of tables depending on the concept being demonstrated. Refer to this section to avoid confusion.
 
-**Table 1: `student`**
+> [!example] Set A: Main Sample Data (Joins & Views)
+> *Used in Sections 1.1, 1.2, 1.5 - 1.7, and 2.*
+>
+> **`student`**
+>
+> | ID  | Name  | Dept |
+> | :-- | :---- | :--- |
+> | 101 | Alice | CS   |
+> | 102 | Bob   | EE   |
+> | 103 | Carol | CS   |
+> | 104 | Dave  | Bio  |
+>
+> **`takes`**
+>
+> | ID  | Course | Grade |
+> | :-- | :----- | :---- |
+> | 101 | CS-101 | A     |
+> | 101 | CS-102 | B     |
+> | 102 | EE-200 | A     |
+> | 999 | Unknown| C     |
 
-| ID  | Name  | Dept |
-| --- | ----- | ---- |
-| 101 | Alice | CS   |
-| 102 | Bob   | EE   |
-| 103 | Carol | CS   |
-| 104 | Dave  | Bio  |
+> [!danger] Set B: The "Natural Join Trap" Data
+> *Used in Section 1.3 only.*
+> *Notice the matching `dept_name` column between `student` and `course`.*
+>
+> **`student` (Modified)**
+>
+> | id  | name  | **dept_name** |
+> | :-- | :---- | :------------ |
+> | 101 | Alice | CS            |
+> | 102 | Bob   | EE            |
+>
+> **`course`**
+>
+> | course_id | title        | **dept_name** |
+> | :--------- | :----------- | :------------ |
+> | CS-101    | Intro to CS  | CS            |
+> | EE-200    | Circuits     | EE            |
+> | MUS-101   | Music Theory | Music         |
+>
+> **`takes`**
+>
+> | id  | course_id |
+> | :-- | :-------- |
+> | 101 | CS-101    |
+> | 101 | MUS-101   |
+> | 102 | EE-200    |
 
-**Table 2: `takes` (Course Enrolment)**
-
-| ID  | Course | Grade |
-| --- | ------ | ----- |
-| 101 | CS-101 | A     |
-| 101 | CS-102 | B     |
-| 102 | EE-200 | A     |
-| 999 | Unknown| C     |
+> [!info] Set C: Constraints & Transactions Data
+> *Used in Sections 3, 4, and 5.*
+>
+> -   **`instructors`**: Used for `CHECK` constraints (Salary > 0).
+> -   **`department` & `course`**: Used for Foreign Keys (`ON DELETE CASCADE`).
+> -   **`person`**: Used for Deferrable Constraints (Circular dependency between spouses).
 
 ---
 
