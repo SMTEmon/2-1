@@ -5,6 +5,14 @@
 
 ---
 
+## 📖 Covered Lectures
+This quiz covers the following material:
+- [[Lecture 1 - Introduction to Database Management Systems]]
+- [[Lecture 2 - Introduction to the Relational Model]]
+- [[Lecture 3 - Introduction to SQL]]
+
+---
+
 ## 📚 Schema Reference
 *Use this schema to solve the problems.*
 
