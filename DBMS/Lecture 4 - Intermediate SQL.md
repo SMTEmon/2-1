@@ -387,68 +387,70 @@ SELECT * FROM cs_students;
 **The Problem**:
 If you insert into a view, the database must unambiguously know how to insert into the underlying base table. If the database cannot clearly figure out how to create that row in the base table, the operation fails.
 
-#### 1. The "Missing NOT NULL Column" Problem
-
-**Scenario**: Imagine you have the `student` base table where `ID` is the Primary Key (cannot be `NULL`).
-
-**Base Table: `student`**
-
-| ID (PK) | Name  | Dept |
-| :------ | :---- | :--- |
-| 101     | Alice | CS   |
-
-Now, you create a view to hide the student IDs for privacy, showing only names and departments.
-
-```sql
-CREATE VIEW public_student_list AS
-SELECT Name, Dept
-FROM student;
-```
-
-**The Failed Operation**: You try to add a new student named "Eve" through this view.
-
-```sql
-INSERT INTO public_student_list (Name, Dept)
-VALUES ('Eve', 'Music');
-```
-
-**Why it fails**:
-The database tries to run `INSERT INTO student (Name, Dept) VALUES ('Eve', 'Music');`.
-It stops and asks: **"What is Eve's ID?"** Since `ID` is `NOT NULL` and wasn't provided (because it wasn't in the view), the database refuses to guess, and the insert fails.
-
-#### 2. The "Aggregates" Problem
-
-**Scenario**: You create a view that summarizes data, such as counting students per department.
-
-**View: `dept_counts`**
-
-```sql
-CREATE VIEW dept_counts AS
-SELECT Dept, COUNT(*) as Student_Count
-FROM student
-GROUP BY Dept;
-```
-
-**Virtual Result**:
-
-| Dept | Student_Count |
-| :--- | :------------ |
-| CS   | 2             |
-| EE   | 1             |
-
-**The Failed Operation**: You try to "insert" a new statistic.
-
-```sql
-INSERT INTO dept_counts (Dept, Student_Count)
-VALUES ('History', 5);
-```
-
-**Why it fails**:
-You are asking the database to make the `Student_Count` for History equal to 5. The database looks at the underlying `student` table and gets confused:
-*   "To make the count 5, I need to insert 5 rows into `student`."
-*   "Who are these 5 students? What are their IDs? What are their Names?"
-
-Because a single row in an aggregate view represents **multiple** rows in the base table, there is no logical way to reverse-engineer a single `INSERT` statement back into the complex data required for the base table.
+> [!info] Detailed Explanation: Why INSERT fails on Views
+> 
+> #### 1. The "Missing NOT NULL Column" Problem
+> 
+> **Scenario**: Imagine you have the `student` base table where `ID` is the Primary Key (cannot be `NULL`).
+> 
+> **Base Table: `student`**
+> 
+> | ID (PK) | Name  | Dept |
+> | :------ | :---- | :--- |
+> | 101     | Alice | CS   |
+> 
+> Now, you create a view to hide the student IDs for privacy, showing only names and departments.
+> 
+> ```sql
+> CREATE VIEW public_student_list AS
+> SELECT Name, Dept
+> FROM student;
+> ```
+> 
+> **The Failed Operation**: You try to add a new student named "Eve" through this view.
+> 
+> ```sql
+> INSERT INTO public_student_list (Name, Dept)
+> VALUES ('Eve', 'Music');
+> ```
+> 
+> **Why it fails**:
+> The database tries to run `INSERT INTO student (Name, Dept) VALUES ('Eve', 'Music');`.
+> It stops and asks: **"What is Eve's ID?"** Since `ID` is `NOT NULL` and wasn't provided (because it wasn't in the view), the database refuses to guess, and the insert fails.
+> 
+> #### 2. The "Aggregates" Problem
+> 
+> **Scenario**: You create a view that summarizes data, such as counting students per department.
+> 
+> **View: `dept_counts`**
+> 
+> ```sql
+> CREATE VIEW dept_counts AS
+> SELECT Dept, COUNT(*) as Student_Count
+> FROM student
+> GROUP BY Dept;
+> ```
+> 
+> **Virtual Result**:
+> 
+> | Dept | Student_Count |
+> | :--- | :------------ |
+> | CS   | 2             |
+> | EE   | 1             |
+> 
+> **The Failed Operation**: You try to "insert" a new statistic.
+> 
+> ```sql
+> INSERT INTO dept_counts (Dept, Student_Count)
+> VALUES ('History', 5);
+> ```
+> 
+> **Why it fails**:
+> You are asking the database to make the `Student_Count` for History equal to 5. The database looks at the underlying `student` table and gets confused:
+> *   "To make the count 5, I need to insert 5 rows into `student`."
+> *   "Who are these 5 students? What are their IDs? What are their Names?"
+> 
+> Because a single row in an aggregate view represents **multiple** rows in the base table, there is no logical way to reverse-engineer a single `INSERT` statement back into the complex data required for the base table.
 
 ### 2.4 Conditions for Updatable Views
 
