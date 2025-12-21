@@ -1,13 +1,3 @@
-# University Notes Vault
-
-This repository contains my personal notes for university courses, organized as an [Obsidian](https://obsidian.md/) vault. It covers subjects like:
-
-- **COA** (Computer Organization & Architecture)
-- **DBMS** (Database Management Systems)
-- **DSA** (Data Structures & Algorithms)
-- **Linear Algebra**
-- **OOC2** (Object-Oriented Programming/Concepts)
-
 ## Setup Guide
 
 You can set up this vault on your local machine using either the command line or directly within Obsidian using a community plugin.
