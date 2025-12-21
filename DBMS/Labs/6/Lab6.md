@@ -188,13 +188,40 @@ FROM AcademicStaff;
 ```
 
 ### 6.2 Updatable Views WITH CHECK OPTION
-Prevents updates/inserts that would make the new row vanish from the view.
+
+**The Concept:** `WITH CHECK OPTION` acts as a guard. It ensures that any data you `INSERT` or `UPDATE` through a view **must satisfy the view's `WHERE` clause**.
+
+If you try to insert data that doesn't match the filter (e.g., a non-.edu email), the row would effectively "vanish" from the view immediately after insertion. The database blocks this to prevent confusion and data integrity issues.
+
+#### Visual Breakdown & Code
+
+**Step 1: The Rule Definition**
 ```sql
 CREATE OR REPLACE VIEW View_Edu_Staff AS
 SELECT id, full_name, email_addr
 FROM AcademicStaff
-WHERE email_addr LIKE '%edu'
-WITH CHECK OPTION;
+WHERE email_addr LIKE '%edu'    -- <--- The Filter
+WITH CHECK OPTION;              -- <--- The Guard
+```
+
+**Step 2: Action vs Result**
+
+| Scenario | Query Input | Check: `%edu`? | Outcome |
+| :--- | :--- | :--- | :--- |
+| **Valid** | `'john@university.edu'` | **True** ✅ | **Allowed.** Row is added to base table. |
+| **Invalid** | `'jane@gmail.com'` | **False** ❌ | **Blocked.** Error: `violates check option`. |
+
+**Step 3: Implementation**
+```sql
+-- 1. Valid Insert (Succeeds)
+-- Matches the '%edu' rule, so it passes through.
+INSERT INTO View_Edu_Staff (full_name, email_addr)
+VALUES ('John Doe', 'john.d@university.edu');
+
+-- 2. Invalid Insert (Fails)
+-- Does NOT match '%edu'. The view rejects it because it would "vanish".
+INSERT INTO View_Edu_Staff (full_name, email_addr)
+VALUES ('Jane Doe', 'jane.d@gmail.com');
 ```
 
 ### 6.3 Materialized Views
