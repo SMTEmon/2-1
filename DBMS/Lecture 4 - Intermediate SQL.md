@@ -454,12 +454,31 @@ If you insert into a view, the database must unambiguously know how to insert in
 
 ### 2.4 Conditions for Updatable Views
 
-Most SQL standards (including Postgres) allow updates only on **Simple Views**:
+Most SQL standards (including Postgres) allow updates only on **Simple Views**. A view is simple and updatable if:
 
 1.  The `FROM` clause has only **one** database relation.
 2.  The `SELECT` clause contains only attribute names (no expressions, aggregates, or `DISTINCT`).
 3.  Any attribute not listed in the `SELECT` clause must be nullable or have a default value in the base table.
 4.  There are no `GROUP BY` or `HAVING` clauses.
+
+> [!example] Examples of Updatable vs. Non-Updatable Views
+>
+> **1. Single Relation Rule**
+> *   **Updatable**: `CREATE VIEW v1 AS SELECT name FROM student;` (One table)
+> *   **Not Updatable**: `CREATE VIEW v2 AS SELECT s.name, t.course_id FROM student s JOIN takes t ON s.ID = t.ID;` (Two tables joined)
+>
+> **2. No Expressions/Aggregates Rule**
+> *   **Updatable**: `CREATE VIEW v3 AS SELECT salary FROM instructor;`
+> *   **Not Updatable**: `CREATE VIEW v4 AS SELECT salary + 1000 FROM instructor;` (Expression cannot be reversed to find original salary)
+> *   **Not Updatable**: `CREATE VIEW v5 AS SELECT MAX(salary) FROM instructor;` (Aggregate)
+>
+> **3. Unlisted Columns Rule**
+> *   **Scenario**: `student` table has `ID` (PK, Not Null), `Name` (Not Null), `Dept` (Nullable).
+> *   **Updatable**: `CREATE VIEW v6 AS SELECT ID, Name FROM student;` (Missing `Dept` is fine as it can be NULL).
+> *   **Not Updatable**: `CREATE VIEW v7 AS SELECT Name, Dept FROM student;` (Missing `ID` which is Not Null and has no default).
+>
+> **4. No Grouping Rule**
+> *   **Not Updatable**: `CREATE VIEW v8 AS SELECT dept, COUNT(*) FROM student GROUP BY dept;` (Cannot insert into a group).
 
 ### 2.5 Materialized Views
 
