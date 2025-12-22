@@ -50,3 +50,4 @@ $$ \text{Result Count} = \min(\text{Count in A}, \text{Count in B}) $$
 (SELECT id FROM ... WHERE ...)
 INTERSECT ALL
 (SELECT id FROM ... WHERE ...);
+```

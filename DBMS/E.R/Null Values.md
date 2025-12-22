@@ -32,4 +32,3 @@ Using `WHERE` clauses with explicit Boolean tests treats these buckets different
 #### `WHERE ... IS NOT TRUE`
 - **Captures:** Both `FALSE` and `UNKNOWN`.
 - **Example Result:** Mozart, Gold, Singh.
-```
