@@ -20,7 +20,7 @@ $action = {
         # Run the sync script and append output to log
         $logFile = "E:\Obsidian\2-1\sync_hook.log"
         Add-Content -Path $logFile -Value "--- Triggered by Watcher at $(Get-Date) ---"
-        powershell.exe -NoProfile -ExecutionPolicy Bypass -File $scriptToRun >> $logFile 2>&1
+        powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$scriptToRun" >> $logFile 2>&1
     }
 }
 
