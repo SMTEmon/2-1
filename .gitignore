@@ -2,3 +2,8 @@
 .trash
 gemini-scribe
 *.pdf
+
+# Local OneDrive Sync scripts and logs
+sync_to_cloud.ps1
+watch_git.ps1
+sync_hook.log

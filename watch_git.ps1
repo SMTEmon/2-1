@@ -17,8 +17,10 @@ $action = {
         # Debounce: Wait a few seconds to let Git finish its operations
         Start-Sleep -Seconds 5
         
-        # Run the sync script
-        powershell.exe -NoProfile -ExecutionPolicy Bypass -File $scriptToRun
+        # Run the sync script and append output to log
+        $logFile = "E:\Obsidian\2-1\sync_hook.log"
+        Add-Content -Path $logFile -Value "--- Triggered by Watcher at $(Get-Date) ---"
+        powershell.exe -NoProfile -ExecutionPolicy Bypass -File $scriptToRun >> $logFile 2>&1
     }
 }
 
