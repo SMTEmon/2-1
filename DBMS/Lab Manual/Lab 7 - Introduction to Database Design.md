@@ -190,3 +190,35 @@ CREATE TABLE Enrolled (
     FOREIGN KEY (C_ID) REFERENCES Course(C_ID)
 );
 ```
+
+## 7. Key Concepts Breakdown
+
+> [!INFO] **Composite Primary Key**
+> A **Composite Primary Key** is a combination of two or more columns that *together* act as the unique identifier for a row. This is common when a single column isn't enough to be unique.
+> 
+> *   **How it works:** In `PRIMARY KEY (S_ID, Phone_Number)`, `S_ID` can repeat, and `Phone_Number` can repeat, but the *pair* must be unique.
+> 
+> | S_ID | Phone_Number | Valid? | Explanation |
+> | :--- | :--- | :--- | :--- |
+> | 101 | 555-0001 | **YES** | First entry. |
+> | 101 | 555-0002 | **YES** | Same Student (101), different phone. |
+> | 102 | 555-0001 | **YES** | Different student, same phone. |
+> | 101 | 555-0001 | **NO** | **ERROR.** (101, 555-0001) already exists. |
+> 
+> *   **Use Case:** Multi-valued attributes (one student has many phones) or Junction Tables (one student takes many courses).
+> *   **Syntax:** Must be defined at the bottom of the table: `PRIMARY KEY (Col1, Col2)`.
+
+> [!WARNING] **The Purpose of Foreign Keys**
+> While Primary Keys handle uniqueness *inside* a table, **Foreign Keys** manage relationships *outside* the table.
+> 
+> *   **The Guard:** `FOREIGN KEY (S_ID) REFERENCES Student(S_ID)` prevents you from adding a phone number for a student ID that doesn't exist. It ensures referential integrity (no "fake" students).
+> *   **The Cleaner:** It allows automatic cleanup operations like Cascade Delete.
+
+> [!DANGER] **Cascade Delete (ON DELETE CASCADE)**
+> By default, a database stops you from deleting a record (e.g., a Student) if other tables reference it (e.g., Student_Phone). This is to prevent orphaned data.
+> 
+> **How to configure:**
+> ```sql
+> FOREIGN KEY (S_ID) REFERENCES Student(S_ID) ON DELETE CASCADE
+> ```
+> *   **What it does:** If you delete a Student from the main table, the database *automatically* deletes all their associated records in the child table (e.g., all their phone numbers).

@@ -46,7 +46,8 @@ Returns >1 row. Used with `IN`, `ANY`, `ALL`.
 
 ### 3.3 Nested Subqueries
 Subqueries inside subqueries.
-*   *Logic:* Find project's dept $ightarrow$ Find dept in Employee.
+*   *Logic:* Find project's dept $
+ightarrow$ Find dept in Employee.
 
 ### 3.4 Correlated Subqueries
 Depends on the outer query. Executed once for **each row** of the outer query.
