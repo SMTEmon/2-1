@@ -57,3 +57,19 @@ If you prefer to stay within the Obsidian interface or want to sync changes easi
 
 - **.obsidian/**: Contains vault settings, plugins, and themes.
 - **Subject Folders**: Each subject has its own folder containing markdown notes.
+
+## PDF Resources
+
+The PDF files associated with these notes are hosted separately due to their size and are not included in this Git repository.
+
+If you would like to access or sync the PDF files, you can use the following SharePoint link:
+
+[**Access PDF Resources (SharePoint/OneDrive)**](https://w16yd-my.sharepoint.com/:f:/g/personal/smtemon_w16yd_onmicrosoft_com/IgAg9x7YMXYLSZSVnWdxmoyqAQK7ICP5C9ua9GPQ3MUwFYI?e=haGCN4)
+
+### Syncing Methods
+
+To keep the PDFs synced with your local vault, you can use one of the following methods:
+
+1.  **Native OneDrive App:** You can "Add shortcut to My files" in SharePoint/OneDrive and use the native OneDrive application to sync the folder to your machine.
+2.  **Rclone:** For more advanced users or Linux environments, you can configure [rclone](https://rclone.org/) to sync the remote OneDrive folder to your local PDF directory.
+3.  **Manual Download:** You can also manually download specific PDFs as needed directly from the link above.
