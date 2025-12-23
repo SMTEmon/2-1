@@ -4,4 +4,4 @@ Chapter -10 (UML)
 	only being able to draw UML class diagram is enough
 
 # DBMS
-Lecture 1 - 6? or 7?
+	Lecture 1 - 6? or 7?
