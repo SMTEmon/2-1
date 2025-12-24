@@ -41,6 +41,38 @@ graph TD
 *   **Right Validity:** $45, 40, 54$ are all $> 39$.
 *   **Subtree Validity:** Node 27 is root of left subtree; $18 < 27$ and $29 > 27$.
 
+### Terminology: Leaf Node vs. External Leaf Node
+
+> [!INFO] Difference between Leaf Node and External Node
+> In the context of standard coding, they often mean the same thing, but in theoretical computer science, there is a specific difference.
+>
+> **1. The Practical Definition (Coding)**
+> *   **Leaf Node:** A node that exists but has no children (left and right are `nullptr`).
+> *   **External Node:** Synonym for Leaf Node.
+> *   **Internal Node:** Any node that has at least one child.
+>
+> **2. The Theoretical Definition (Extended Binary Trees)**
+> *   **Leaf Node (Internal):** The actual node containing data at the bottom of the tree.
+> *   **External Node (Virtual):** The `nullptr` (null pointers) attached to the leaves. In diagrams, these are often drawn as squares.
+>
+> **Visual Example:**
+> ```text
+>        (10)      <- Internal Node (Root)
+>        /  \
+>      (5)   NULL  <- (5) is a Leaf Node
+>      / \
+>   NULL NULL      <- These NULLs are the "External Nodes"
+> ```
+>
+> | Term | Symbol | Value | What is it? |
+> | :--- | :--- | :--- | :--- |
+> | **Leaf Node** | ⭕ (Circle) | `5` | An actual object in memory. |
+> | **External Node** | ⏹ (Square) | `nullptr` | A placeholder representing an empty subtree. |
+>
+> **Why does this distinction matter?**
+> *   **Height:** Leaf = 0, External = -1 (or 0).
+> *   **Equation:** $E = I + 1$ (Number of External nodes = Number of Internal nodes + 1).
+
 ---
 
 ## 2. Why use a BST?
