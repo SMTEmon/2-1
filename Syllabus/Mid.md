@@ -7,3 +7,5 @@ Chapter -10 (UML)
 	Lecture 1 - 6? or 7?
 	 No creation of ERD
 	  Complicated ERD-> Query will be given
+# TOC
+    Lecture 1, 2
