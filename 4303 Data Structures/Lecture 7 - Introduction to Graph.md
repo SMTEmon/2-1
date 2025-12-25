@@ -122,6 +122,9 @@ graph LR
 *   **Cons:** Checking if a specific edge $(u, v)$ exists is slower ($O(\text{degree of } u)$) because you must traverse the list.
 
 ### C. Adjacency Multi-list
+
+[YT Video Link on Adjacency Multi-List](https://www.youtube.com/watch?v=f2z1n6atBsc)
+
 In standard Adjacency Lists, an undirected edge $(u, v)$ is duplicated in the lists of both $u$ and $v$. The **Adjacency Multi-list** avoids this by treating **Edges as Nodes**.
 
 *   **Core Idea:** Each edge exists as a single unique node in memory, simultaneously linked into the lists of both vertices it connects.
@@ -158,13 +161,14 @@ graph TD
     *   **Space Efficient:** No duplication for undirected edges.
 *   **Cons:** More complex pointer manipulation.
 
-[YT Video Link on Adjacency Multi-List](https://www.youtube.com/watch?v=f2z1n6atBsc)
-
 ---
 
 ## 4. Graph Traversals
 
 ### A. Breadth-First Search (BFS)
+
+[YT Video Link on BFS](https://www.youtube.com/watch?v=xlVX7dXLS64)
+
 Explores the graph **layer-by-layer** (like ripples in a pond).
 *   **Data Structure:** **Queue** (FIFO).
 *   **Usage:** Finding **Shortest Path** in unweighted graphs, Peer-to-Peer networks.
@@ -237,6 +241,9 @@ void BFS(int startNode, int V, vector<vector<int>>& adj) {
 ```
 
 ### B. Depth-First Search (DFS)
+
+[YT Video Link on DFS](https://www.youtube.com/watch?v=PMMc4VsIacU)
+
 Explores as **deep** as possible along each branch before backtracking.
 *   **Data Structure:** **Stack** (LIFO) or **Recursion**.
 *   **Usage:** Maze solving, Cycle detection, Pathfinding.
