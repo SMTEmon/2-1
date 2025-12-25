@@ -1,6 +1,6 @@
 ---
 course: CSE 4303 - Data Structures
-lecture: 06
+lecture: 6
 instructor: Asaduzzaman Herok
 date: 2025-12-23
 tags:
@@ -8,7 +8,6 @@ tags:
   - bst
   - binary-search-tree
   - algorithms
-  - c++
 ---
 
 # Lecture 06: Binary Search Trees (BST)
