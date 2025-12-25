@@ -98,7 +98,7 @@ int adj[5][5] = {
 ```
 
 ### B. Adjacency List (Array of Linked Lists)
-An array where each element points to a linked list of neighbors. This is the industry standard for **sparse graphs**.
+An array where each element points to a linked list of neighbours. This is the industry standard for **sparse graphs**.
 
 *   **Structure:** An array of size $V$ (Total Vertices).
 *   **Mechanism:**
