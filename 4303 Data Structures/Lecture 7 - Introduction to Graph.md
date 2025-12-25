@@ -1,6 +1,6 @@
 ---
 course: CSE 4303 - Data Structures
-lecture: 7
+lecture: 07
 instructor: Asaduzzaman Herok
 date: 2025-12-25
 tags:
@@ -10,6 +10,7 @@ tags:
   - dfs
   - topological-sort
   - algorithms
+  - c++
 ---
 # Lecture 07: Introduction to Graphs
 
@@ -64,13 +65,26 @@ Real-world relationships are often "Many-to-Many" and contain cycles.
 
 ## 3. Graph Representations
 
-We primarily use two methods to store graphs in memory.
+We primarily use two methods to store graphs in computer memory. The choice depends on the graph's density (number of edges vs. vertices).
 
-### A. Adjacency Matrix
-A 2D array `A[V][V]` where `A[i][j] = 1` if an edge exists, else `0`.
+### A. Adjacency Matrix (2D Array)
+A 2D grid where rows and columns represent vertices. This is efficient for **dense graphs**.
 
-*   **Pros:** $O(1)$ to check if edge $(u, v)$ exists.
-*   **Cons:** Consumes $O(V^2)$ space (wasteful for sparse graphs).
+*   **Structure:** A 2D array `adj[V][V]`.
+*   **Value:** `adj[i][j] = 1` (or weight) if there is an edge from $i$ to $j$. Otherwise `0`.
+*   **Symmetry (Undirected Graphs):** The matrix is a **mirror image** across the main diagonal (top-left to bottom-right). If connection $A \to B$ exists, then $B \to A$ automatically exists.
+
+**Visual Example (Edge A—B):**
+
+|   | A | B |
+|---|---|---|
+| **A** | 0 | **1** |
+| **B** | **1** | 0 |
+
+*(Notice how the 1s at [A][B] and [B][A] mirror each other)*
+
+*   **Pros:** Instant lookups ($O(1)$) to check if an edge exists.
+*   **Cons:** Consumes massive memory ($O(V^2)$), most of which is wasted on zeros if the graph is sparse.
 
 ```cpp
 // Adjacency Matrix for 5 nodes
@@ -83,23 +97,68 @@ int adj[5][5] = {
 };
 ```
 
-### B. Adjacency List
-An array of Lists (or Vectors). `adj[i]` contains a list of all nodes connected to node `i`.
+### B. Adjacency List (Array of Linked Lists)
+An array where each element points to a linked list of neighbors. This is the industry standard for **sparse graphs**.
 
-*   **Pros:** Saves space $O(V + E)$. Ideal for sparse graphs.
-*   **Cons:** Checking specific edge existence takes $O(\text{degree of } u)$.
+*   **Structure:** An array of size $V$ (Total Vertices).
+*   **Mechanism:**
+    *   Every index `i` in the array represents a Vertex.
+    *   `Array[i]` acts as a **Head Pointer** to a Linked List (or Vector).
+    *   The Linked List contains all the **neighbors** (adjacent nodes) of Vertex `i`.
+*   **Visual Logic:**
+    *   `List[0]`: Points to -> `1` -> `4` -> `NULL` (Node 0 is connected to 1 and 4).
+    *   `List[1]`: Points to -> `0` -> `3` -> `NULL` (Node 1 is connected to 0 and 3).
 
 ```mermaid
 graph LR
-    Node0((0)) --> Node1((1))
-    Node0 --> Node4((4))
-    
-    list0[List 0] --> 1[1] --> 4[4] --> null0[NULL]
-    list1[List 1] --> 0[0] --> 3[3] --> 4[4] --> null1[NULL]
+    list0[Array Index 0] --> node1[Node 1] --> node4[Node 4] --> null0[NULL]
+    list1[Array Index 1] --> node0[Node 0] --> node3[Node 3] --> null1[NULL]
     
     style list0 fill:#f9f,stroke:#333
     style list1 fill:#f9f,stroke:#333
 ```
+
+*   **Pros:** Memory efficient ($O(V+E)$). Only stores existing connections.
+*   **Cons:** Checking if a specific edge $(u, v)$ exists is slower ($O(\text{degree of } u)$) because you must traverse the list.
+
+### C. Adjacency Multi-list
+In standard Adjacency Lists, an undirected edge $(u, v)$ is duplicated in the lists of both $u$ and $v$. The **Adjacency Multi-list** avoids this by treating **Edges as Nodes**.
+
+*   **Core Idea:** Each edge exists as a single unique node in memory, simultaneously linked into the lists of both vertices it connects.
+*   **Structure:**
+    1.  **Vertex Directory (`Heads`):** An array where `Heads[i]` points to the first edge connected to Vertex $i$.
+    2.  **Edge Node:** A structure representing an edge $(u, v)$ with 5 fields:
+        *   **M:** Mark bit (e.g., for visited status).
+        *   **V1, V2:** The two vertices connected by this edge ($u$ and $v$).
+        *   **Link1:** Pointer to the next edge connected to $V1$.
+        *   **Link2:** Pointer to the next edge connected to $V2$.
+
+**Visual Representation (Triangle Graph A-B-C):**
+*Edges: (A,B), (B,C), (A,C)*
+
+```mermaid
+graph TD
+    subgraph Edge Nodes
+    E1[Edge 1: A, B]
+    E2[Edge 2: B, C]
+    E3[Edge 3: A, C]
+    end
+    
+    HeadA[Head A] --> E1
+    HeadB[Head B] --> E1
+    HeadC[Head C] --> E2
+    
+    E1 -.->|Next for A| E3
+    E1 -.->|Next for B| E2
+    E2 -.->|Next for C| E3
+```
+
+*   **Pros:**
+    *   **Edge Identity:** Unique storage allows marking edges (e.g., "visited") without ambiguity.
+    *   **Space Efficient:** No duplication for undirected edges.
+*   **Cons:** More complex pointer manipulation.
+
+[YT Video Link on Adjacency Multi-List](https://www.youtube.com/watch?v=f2z1n6atBsc)
 
 ---
 
@@ -278,16 +337,61 @@ void TopologicalSort(int V, vector<vector<int>>& adj) {
 
 ---
 
-## 6. Advanced Concepts (Brief)
+## 6. Transitive Closure
+
+In the context of graph theory, the **transitive closure** of a graph $G$ is another graph $G^*$ that represents **reachability** between all nodes.
+
+### The Core Idea
+If there is a path of any length (direct or indirect) from node $u$ to node $v$ in the original graph, then there is a **direct edge** $(u, v)$ in the transitive closure.
+
+### Formal Definition
+Given a graph $G = (V, E)$, the transitive closure $G^* = (V, E^*)$ is defined such that:
+*   An edge $(u, v)$ exists in $E^*$ **if and only if** there is a valid path from $u$ to $v$ in $G$.
+
+### Visual Example
+Imagine a simple directed path: **A $\to$ B $\to$ C**
+
+**Original Graph:**
+```mermaid
+graph LR
+    A((A)) --> B((B))
+    B --> C((C))
+    
+    style A fill:#ff9999
+    style B fill:#99ff99
+    style C fill:#99ff99
+```
+
+**Transitive Closure (Reachability):**
+```mermaid
+graph LR
+    A((A)) --> B((B))
+    B --> C((C))
+    A -.-> C((C))
+    
+    linkStyle 2 stroke:red,stroke-width:2px,stroke-dasharray: 5 5;
+    
+    style A fill:#ff9999
+    style B fill:#99ff99
+    style C fill:#99ff99
+```
+*   **Original Edges:** $(A, B)$ and $(B, C)$.
+*   **Transitive Closure Edges:** $(A, B)$, $(B, C)$, and the new edge **$(A, C)$** (because A can reach C through B).
+
+### Calculation
+The most famous method is **Warshall’s Algorithm**, which uses a dynamic programming approach to build the reachability matrix in $O(V^3)$ time. It is useful for $O(1)$ reachability queries (e.g., "Can A reach C?").
+
+---
+
+## 7. Other Advanced Concepts
 
 *   **Articulation Point (Cut Vertex):** A node whose removal disconnects the graph. Critical in network routing (Single Point of Failure).
 *   **Bridge (Cut Edge):** An edge whose removal disconnects the graph.
 *   **Bi-Connected Graph:** Contains no articulation points. Robust against single node failures.
-*   **Transitive Closure:** A graph $G^*$ where an edge $(u, v)$ exists if there is a path from $u$ to $v$ in the original graph. Useful for $O(1)$ reachability queries.
 
 ---
 
-## 7. Summary Comparison
+## 8. Summary Comparison
 
 | Algorithm | Data Structure | Time Complexity | Space Complexity | Primary Use Case |
 | :--- | :--- | :--- | :--- | :--- |
