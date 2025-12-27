@@ -1,5 +1,5 @@
 ---
-source: obsidian://open?vault=2-1&file=4309%20TOC%2FQuestions%20from%20MIT%2F18.404J%20F2020%20Problem%20Set%201.pdf
+source: "[[18.404J F2020 Problem Set 1.pdf]]"
 ---
 
 
