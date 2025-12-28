@@ -1,13 +1,14 @@
-
-***
-# Non-Linear Data Structures: Trees
-
-**Tags:** #DataStructures #CS #Trees #Algorithms #Cpp
-**Lecture Date:** November 24, 2025
-**Source:** CSE 4303 Lecture 5
-
 ---
-
+source: "[[CSE_4303_Lecture_5.pdf]]"
+date: 2025-11-24
+tags:
+  - datastructures
+  - CS
+  - Trees
+  - algorithms
+  - cpp
+---
+---
 ## 1. Introduction: Linear vs. Non-Linear
 
 ### The Limitation of Linear Structures
