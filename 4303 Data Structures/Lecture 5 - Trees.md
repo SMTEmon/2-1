@@ -1,2 +1,0 @@
-
-[[Huffman's Tree]]
