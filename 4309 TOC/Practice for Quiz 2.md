@@ -2,7 +2,6 @@
 source: "[[18.404J F2020 Problem Set 1.pdf]]"
 book: "[[Introduction to the TheoryOfComputing 2nd.pdf]]"
 ---
-deed
 
 # Problem 1.31: Reverse of a Regular Language
 
