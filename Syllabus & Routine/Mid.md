@@ -4,7 +4,11 @@
 		only being able to draw UML class diagram is enough
 
 # DBMS
-	
+[[Lecture 1 - Introduction to Database Management Systems]]
+[[Lecture 2 - Introduction to the Relational Model]]
+[[Lecture 3 - Introduction to SQL]]
+[[Lecture 4 - Intermediate SQL]]
+
 	Lecture 1 - 6? or 7?
 		QuestionType: 
 			 No creation of ERD
@@ -13,7 +17,16 @@
     Lecture 1, 2
 
 
-
+# DS
+[[Lecture 1- DSA Intro]]
+[[Lecture 1.2 - Complexity & Time-Space]]
+[[Lecture 2.1 - Arrays & Linked Lists]]
+[[Lecture 2.2 - Advanced Linked Lists]]
+[[Lecture 3 - Stack & Its Applications]]
+[[Lecture 4 - Queues & Deques]]
+[[Lecture 5 - Non-Linear Data Structures - Trees]]
+[[Lecture 6 - Binary Search Trees]]
+[[Lecture 7 - Introduction to Graph]]
 
 
 # Routine 
