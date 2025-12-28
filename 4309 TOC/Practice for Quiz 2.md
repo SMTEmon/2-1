@@ -115,9 +115,9 @@ Since we have constructed an NFA for $A^\mathcal{R}$, **$A^\mathcal{R}$ is regul
 
 
 
-
-
-
+***
+***
+***
 # Problem 1.32: Regularity of Binary Addition
 
 ## Problem Statement
@@ -167,14 +167,14 @@ Let the current state be $c_{in}$. We read input $\begin{bmatrix} a \\ b \\ s_{i
 2. The transitions are valid **only if** $S_{calc} \pmod 2 = s_{input}$.
 3. The next state is determined by the new carry: $c_{out} = \lfloor S_{calc} / 2 \rfloor$.
 
-| Current State ($c_{in}$) | Input $\begin{bmatrix}a\\b\\s\end{bmatrix}$ | Calc ($a+b+c_{in}$) | Valid? ($s = \text{sum} \% 2$) | Next State ($c_{out}$) |
-| :---: | :---: | :---: | :---: | :---: |
-| **$q_0$** (0) | $\begin{bmatrix}0\\0\\0\end{bmatrix}$ | 0 | ✅ | $q_0$ |
-| **$q_0$** (0) | $\begin{bmatrix}1\\0\\1\end{bmatrix}$ or $\begin{bmatrix}0\\1\\1\end{bmatrix}$ | 1 | ✅ | $q_0$ |
-| **$q_0$** (0) | $\begin{bmatrix}1\\1\\0\end{bmatrix}$ | 2 | ✅ | $q_1$ |
-| **$q_1$** (1) | $\begin{bmatrix}0\\0\\1\end{bmatrix}$ | 1 | ✅ | $q_0$ |
-| **$q_1$** (1) | $\begin{bmatrix}1\\0\\0\end{bmatrix}$ or $\begin{bmatrix}0\\1\\0\end{bmatrix}$ | 2 | ✅ | $q_1$ |
-| **$q_1$** (1) | $\begin{bmatrix}1\\1\\1\end{bmatrix}$ | 3 | ✅ | $q_1$ |
+| Current State ($c_{in}$) |                  Input $\begin{bmatrix}a\\b\\s\end{bmatrix}$                   | Calc ($a+b+c_{in}$) | Valid? ($s = \text{sum} \% 2$) | Next State ($c_{out}$) |
+| :----------------------: | :----------------------------------------------------------------------------: | :-----------------: | :----------------------------: | :--------------------: |
+|      **$q_0$** (0)       |                     $\begin{bmatrix}0\\0\\0\end{bmatrix}$                      |          0          |               ✅                |         $q_0$          |
+|      **$q_0$** (0)       | $\begin{bmatrix}1\\0\\1\end{bmatrix}$ or $\begin{bmatrix}0\\1\\1\end{bmatrix}$ |          1          |               ✅                |         $q_0$          |
+|      **$q_0$** (0)       |                     $\begin{bmatrix}1\\1\\0\end{bmatrix}$                      |          2          |               ✅                |         $q_1$          |
+|      **$q_1$** (1)       |                     $\begin{bmatrix}0\\0\\1\end{bmatrix}$                      |          1          |               ✅                |         $q_0$          |
+|      **$q_1$** (1)       | $\begin{bmatrix}1\\0\\0\end{bmatrix}$ or $\begin{bmatrix}0\\1\\0\end{bmatrix}$ |          2          |               ✅                |         $q_1$          |
+|      **$q_1$** (1)       |                     $\begin{bmatrix}1\\1\\1\end{bmatrix}$                      |          3          |               ✅                |         $q_1$          |
 
 *(Note: Any input not listed above leads to an implicit reject state).*
 
@@ -198,3 +198,122 @@ graph LR
     classDef accept fill:#bfb,stroke:#333,stroke-width:2px;
     class q0 accept;
 ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+***
+***
+***
+
+# Problem 1.33: Regularity of $y = 3x$
+
+## 1. Problem Statement
+
+Let $\Sigma_2 = \left\{ \begin{bmatrix} 0 \\ 0 \end{bmatrix}, \begin{bmatrix} 0 \\ 1 \end{bmatrix}, \begin{bmatrix} 1 \\ 0 \end{bmatrix}, \begin{bmatrix} 1 \\ 1 \end{bmatrix} \right\}$.
+A string $w \in \Sigma_2^*$ represents two rows of binary numbers. Let the top row be $x$ and the bottom row be $y$.
+Define the language:
+$$ C = \{ w \in \Sigma_2^* \mid \text{the bottom row of } w \text{ is three times the top row} \} $$
+$$ y = 3x \iff y - 3x = 0 $$
+
+**Goal:** Show that $C$ is regular.
+
+---
+
+## 2. Proof Strategy: MSB-to-LSB Processing
+
+To prove $C$ is regular, we construct a **Deterministic Finite Automaton (DFA)**.
+We process the string from left to right (Most Significant Bit first).
+
+> [!INFO] Concept
+> We track the value of the difference $k = y - 3x$ as we read the bits.
+> Because the binary value doubles with every new bit read, we update the difference state using the formula:
+> $$ k_{new} = 2 \cdot k_{old} + (b - 3a) $$
+> Where $a$ is the top bit and $b$ is the bottom bit of the current column.
+
+### State Bounds
+We need to determine which values of $k$ allow the system to return to 0.
+The input contribution $(b-3a)$ ranges from $-3$ (if $\begin{bmatrix}1\\0\end{bmatrix}$) to $+1$ (if $\begin{bmatrix}0\\1\end{bmatrix}$).
+
+1.  **Lower Bound:** If $k < 0$ (e.g., $-1$), the max next state is $2(-1) + 1 = -1$. The value can never return to 0. All negative integers are "Dead" states.
+2.  **Upper Bound:** If $k \ge 3$, the min next state is $2(3) - 3 = 3$. The value can never return to 0. All integers $\ge 3$ are "Dead" states.
+
+**Valid States:** The only recoverable states are $Q = \{0, 1, 2\}$.
+**Dead State:** A sink state $D$ for all other values.
+
+---
+
+## 3. Transition Logic
+
+The transition function $\delta(k, \begin{bmatrix}a\\b\end{bmatrix})$ is calculated by $2k + b - 3a$.
+
+| Current State $k$ | Input $\begin{bmatrix}0\\0\end{bmatrix}$ <br> ($+0$) | Input $\begin{bmatrix}0\\1\end{bmatrix}$ <br> ($+1$) | Input $\begin{bmatrix}1\\0\end{bmatrix}$ <br> ($-3$) | Input $\begin{bmatrix}1\\1\end{bmatrix}$ <br> ($-2$) |
+| :---: | :---: | :---: | :---: | :---: |
+| **0** | $0$ | $1$ | $D$ | $D$ |
+| **1** | $2$ | $D$ | $D$ | $0$ |
+| **2** | $D$ | $D$ | $1$ | $2$ |
+| **D** | $D$ | $D$ | $D$ | $D$ |
+
+*   **Start State:** $0$ (Initial difference is 0).
+*   **Accept State:** $0$ (Final difference must be 0).
+
+---
+
+## 4. Visual Representation (DFA)
+
+Here is the state diagram for the language $C$.
+*(Inputs are formatted as `[top, bottom]`)*
+
+```mermaid
+stateDiagram-v2
+    direction LR
+    
+    %% Define States
+    s0: 0 (Start/Accept)
+    s1: 1
+    s2: 2
+    D: Dead State
+
+    %% Transitions from 0
+    s0 --> s0: [0, 0]
+    s0 --> s1: [0, 1]
+    s0 --> D: [1, 0], [1, 1]
+
+    %% Transitions from 1
+    s1 --> s2: [0, 0]
+    s1 --> s0: [1, 1]
+    s1 --> D: [0, 1], [1, 0]
+
+    %% Transitions from 2
+    s2 --> s2: [1, 1]
+    s2 --> s1: [1, 0]
+    s2 --> D: [0, 0], [0, 1]
+
+    %% Styling
+    classDef accept fill:#d4edda,stroke:#28a745,stroke-width:2px;
+    classDef dead fill:#f8d7da,stroke:#dc3545,stroke-width:1px;
+    class s0 accept
+    class D dead
+```
+
+## 5. Example Walkthrough
+
+Test with the valid string provided in the problem: $\begin{bmatrix}0\\0\end{bmatrix}\begin{bmatrix}0\\1\end{bmatrix}\begin{bmatrix}1\\1\end{bmatrix}\begin{bmatrix}0\\0\end{bmatrix}$
+*(Corresponds to $x=010_2 = 2, y=0110_2 = 6$)*
+
+1.  **Start at $0$**.
+2.  Read $\begin{bmatrix}0\\0\end{bmatrix}$: Calculate $2(0) + 0 - 3(0) = 0$. **State $\to 0$**.
+3.  Read $\begin{bmatrix}0\\1\end{bmatrix}$: Calculate $2(0) + 1 - 3(0) = 1$. **State $\to 1$**.
+4.  Read $\begin{bmatrix}1\\1\end{bmatrix}$: Calculate $2(1) + 1 - 3(1) = 0$. **State $\to 0$**.
+5.  Read $\begin{bmatrix}0\\0\end{bmatrix}$: Calculate $2(0) + 0 - 3(0) = 0$. **State $\to 0$**.
+
+**Result:** The machine ends in state $0$ (Accept). The string is in $C$.
