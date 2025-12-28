@@ -101,14 +101,14 @@ graph TD
 
 ### Generated Codes
 
-| **Character** | **Path**                       | **Binary Code** | **Bit Length** |
-| ------------- | ------------------------------ | --------------- | -------------- |
-| **F**         | Right (0)                      | `0`             | 1              |
-| **C**         | Left -> Left -> Left           | `100`           | 3              |
-| **D**         | Left -> Left -> Right          | `101`           | 3              |
-| **A**         | Left -> Right -> Left -> Left  | `1100`          | 4              |
-| **B**         | Left -> Right -> Left -> Right | `1101`          | 4              |
-| **E**         | Left -> Right -> Right         | `111`           | 3              |
+| **Character** | **Path**                        | **Binary Code** | **Bit Length** |
+| ------------- | ------------------------------- | --------------- | -------------- |
+| **F**         | Left (0)                        | `0`             | 1              |
+| **C**         | Right -> Left -> Left           | `100`           | 3              |
+| **D**         | Right -> Left -> Right          | `101`           | 3              |
+| **A**         | Right -> Right -> Left -> Left  | `1100`          | 4              |
+| **B**         | Right -> Right -> Left -> Right | `1101`          | 4              |
+| **E**         | Right -> Right -> Right         | `111`           | 3              |
 
 _Notice: 'F' is the most frequent (45) and gets the shortest code (1 bit). 'A' is the least frequent (5) and gets the longest code (4 bits)._
 
