@@ -8,6 +8,7 @@
 [[Lecture 2 - Introduction to the Relational Model]]
 [[Lecture 3 - Introduction to SQL]]
 [[Lecture 4 - Intermediate SQL]]
+[[Lecture 5 - Database Design using ERD]]
 
 	Lecture 1 - 6? or 7?
 		QuestionType: 
@@ -15,6 +16,7 @@
 			 Complicated ERD-> Query will be given
 # TOC
     Lecture 1, 2
+	Book Chapter 1
 
 
 # DS
