@@ -602,13 +602,34 @@ CREATE TABLE instructors (
 
 ### 4.3 Referential Integrity (Foreign Keys)
 
-**Definition**: Ensures that a value appearing in one relation (the referencing or child table) also exists in another relation (the referenced or parent table).
+**Definition**: Ensures that a value appearing in one relation (the referencing or child table) also exists in another relation (the referenced or parent table). Think of this as a "Parent-Child" relationship where you cannot have a child pointing to a parent that doesn't exist.
 
-**Cascading Actions**: What happens if the referenced data is deleted?
+**Cascading Actions**: What happens if the referenced (parent) data is deleted?
 
--   `ON DELETE NO ACTION`: Default behavior. Rejects the deletion if any child rows reference the parent row.
--   `ON DELETE CASCADE`: Deletes the referencing (child) rows too.
--   `ON DELETE SET NULL`: Sets the referencing foreign key column in the child rows to `NULL`.
+> [!info] Scenarios for Handling Deletions
+>
+> #### 1. `ON DELETE NO ACTION` (The Bodyguard)
+> **"You cannot delete this Parent because they have Children depending on them."**
+> - **Behavior**: This is the default. It stops the deletion if any child rows reference the parent row.
+> - **Example**: You cannot delete a `Customer` if they have existing `Orders`.
+>
+> #### 2. `ON DELETE CASCADE` (The Chain Reaction)
+> **"If the Parent dies, the Children die with them."**
+> - **Behavior**: Automatically deletes the referencing (child) rows when the parent row is deleted.
+> - **Example**: If you delete a `Post`, all `Comments` on that post are also deleted.
+>
+> #### 3. `ON DELETE SET NULL` (The Orphanage)
+> **"If the Parent leaves, the Children stay, but they no longer have a Parent."**
+> - **Behavior**: Sets the foreign key column in the child rows to `NULL`. The child rows are preserved but "orphaned."
+> - **Example**: If a `Department` is deleted, the `Employees` in it remain but their `dept_id` becomes `NULL`.
+
+#### Summary of Cascading Actions
+
+| Mode | Analogy | What happens to the Child? | Best For... |
+| :--- | :--- | :--- | :--- |
+| **NO ACTION** | **The Vault** | **Protected.** Database blocks the delete. | Financial records, Orders, Audit trails. |
+| **CASCADE** | **The Shredder** | **Destroyed.** Child is deleted with Parent. | Social media posts, "Part of" relationships. |
+| **SET NULL** | **The Eraser** | **Detached.** Link becomes NULL, row stays. | Employees, Inventory items, categorization. |
 
 #### Cascading Delete Example
 
@@ -645,19 +666,46 @@ CREATE TABLE person (
 
 ```sql
 BEGIN;
+-- "Start the essay." We are grouping the following lines into one unit of work.
+
 SET CONSTRAINTS ALL DEFERRED;
+-- "Teacher, put on your blindfold."
+-- The database agrees to stop checking Foreign Keys until we say COMMIT.
 
--- Insert Husband with a temporary NULL or dummy spouse_id
+-- Step A: Insert Husband
+-- Note: We use NULL here to be safe, but with DEFERRED, 
+-- we could theoretically insert an invalid ID (like 2) right now depending on DB settings.
 INSERT INTO person (ID, spouse_id) VALUES (1, NULL);
+-- Database State: Alice exists. Spouse is NULL.
 
--- Insert Wife, pointing to the husband
+-- Step B: Insert Wife
+-- Note: Wife points to Husband (ID 1). 
+-- This works because ID 1 already exists from the previous step.
 INSERT INTO person (ID, spouse_id) VALUES (2, 1);
+-- Database State: 
+-- Alice (ID 1, Spouse: NULL)
+-- Bob   (ID 2, Spouse: 1)
 
--- Update Husband with the real spouse_id
+-- Step C: Update Husband
+-- Now we go back and fix Alice's record to point to Bob (ID 2).
 UPDATE person SET spouse_id = 2 WHERE ID = 1;
+-- Database State:
+-- Alice (ID 1, Spouse: 2) -> Points to Bob (Valid!)
+-- Bob   (ID 2, Spouse: 1) -> Points to Alice (Valid!)
 
-COMMIT; -- All constraints are checked here.
+COMMIT;
+-- "Teacher, take off the blindfold."
+-- The database checks all relationships NOW.
+-- Since Alice points to Bob (who exists) and Bob points to Alice (who exists), everything is valid.
 ```
+
+> [!info] Why use `DEFERRED` here?
+>
+> Technically, if your `spouse_id` column allows `NULL` values (as done in the snippet), you *could* do this without `DEFERRED` by using the `NULL` trick (Insert NULL first, Update later).
+>
+> However, `DEFERRED` becomes **mandatory** if:
+> 1.  The `spouse_id` column is **`NOT NULL`**. (You wouldn't be able to insert the first person with `NULL`).
+> 2.  You are inserting data into **two different tables** that reference each other (e.g., `Employees` belong to `Departments`, but `Departments` must have a `Manager` who is an `Employee`).
 
 ---
 
