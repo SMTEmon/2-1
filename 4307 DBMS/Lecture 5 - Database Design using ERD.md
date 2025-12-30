@@ -57,17 +57,17 @@ Attributes are descriptive properties possessed by all members of an entity set.
 In the slides, Entity Sets are represented by **Rectangles** with attributes listed inside. The **Primary Key (PK)** is underlined.
 
 ```mermaid
-classDiagram
-    class Instructor {
-        <u>ID</u>
-        name
-        salary
+erDiagram
+    STUDENT {
+        int ID PK
+        string name
+        string street
+        string city
+        string phone_numbers "Multi-valued"
+        int age "Derived"
     }
-    class Student {
-        <u>ID</u>
-        name
-        tot_cred
-    }
+    %% Note: Mermaid doesn't natively show composite/dashed lines well, 
+    %% but we represent them with comments/types here.
 ```
 
 ### C. Advanced Attribute Implementation (PostgreSQL)
@@ -118,13 +118,28 @@ A **Relationship** is an association among several entities. A **Relationship Se
 1.  **Binary:** Involves two entity sets (Most common).
     *   *Example:* Student --- *Enrolled* --- Course.
 2.  **Ternary:** Involves three entity sets simultaneously.
-    *   *Example:* Supplier --- *Supply* --- Part --- Project (A supplier supplies a specific part to a specific project).
+    *   *Example:* Supplier --- *Supply* --- Part --- Project.
 
-### Roles and Recursion
+```mermaid
+erDiagram
+    STUDENT ||--o{ ENROLLED : participates
+    ENROLLED }o--|| COURSE : in
+
+    %% Ternary representation (Conceptual)
+    SUPPLIER ||--o{ SUPPLY : provides
+    PART ||--o{ SUPPLY : "is provided"
+    PROJECT ||--o{ SUPPLY : "receives"
+```
+
+### Roles and Recursive Relationships
 Entities in a relationship do not need to be distinct. The same entity set can participate in different **roles**.
 *   **Recursive Relationship Example:** `Course` references itself via `Prereq`.
-    *   Role 1: `course_id` (Main course)
-    *   Role 2: `prereq_id` (Required course)
+
+```mermaid
+erDiagram
+    COURSE ||--o{ PREREQ : "is a prerequisite for"
+    COURSE ||--o{ PREREQ : "has prerequisite"
+```
 
 ### Attributes on Relationships
 Attributes can belong to the relationship itself, usually describing the *nature* of the association.
@@ -145,6 +160,15 @@ Cardinality expresses the number of entities to which another entity can be asso
 | **One-to-Many (1:N)** | A associated with many B; B associated with one A. | Department $\rightarrow$ Student | Arrow on "One" side; Line on "Many" side |
 | **Many-to-One (N:1)** | Reverse of 1:N. | Student $\rightarrow$ Department | Line on "Many"; Arrow on "One" |
 | **Many-to-Many (M:N)** | A associated with many B; B associated with many A. | Student --- Course | Simple lines on **both** sides |
+
+#### Visual Notation (Crow's Foot vs. Arrows)
+Different notations exist, but the logic remains:
+```mermaid
+erDiagram
+    PERSON ||--|| DRIVING_LICENSE : "1:1 (One-to-One)"
+    DEPT ||--o{ STUDENT : "1:N (One-to-Many)"
+    STUDENT }o--o{ COURSE : "M:N (Many-to-Many)"
+```
 
 ### B. Min..Max Notation
 Alternative notation `l..h` on the line.
@@ -179,6 +203,21 @@ Alternative notation `l..h` on the line.
 | **Relationship** | Single Diamond. | Double Diamond (identifying relationship). |
 | **Identification** | Unique by its own attributes. | Unique by (Strong Entity PK + Partial Key). |
 
+#### Visual Example: Loan and Payment
+```mermaid
+erDiagram
+    LOAN ||--o{ PAYMENT : "has"
+    LOAN {
+        int loan_number PK
+        float amount
+    }
+    PAYMENT {
+        int payment_number PK "Partial Key / Discriminator"
+        date payment_date
+        float amount
+    }
+```
+
 *Example:* A `Loan` (Strong) has `Payments` (Weak). You cannot identify "Payment #1" without knowing which Loan it belongs to.
 
 ---
@@ -188,6 +227,14 @@ Alternative notation `l..h` on the line.
 *   **Specialization (Top-down):** Dividing an entity into subgroups (e.g., Person $\to$ Employee, Student).
 *   **Generalization (Bottom-up):** Combining entities with shared features.
 *   **Notation:** Hollow arrow-head pointing to the higher-level entity (ISA relationship).
+
+```mermaid
+graph TD
+    Person -->|ISA| Student
+    Person -->|ISA| Employee
+    Employee -->|ISA| Instructor
+    Employee -->|ISA| Secretary
+```
 
 ### Membership Constraints
 1.  **Condition-defined:** Membership based on an attribute (e.g., `age > 65`).
@@ -206,13 +253,39 @@ This is the process of converting the conceptual diagram into SQL DDL.
 
 ### A. Converting Relationships
 
-#### 1. One-to-Many (1:N)
+#### 1. One-to-Many (1:N) & Many-to-One (N:1)
 *   **Rule:** Identify the "Many" side. Place the PK of the "One" side entity inside the "Many" side table as a **Foreign Key (FK)**.
-*   *Example:* `Dept (1) -> Student (N)`. `Student` table gets `Dept_ID` column.
+*   *Example:* `Dept (1) --has--> (N) Student`.
+
+```sql
+CREATE TABLE Department (
+    Dept_ID INT PRIMARY KEY,
+    Name VARCHAR(50)
+);
+
+CREATE TABLE Student (
+    ID INT PRIMARY KEY,
+    Name VARCHAR(50),
+    Dept_ID INT, -- The Foreign Key sits on the "Many" side
+    FOREIGN KEY (Dept_ID) REFERENCES Department(Dept_ID)
+);
+```
 
 #### 2. One-to-One (1:1)
 *   **Rule:** Place the FK in either table (preferably the one with total participation).
 *   **Constraint:** You must apply a `UNIQUE` constraint to the Foreign Key to ensure strictly 1:1.
+
+```sql
+CREATE TABLE Person (
+    P_ID INT PRIMARY KEY,
+    Name VARCHAR(50)
+);
+
+CREATE TABLE License (
+    L_ID INT PRIMARY KEY,
+    P_ID INT UNIQUE REFERENCES Person(P_ID) -- Combined FK + Unique constraint
+);
+```
 
 #### 3. Many-to-Many (M:N)
 *   **Problem:** Neither table can hold the FK without violating First Normal Form (atomicity).
