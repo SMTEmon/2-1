@@ -857,11 +857,6 @@ GRANT teacher TO dean;
     GRANT SELECT ON students TO faculty_role WITH GRANT OPTION;
     ```
 
-### RBAC Example Diagram
-
-![RBAC Example](https://i.imgur.com/r62Kq4k.png)
-*Figure: Role-based Access Control in a Result Processing System (RPS)*
-
 ---
 
 ## Summary
