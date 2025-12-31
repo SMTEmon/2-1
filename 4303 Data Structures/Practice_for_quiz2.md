@@ -198,4 +198,87 @@ Function insertIterative(root, value):
         Parent.Left = NewNode
     Else:
         Parent.Right = NewNode
+
+---
+
+## Part 3: Advanced Concepts & Challenge Problems
+
+### Topic: Complexity & Logic
+
+**Problem 10: Asymptotic Analysis (Time Complexity)**
+Calculate the tightest upper bound ($O$) for the following code snippet. Explain your derivation.
+```cpp
+void obscureFunction(int n) {
+    for (int i = 1; i < n; i = i * 2) {      // Loop A
+        for (int j = 0; j < i; j++) {        // Loop B
+            cout << i << j;
+        }
+    }
+}
+```
+*Hint: Analyze how many times Loop B runs relative to the growth of `i` (1, 2, 4, 8...). It is a geometric series.*
+
+### Topic: Advanced Linked Lists
+
+**Problem 11: XOR Linked List Traversal**
+You are working with a memory-efficient **XOR Linked List**.
+*   **Formula:** `Node->npx = Address(Prev) XOR Address(Next)`
+*   **Memory Map:**
+    *   **Node A (Addr 100):** `npx = 0 XOR 200`
+    *   **Node B (Addr 200):** `npx = 100 XOR 300`
+    *   **Node C (Addr 300):** `npx = 200 XOR 400`
+    *   **Node D (Addr 400):** `npx = 300 XOR 0`
+
+**Task:** You are currently at **Node C** (Address 300) and you arrived from **Node B** (Address 200).
+1.  Calculate the address of the **Next Node** (D).
+2.  Show the XOR calculation step-by-step.
+
+### Topic: Advanced Queue/Deque Applications
+
+**Problem 12: Sliding Window Maximum**
+Given an array `arr = [1, 3, -1, -3, 5, 3, 6, 7]` and a window size $k=3$.
+You need to find the maximum integer in each sliding window.
+*   **Algorithm:** Use a **Deque** to store *indices* of useful elements.
+*   **Task:** Trace the content of the Deque for every step.
+    *   *Constraint:* The Deque must be maintained in **decreasing order** of values. Indices of elements that fall out of the window must be removed from the front.
+
+**Problem 13: Queue using Stacks**
+Design a Queue Data Structure using **only two Stacks** (`S1` and `S2`).
+1.  Write Pseudo Code for `Enqueue(x)`.
+2.  Write Pseudo Code for `Dequeue()`.
+3.  What is the **Amortized Time Complexity** of the Dequeue operation?
+
+### Topic: Advanced Graphs
+
+**Problem 14: Warshall’s Algorithm (Transitive Closure)**
+Given the Adjacency Matrix for a directed graph:
+```text
+  A B C
+A 0 1 0
+B 0 0 1
+C 1 0 0
+```
+1.  Trace the construction of matrices $R^{(0)}$, $R^{(1)}$, $R^{(2)}$, and $R^{(3)}$.
+2.  What does the final matrix tell you about the connectivity of A, B, and C?
+
+**Problem 15: Adjacency Multi-list**
+Draw the **Adjacency Multi-list** memory representation for the following undirected graph.
+*   **Vertices:** A, B, C
+*   **Edges:** (A, B), (A, C)
+*   **Structure:** Show the `Head` array and the Edge Nodes with fields `[Mark | V1 | V2 | Link1 | Link2]`.
+
+**Problem 16: Topological Sort & Cycles**
+Attempt to perform a **Topological Sort** (using Kahn's In-Degree Algorithm) on the following graph:
+*   $A \to B$
+*   $B \to C$
+*   $C \to A$
+*   $C \to D$
+*   **Task:** Trace the Queue and In-Degree array. Explain why the algorithm fails or succeeds.
+
+### Topic: Binary Search Trees (Verification)
+
+**Problem 17: Validate BST**
+Write pseudo code for a function `isValidBST(Node root)` that returns `true` if a binary tree is a valid Binary Search Tree.
+*   **Challenge:** Simply checking `root.left.val < root.val < root.right.val` recursively is **wrong**. (Example: A right child could have a left child that is smaller than the top Root).
+*   **Hint:** Pass down a range `(min, max)` to each recursive call.
 ```
