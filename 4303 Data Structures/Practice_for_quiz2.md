@@ -49,21 +49,6 @@ Function isBalanced(string exp):
     Else -> Return False
 ```
 
-### Topic: Complexity Analysis
-
-**Problem 4: Asymptotic Analysis (Time Complexity)**
-Calculate the tightest upper bound ($O$) for the following code snippet. Explain your derivation.
-```cpp
-void obscureFunction(int n) {
-    for (int i = 1; i < n; i = i * 2) {      // Loop A
-        for (int j = 0; j < i; j++) {        // Loop B
-            cout << i << j;
-        }
-    }
-}
-```
-*Hint: Analyze how many times Loop B runs relative to the growth of `i` (1, 2, 4, 8...). It is a geometric series.*
-
 ### Topic: Advanced Linked Lists (XOR)
 
 **Problem 5: XOR Linked List Traversal**
@@ -160,10 +145,6 @@ Construct the Huffman Tree and determine the binary codes for the following char
 **Problem 16: BST Validation (Hard)**
 Write pseudo code for a function `isValidBST(Node root)` that returns `true` if a binary tree is a valid Binary Search Tree.
 *   **Challenge:** Simple local checks fail. You must pass down a range `(min, max)` to recursive calls.
-
-**Problem 17: Theoretical Properties**
-1.  **Height Calculation:** If a Complete Binary Tree has `N = 20` nodes, what is its height?
-2.  **Strictly Binary Tree:** If a Strictly Binary Tree (2-Tree) has `15` Leaf Nodes, how many Internal Nodes does it have? ($E = I + 1$)
 
 **Problem 18: Search Trace & Comparison**
 Given BST: `Root(50) -> L(30), R(70)`, `30 -> L(20), R(40)`, `70 -> L(60), R(80)`.
