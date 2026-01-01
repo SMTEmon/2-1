@@ -342,6 +342,18 @@ void TopologicalSort(int V, vector<vector<int>>& adj) {
 }
 ```
 
+### 5.1 Understanding Cycles & Why Sorting Fails
+
+> [!CAUTION] The "Chicken and Egg" Problem
+> Topological Sort is only possible in a **DAG** (Directed Acyclic Graph). If a **Cycle** exists, the algorithm will fail.
+
+**Why does it fail?**
+In Kahn's Algorithm, we look for nodes with **In-Degree 0** (no prerequisites) to start. In a cycle (e.g., $A \to B \to C \to A$):
+1.  **A** is waiting for **C**.
+2.  **C** is waiting for **B**.
+3.  **B** is waiting for **A**.
+*   **Result:** No node ever reaches an In-Degree of 0. The Queue stays empty, and the algorithm terminates without processing all nodes.
+
 ---
 
 ## 6. Transitive Closure
