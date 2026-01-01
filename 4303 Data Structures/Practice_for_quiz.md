@@ -1,5 +1,3 @@
-# Practice for Quiz 02: Data Structures
-
 ## Question Pattern
 1.  **Algorithmic Simulation:** Step-by-step tracing of algorithms.
 2.  **Pseudo Code:** Logic for applying a specific Data Structure.
