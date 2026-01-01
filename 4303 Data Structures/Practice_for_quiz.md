@@ -64,7 +64,7 @@ You are working with a memory-efficient **XOR Linked List**.
 
 ---
 
-## Part 2: Comprehensive Practice (Lectures 4-7)
+## Part 2: Comprehensive Practice (Lectures 4-6)
 
 ### Topic: Queues & Deques (Lecture 4)
 
@@ -159,50 +159,6 @@ The diameter of a tree is the number of nodes on the longest path between two le
 *   **Task:** Write pseudo code to find the diameter.
 *   *Hint:* For every node, calculate height of left and right subtrees. `Diameter = Max(LeftHeight + RightHeight + 1)` over all nodes.
 
-### Topic: Graphs (Lecture 7)
-
-**Problem 21: Warshall’s Algorithm (Transitive Closure)**
-Given the Adjacency Matrix:
-```text
-  A B C
-A 0 1 0
-B 0 0 1
-C 1 0 0
-```
-Trace the construction of matrices $R^{(0)}$ to $R^{(3)}$. What is the connectivity?
-
-**Problem 22: Adjacency Multi-list**
-Draw the **Adjacency Multi-list** representation for undirected graph with Edges: `(A, B)`, `(A, C)`.
-*   Show `Head` array and Edge Nodes `[Mark | V1 | V2 | Link1 | Link2]`.
-
-**Problem 23: Topological Sort & Cycles**
-Trace **Kahn's Algorithm** (In-Degree) on graph: `A->B`, `B->C`, `C->A`, `C->D`.
-*   Explain why the algorithm fails (Cycle detection).
-
-**Problem 24: Matrix to List Conversion**
-Convert this Matrix to an Adjacency List:
-```text
-  0 1 2 3
-0 0 1 0 1
-1 0 0 1 0
-2 1 0 0 0
-3 0 0 1 0
-```
-
-**Problem 25: DFS Stack Simulation**
-Perform DFS on the graph from Problem 24 starting at Node 0.
-*   **Constraint:** Choose smaller index neighbor first.
-*   **Task:** Show Stack status at every step.
-
-**Problem 26: Bipartite Graph Check (Challenge)**
-A graph is Bipartite if vertices can be divided into two disjoint sets $U$ and $V$ such that every edge connects a vertex in $U$ to one in $V$.
-*   **Task:** Use BFS/DFS coloring logic (Red/Blue) to check if the graph `A-B, B-C, C-D, D-A` (Square) is bipartite. Then try `A-B, B-C, C-A` (Triangle).
-*   *Logic:* If you meet a neighbor with the same color, it's NOT bipartite.
-
-**Problem 27: Shortest Path in Unweighted Maze (Challenge)**
-Given a 2D grid where `0` is a wall and `1` is a path. You start at `(0,0)` and want to reach `(N-1, M-1)`.
-*   **Task:** Explain how **BFS** can find the shortest path length. Trace for a 3x3 grid.
-
 ---
 
 # Solutions
@@ -220,7 +176,7 @@ Given a 2D grid where `0` is a wall and `1` is a path. You start at `(0,0)` and 
 > | **L** | Print | `+` | `KL` |
 > | **-** | Pop `+` (Precedence Equal, Assoc L-R), Push `-` | `-` | `KL+` |
 > | **M** | Print | `-` | `KL+M` |
-> | **\*** | Push | `- *` | `KL+M` |
+> | ***** | Push | `- *` | `KL+M` |
 > | **N** | Print | `- *` | `KL+MN` |
 > | **+** | Pop `*`, Pop `-` (Lower Precedence/Equal), Push `+` | `+` | `KL+MN*-` |
 > | **(** | Push | `+ (` | `KL+MN*-` |
@@ -228,13 +184,13 @@ Given a 2D grid where `0` is a wall and `1` is a path. You start at `(0,0)` and 
 > | **^** | Push | `+ ( ^` | `KL+MN*-O` |
 > | **P** | Print | `+ ( ^` | `KL+MN*-OP` |
 > | **)** | Pop until `(` | `+` | `KL+MN*-OP^` |
-> | **\*** | Push | `+ *` | `KL+MN*-OP^` |
+> | ***** | Push | `+ *` | `KL+MN*-OP^` |
 > | **W** | Print | `+ *` | `KL+MN*-OP^W` |
 > | **/** | Pop `*` (Equal, L-R), Push `/` | `+ /` | `KL+MN*-OP^W*` |
 > | **U** | Print | `+ /` | `KL+MN*-OP^W*U` |
 > | **/** | Pop `/` (Equal, L-R), Push `/` | `+ /` | `KL+MN*-OP^W*U/` |
 > | **V** | Print | `+ /` | `KL+MN*-OP^W*U/V` |
-> | **\*** | Pop `/` (Equal, L-R), Push `*` | `+ *` | `KL+MN*-OP^W*U/V/` |
+> | ***** | Pop `/` (Equal, L-R), Push `*` | `+ *` | `KL+MN*-OP^W*U/V/` |
 > | **T** | Print | `+ *` | `KL+MN*-OP^W*U/V/T` |
 > | **+** | Pop `*`, Pop `+`, Push `+` | `+` | `KL+MN*-OP^W*U/V/T*+` |
 > | **Q** | Print | `+` | `KL+MN*-OP^W*U/V/T*+Q` |
@@ -256,7 +212,7 @@ Given a 2D grid where `0` is a wall and `1` is a path. You start at `(0,0)` and 
 > | 6 | **5** | `[2, 5]` | Push |
 > | 7 | **3** | `[2, 5, 3]` | Push |
 > | 8 | **2** | `[2, 5, 3, 2]` | Push |
-> | 9 | **\*** | `[2, 5, 6]` | Pop 2, 3. Calc $2 * 3 = 6$. Push 6. |
+> | 9 | ***** | `[2, 5, 6]` | Pop 2, 3. Calc $2 * 3 = 6$. Push 6. |
 > | 10 | **+** | `[2, 11]` | Pop 6, 5. Calc $6 + 5 = 11$. Push 11. |
 > | 11 | **-** | `[9]` | Pop 11, 2. Calc $11 - 2 = 9$. Push 9. |
 >
@@ -271,7 +227,7 @@ Given a 2D grid where `0` is a wall and `1` is a path. You start at `(0,0)` and 
 > | 1 | **10** | `[10]` | Push |
 > | 2 | **2** | `[10, 2]` | Push |
 > | 3 | **8** | `[10, 2, 8]` | Push |
-> | 4 | **\*** | `[10, 16]` | Pop 8, 2. Calc $2 * 8 = 16$. Push. |
+> | 4 | ***** | `[10, 16]` | Pop 8, 2. Calc $2 * 8 = 16$. Push. |
 > | 5 | **+** | `[26]` | Pop 16, 10. Calc $10 + 16 = 26$. Push. |
 > | 6 | **3** | `[26, 3]` | Push |
 > | 7 | **-** | `[23]` | Pop 3, 26. Calc $26 - 3 = 23$. Push. |
@@ -304,11 +260,11 @@ Given a 2D grid where `0` is a wall and `1` is a path. You start at `(0,0)` and 
 > | :--- | :--- | :--- | :--- | :--- |
 > | **Initial** | -1 | -1 | `[ , , , , ]` | Empty |
 > | **1. Enq(10)** | 0 | 0 | `[10, , , , ]` | First Element |
-> | **2. Enq(20)** | 0 | 1 | `[10, 20, , , ]` | |
-> | **3. Enq(30)** | 0 | 2 | `[10, 20, 30, , ]` | |
+> | **2. Enq(20)** | 0 | 1 | `[10, 20, , , ]` |  |
+> | **3. Enq(30)** | 0 | 2 | `[10, 20, 30, , ]` |  |
 > | **4. Deq()** | 1 | 2 | `[ , 20, 30, , ]` | 10 Removed |
-> | **5. Enq(40)** | 1 | 3 | `[ , 20, 30, 40, ]` | |
-> | **6. Enq(50)** | 1 | 4 | `[ , 20, 30, 40, 50]` | |
+> | **5. Enq(40)** | 1 | 3 | `[ , 20, 30, 40, ]` |  |
+> | **6. Enq(50)** | 1 | 4 | `[ , 20, 30, 40, 50]` |  |
 > | **7. Enq(60)** | 1 | 0 | `[60, 20, 30, 40, 50]` | Wrap around. **FULL** now (Next R == F). |
 > | **8. Deq()** | 2 | 0 | `[60, , 30, 40, 50]` | 20 Removed |
 > | **9. Enq(70)** | 2 | 1 | `[60, 70, 30, 40, 50]` | Wrap around |
@@ -364,11 +320,11 @@ Given a 2D grid where `0` is a wall and `1` is a path. You start at `(0,0)` and 
 > *Note: The formula assumes standard array implementation where Rear points to the last inserted element.*
 >
 > 1.  **F=2, R=5:**
->     $Count = (5 - 2 + 10) \% 10 + 1 = 13 \% 10 + 1 = 3 + 1 = 4$.
+>     $Count = (5 - 2 + 10) % 10 + 1 = 13 % 10 + 1 = 3 + 1 = 4$.
 > 2.  **F=8, R=1:**
->     $Count = (1 - 8 + 10) \% 10 + 1 = 3 \% 10 + 1 = 3 + 1 = 4$.
+>     $Count = (1 - 8 + 10) % 10 + 1 = 3 % 10 + 1 = 3 + 1 = 4$.
 > 3.  **F=5, R=4:**
->     $Count = (4 - 5 + 10) \% 10 + 1 = 9 \% 10 + 1 = 10$.
+>     $Count = (4 - 5 + 10) % 10 + 1 = 9 % 10 + 1 = 10$.
 >     *Interpretation:* Since Count == MAX, the queue is **FULL**.
 
 ### Problem 12: Tree Traversals
@@ -518,7 +474,57 @@ Given a 2D grid where `0` is a wall and `1` is a path. You start at `(0,0)` and 
 >     Return NULL
 > ```
 
-### Problem 21: Warshall's Algorithm
+---
+
+## Part 3: Graphs (Lecture 7 - Practice Later)
+
+### Topic: Graphs (Lecture 7)
+
+**Problem 21: Warshall’s Algorithm (Transitive Closure)**
+Given the Adjacency Matrix:
+```text
+  A B C
+A 0 1 0
+B 0 0 1
+C 1 0 0
+```
+Trace the construction of matrices $R^{(0)}$ to $R^{(3)}$. What is the connectivity?
+
+**Problem 22: Adjacency Multi-list**
+Draw the **Adjacency Multi-list** representation for undirected graph with Edges: `(A, B)`, `(A, C)`.
+*   Show `Head` array and Edge Nodes `[Mark | V1 | V2 | Link1 | Link2]`.
+
+**Problem 23: Topological Sort & Cycles**
+Trace **Kahn's Algorithm** (In-Degree) on graph: `A->B`, `B->C`, `C->A`, `C->D`.
+*   Explain why the algorithm fails (Cycle detection).
+
+**Problem 24: Matrix to List Conversion**
+Convert this Matrix to an Adjacency List:
+```text
+  0 1 2 3
+0 0 1 0 1
+1 0 0 1 0
+2 1 0 0 0
+3 0 0 1 0
+```
+
+**Problem 25: DFS Stack Simulation**
+Perform DFS on the graph from Problem 24 starting at Node 0.
+*   **Constraint:** Choose smaller index neighbor first.
+*   **Task:** Show Stack status at every step.
+
+**Problem 26: Bipartite Graph Check (Challenge)**
+A graph is Bipartite if vertices can be divided into two disjoint sets $U$ and $V$ such that every edge connects a vertex in $U$ to one in $V$.
+*   **Task:** Use BFS/DFS coloring logic (Red/Blue) to check if the graph `A-B, B-C, C-D, D-A` (Square) is bipartite. Then try `A-B, B-C, C-A` (Triangle).
+*   *Logic:* If you meet a neighbor with the same color, it's NOT bipartite.
+
+**Problem 27: Shortest Path in Unweighted Maze (Challenge)**
+Given a 2D grid where `0` is a wall and `1` is a path. You start at `(0,0)` and want to reach `(N-1, M-1)`.
+*   **Task:** Explain how **BFS** can find the shortest path length. Trace for a 3x3 grid.
+
+### Graph Solutions
+
+#### Problem 21: Warshall's Algorithm
 
 > **Solution:**
 > **$R^{(0)}$ (Initial Matrix):**
@@ -557,7 +563,7 @@ Given a 2D grid where `0` is a wall and `1` is a path. You start at `(0,0)` and 
 > ```
 > **Connectivity:** Strongly Connected (All 1s).
 
-### Problem 23: Topological Sort & Cycles
+#### Problem 23: Topological Sort & Cycles
 
 > **Solution:**
 > 1.  **Calculate In-Degrees:**
@@ -571,7 +577,7 @@ Given a 2D grid where `0` is a wall and `1` is a path. You start at `(0,0)` and 
 >     *   Since the Queue starts empty (or eventually becomes empty before processing all nodes), the algorithm terminates prematurely.
 >     *   This confirms a **Cycle** exists (`A->B->C->A`), making Topological Sort impossible.
 
-### Problem 25: DFS Stack Simulation
+#### Problem 25: DFS Stack Simulation
 
 > **Solution:**
 > *Graph Edges:* `0->1`, `0->3`, `1->2`, `2->0`, `3->2`.
@@ -594,7 +600,7 @@ Given a 2D grid where `0` is a wall and `1` is a path. You start at `(0,0)` and 
 >
 > **DFS Order:** `0 -> 1 -> 2 -> 3`
 
-### Problem 27: Shortest Path in Maze (BFS)
+#### Problem 27: Shortest Path in Maze (BFS)
 
 > **Solution:**
 > **Why BFS?** BFS explores layer-by-layer. All nodes at distance `d` are processed before `d+1`. The first time we reach the target, it is guaranteed to be via the shortest path.
