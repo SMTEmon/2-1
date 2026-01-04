@@ -85,6 +85,8 @@ Follow Slides for these from Classroom
     - Load/Store Instructions
     - Branching & Looping (Conditionals)
 
+**Lecture 7: I/O**
+
 # Routine 
 2:30 - 4:30 PM
 
