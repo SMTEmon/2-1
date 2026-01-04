@@ -43,6 +43,16 @@ We prove that the class of regular languages is closed under Union, Concatenatio
 >     $$ \delta(q, a) = \begin{cases} \delta_1(q, a) & q \in Q_1 \\ \delta_2(q, a) & q \in Q_2 \\ \delta_1(q, a) \cup \{q_2\} & q \in F_1 \text{ and } a = \varepsilon \\ \end{cases} $$
 >     *(Informally: Add $\varepsilon$-transitions from all states in $F_1$ to $q_2$.)*
 
+> [!INFO] De-mystifying the Math
+> The formal definition for the new transition function $\delta$ might look intimidating, but it just describes the "glue" logic:
+>
+> $$ \delta(q, a) = \begin{cases} \delta_1(q, a) & q \in Q_1 \\ \delta_2(q, a) & q \in Q_2 \\ \delta_1(q, a) \cup \{q_2\} & q \in F_1 \text{ and } a = \varepsilon \\ \end{cases} $$
+>
+> **Plain English Translation:**
+> 1.  **Top Line:** If you are inside Machine 1 ($Q_1$), keep following Machine 1's rules.
+> 2.  **Middle Line:** If you are inside Machine 2 ($Q_2$), keep following Machine 2's rules.
+> 3.  **Bottom Line (The Magic Bridge):** If you are at an exit door of Machine 1 ($F_1$) and want to move without input ($\varepsilon$), you get a **free pass** to the start of Machine 2 ($q_2$). This "glues" the two machines together.
+
 ---
 
 ### 1.3 Closure under Star
@@ -83,6 +93,18 @@ We prove that the class of regular languages is closed under Union, Concatenatio
 >     *   For a set of states $R$, feed input $a$ to all of them.
 >     *   Take the union of all resulting states.
 >     *   Apply $\varepsilon$-closure ($E$) to the result.
+
+> [!INFO] What is $E(\{q_0\})$? (Epsilon Closure)
+> This notation answers the question: **"Where can I go for free?"**
+>
+> In an NFA, you don't just start at the official start state ($q_0$). If there are any "magic teleportation" arrows ($\varepsilon$-transitions) leading out of it, you instantly occupy those states too.
+>
+> **The Calculation:**
+> 1.  **Start** with the set $\{q_0\}$.
+> 2.  **Follow** all $\varepsilon$-arrows recursively.
+> 3.  **Result** is the set of *all* reachable states without consuming input.
+>
+> *Example:* If Start $\xrightarrow{\varepsilon}$ A $\xrightarrow{\varepsilon}$ B, then the DFA start state is the set $\{Start, A, B\}$.
 
 ---
 
