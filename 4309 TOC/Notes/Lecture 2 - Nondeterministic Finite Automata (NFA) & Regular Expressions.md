@@ -138,6 +138,7 @@ graph LR
 2. Draw $\varepsilon$-transitions from *every* accept state of $N_1$ to the start state of $N_2$.
 3. Turn $N_1$ accept states into non-accept states.
 
+
 ```mermaid
 graph LR
     subgraph Machine N1
