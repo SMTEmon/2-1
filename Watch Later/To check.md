@@ -1,3 +1,5 @@
-[  ] ACID in sql
-[  ] Left Nullspace in Linear Algebra 
-[  ] Big Picture in LA
+
+> [!todo] To Check
+> - [ ] Acid in SQL
+> - [ ] Left Nullspace in Linear
+> - [ ] Big Picture in LA
