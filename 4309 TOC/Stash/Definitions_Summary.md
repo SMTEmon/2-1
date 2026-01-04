@@ -24,7 +24,7 @@ Let $M = (Q, \Sigma, \delta, q_0, F)$ be a DFA and $w = w_1w_2\dots w_n$ be a st
 
 > [!NOTE] Language of M
 > The language recognized by $M$, denoted **$L(M)$**, is the set of all strings accepted by $M$.
-> $$L(M) = \{ w \mid M \text{ accepts } w \}
+> $$L(M) = \{ w \mid M \text{ accepts } w \}$$
 
 ---
 
@@ -70,7 +70,7 @@ $R$ is a **regular expression** if $R$ is:
 
 > [!QUOTE] Arden's Theorem
 > For regular expressions $P, Q, R$ where $P$ does not contain $\varepsilon$:
-> $$ R = Q + RP \implies R = QP^* \}
+> $$ R = Q + RP \implies R = QP^* $$
 
 ---
 
@@ -83,7 +83,7 @@ $R$ is a **regular expression** if $R$ is:
 >
 > 1.  **$for\ all\ i \ge 0, xy^iz \in A$**
 > 2.  **$|y| > 0$**
-> 3.  **$|xy| \le p$
+> 3.  **$|xy| \le p$**
 
 ---
 
