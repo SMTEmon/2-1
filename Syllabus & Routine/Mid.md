@@ -14,14 +14,17 @@
 
 > [!abstract] **Object Oriented Concepts (OOC)**
 > ### Chapters & UML
-> - **Chapters:** 7, 8, 9, 11, 12
+> - **Chapter 7:** [[Chapter 7 - Mastering Inheritance and Composition]]
+> - **Chapter 8:** [[Chapter 8 - Frameworks and Reuse - Designing with Interfaces and Abstract Classes]]
+> - **Chapters:** 9, 11, 12
 > - **Chapter 10 (UML):** *Only drawing UML class diagrams*
 > 
 > ### Key Topics (Follow Slides)
+> - **Principles:** [[1. SOLID]], [[2. Single Responsibility Principle]], [[Lec 8 - SRP]], [[TDD]]
 > - **Basics:** Coupling, Cohesion, Static variables
 > - **Testing:** Test Cases & Exception Handling
 > - **Relationships:** Association vs. Aggregation vs. Composition
-> - **Principles:** SRP (Single Responsibility), OCP (Open/Closed), TDD (Test-Driven Development)
+> - **Clean Code:** [[Clean Code]], [[Clean Code - 2]]
 > 
 > ### Resources
 > - [Clean Code - FreeCodeCamp](https://www.freecodecamp.org/news/how-to-write-clean-code/)
@@ -41,8 +44,12 @@
 > > - Complicated ERD will be given; you must write queries based on it.
 
 > [!brain] **Theory of Computation (TOC)**
-> - **Slides:** Lectures 1, 2, and 3
-> - **Textbook:** Chapter 1 - Regular Languages
+> ### Notes
+> - [[Lecture 1 - Introduction & Finite Automata]]
+> - [[Lecture 2 - Nondeterministic Finite Automata (NFA) & Regular Expressions]]
+> - [[Lecture 3 - Non-Regular Languages & The Pumping Lemma]]
+> - **Textbook:** [[Introduction to the TheoryOfComputing 2nd.pdf]]
+> 	- Chapter 1 - Regular Languages
 
 > [!list] **Data Structures (DS)**
 > - [[Lecture 1- DSA Intro]]
@@ -56,15 +63,20 @@
 > - [[Lecture 7 - Introduction to Graph]]
 
 > [!math] **Linear Algebra**
-> - **Foundations:** Essence (Vectors, Linear Properties, Span), Geometry (Row/Column Pictures, Matrix Form).
-> - **Elimination:** Matrices, Invertible Matrix, $EA = U$, Back substitution, Permutation Matrices.
-> - **Factorization:** $A = LU$ and $A = LDU$ Factorization.
-> - **Vector Spaces:** Subspaces, Null Space, Column Space.
-> - **Solving $Ax = b$:** Special/Particular solutions, Echelon Form, Rank.
-> - **Four Fundamental Subspaces:** Basis, Independence, Columnspace, Nullspace, Rowspace, Left Nullspace.
+> ### Gilbert Strang Notes
+> 1. [[1. The Geometry of Linear Equations]]
+> 2. [[2. Elimination with Matrices]]
+> 3. [[3. Matrix Multiplication and Inverse Matrices]]
+> 4. [[4. Factorization into A = LU]]
+> 5. [[5. Permutations, Transposes, and Vector Spaces]]
+> 6. [[6. Vector Spaces and Subspaces]]
+> 7. [[7. Solving Ax = 0]]
+> 8. [[8. Solving Ax = b]]
+> 9. [[9. Independence, Basis, and Dimension]]
+> 10. [[10. The Four Fundamental Subspaces]]
 
 > [!note] **Computer Organization and Architecture (COA)**
-> - **L1 (Intro):** Organization vs. Architecture, Moore’s Law, Performance Metrics (Amdahl’s Law).
-> - **L2 (Top-Level):** Von Neumann, Instruction Cycle, Interrupts (Nested/Disabled), Bus vs. Point-to-Point.
+> - [[Lecture 1]]
+> - [[Lecture 2]]
 > - **L3 (ISA - RISC-V):** CISC vs. RISC, Formats (R, I, S, SB), Assembly Programming (ALU, Load/Store, Branching).
 > - **L7 (I/O):** Input/Output systems.
