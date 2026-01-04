@@ -93,8 +93,19 @@ flowchart LR
 ## 5. Validating XML: The DTD
 XML documents can be checked for structural correctness using a **Document Type Definition (DTD)**.
 
+> [!note] Document Validity
+> An XML document that specifies a DTD is either valid or invalid based on the DTD. If a document does not specify a DTD, the XML document is not judged either valid or invalid. An XML document can specify a DTD internally or externally. Because external DTDs provide a very powerful mechanism, we will use an external DTD here. The DTD is where you define the tags that describe your data. When you create an XML document, you can only use tags that are predefined. All XML documents are checked for validity. The XML processor reads the DTD and determines whether the document is valid. If the document is not valid, a syntax error is produced.
+
 *   **Well-Formed:** The XML follows basic syntax (tags nested correctly, root element exists).
 *   **Valid:** The XML specifically conforms to the rules defined in a DTD.
+
+### Data Specification Table
+| Object Category | Fields / Elements |
+| :--- | :--- |
+| **Supplier** | name, address |
+| **Name** | companyname |
+| **Address** | street, city, state, zip |
+| **Product** | type, price, count |
 
 ### Example: The Supplier DTD
 We want to transfer a Supplier object containing a Name, Address, and Product info.
@@ -124,6 +135,9 @@ We want to transfer a Supplier object containing a Name, Address, and Product in
 <!ELEMENT price ( #PCDATA)>
 <!ELEMENT count ( #PCDATA)>
 ```
+
+> [!help] PCDATA
+> PCDATA stands for Parsed Character Data and is simply standard character information parsed from the text file. Any numbers, such as integers, will need to be converted by the parser.
 
 *   `#PCDATA`: Parsed Character Data (standard text/numbers).
 *   `+`: Indicates the element can appear one or more times (used on `street` in the text example, though implied in the list).
