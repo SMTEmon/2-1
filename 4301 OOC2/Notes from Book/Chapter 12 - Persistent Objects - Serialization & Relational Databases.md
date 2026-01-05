@@ -144,17 +144,55 @@ The framework uses the `System.Xml.Serialization` namespace.
 [XmlRoot("person")]
 public class Person {
     private String strName;
+    private int intAge;
 
-    // The XML Serializer uses this Property to get/set data
+    // The XML Serializer uses these Properties to get/set data
     [XmlAttribute("name")]
     public String Name {
         get { return this.strName; }
         set { this.strName = value; }
     }
+
+    [XmlElement("age")]
+    public int Age {
+        get { return this.intAge; }
+        set { this.intAge = value; }
+    }
+}
+```
+
+### Java Implementation (JAXB)
+In Java, XML serialization is standardly handled via **JAXB (Java Architecture for XML Binding)**. 
+
+**Annotations used:**
+*   `@XmlRootElement(name = "person")`: Defines the root element.
+*   `@XmlAttribute(name = "name")`: Maps a field/property to an XML attribute.
+*   `@XmlElement(name = "age")`: Maps a field/property to a nested XML element.
+
+#### Java Code Structure
+```java
+import javax.xml.bind.annotation.*;
+
+@XmlRootElement(name = "person")
+public class Person {
+    private String name;
+    private int age;
+
+    // Default constructor is required for JAXB
+    public Person() {}
+
+    @XmlAttribute(name = "name")
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+
+    @XmlElement(name = "age")
+    public int getAge() { return age; }
+    public void setAge(int age) { this.age = age; }
 }
 ```
 
 #### Generated XML Output
+(Identical for both languages as XML acts as the bridge)
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
 <person name="John Q. Public">
