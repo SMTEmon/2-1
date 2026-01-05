@@ -93,6 +93,33 @@ ObjectInputStream ois = new ObjectInputStream(fis);
 Person p = (Person) ois.readObject(); 
 ```
 
+### Handling Multiple Objects
+When multiple objects are stored in a file, `readObject()` retrieves them one by one in the order they were written.
+
+**Option A: Read until EOF (Loop)**
+```java
+try {
+    while (true) {
+        Person p = (Person) ois.readObject();
+        // Process p
+    }
+} catch (EOFException e) {
+    // End of file reached
+}
+```
+
+**Option B: Store a Collection (Recommended)**
+Write a single `List<Person>` object. Reading it back retrieves all data in one call.
+```java
+// Write: oos.writeObject(myListOfPeople);
+
+// Read:
+List<Person> people = (List<Person>) ois.readObject();
+for (Person p : people) {
+    // Process p
+}
+```
+
 ---
 
 ## 3. XML Serialization (Cross-Platform)
