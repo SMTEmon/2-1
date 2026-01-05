@@ -173,3 +173,85 @@ graph LR
     q2 -- "S, L, U, D" --> q2
 ```
 
+### 2c) NFA for Concatenation ($A \circ B$)
+
+**Given:**
+
+- $N_1$ accepts Language $A$ (Final states $F_1$).
+- $N_2$ accepts Language $B$ (Start state $q_{start2}$).
+
+**Construction of $N$ for $A \circ B$:**
+
+1. Take the diagram of $N_1$ and $N_2$.    
+2. Add **$\epsilon$-transitions** from every Final State in $F_1$ to the Start State of $N_2$.    
+3. Mark the original states in $F_1$ as **non-final**.    
+4. The new start state is the start state of $N_1$.    
+5. The new final states are the final states of $N_2$.    
+
+**Diagram:**
+
+```mermaid
+graph LR
+    subgraph N1 [NFA for A]
+    start1((Start N1)) -.-> end1((End N1))
+    end
+    
+    subgraph N2 [NFA for B]
+    start2((Start N2)) -.-> end2(((End N2)))
+    end
+    
+    end1 -- ε --> start2
+```
+
+### 2d) Convert Regex to NFA
+
+#### i. $(((00)^*(11)) \cup 01)^*$
+
+**Logic:** A loop that can take two paths:
+
+1. Path A: Any number of `00`s followed by `11`.
+2. Path B: The sequence `01`.
+
+
+```mermaid
+graph LR
+    start((Start)) --> q0((q0))
+    q0 -- ε --> accept(((Accept)))
+    accept -- ε --> q0
+
+    %% Path 1: (00)*(11)
+    q0 -- ε --> p1_start
+    p1_start -- 0 --> p1_a -- 0 --> p1_start
+    p1_start -- 1 --> p1_b -- 1 --> p1_end
+    p1_end -- ε --> q0
+
+    %% Path 2: 01
+    q0 -- ε --> p2_start
+    p2_start -- 0 --> p2_mid -- 1 --> p2_end
+    p2_end -- ε --> q0
+```
+
+
+#### ii. $(0 \cup 10)^* 010 (0 \cup 1)^*$
+
+**Logic:**
+1. **Prefix:** Loop of `0` or `10`.
+2. **Core:** Sequence `010`.
+3. **Suffix:** Loop of `0` or `1` (anything).
+    
+
+```mermaid
+graph LR
+    q0((q0)) -- 0 --> q0
+    q0 -- 1 --> q0_1 -- 0 --> q0
+    
+    %% Transition to Core
+    q0 -- 0 --> q1
+    q1 -- 1 --> q2
+    q2 -- 0 --> q3(((q3)))
+    
+    %% Suffix Loop
+    q3 -- 0,1 --> q3
+```
+
+
