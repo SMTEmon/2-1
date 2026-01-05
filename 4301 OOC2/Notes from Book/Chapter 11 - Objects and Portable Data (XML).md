@@ -24,14 +24,36 @@ Historically, businesses struggle with diverse storage formats (e.g., Oracle vs.
 ### XML Application Directions
 Data moves in two primary directions within the enterprise and industry:
 
-1.  **Vertical Applications (Vocabularies):**
-    *   Data moves through specific industry groups.
-    *   Specific industries create their own Markup Languages (standards).
-    *   *Examples:*
-        *   **FpML:** Financial Products Markup Language.
-        *   **RecipeML:** For food, hotels, and publishing.
-2.  **Horizontal Applications:**
-    *   Broad applications specific to a function (like e-commerce) that span across industries (Retail, Transportation, etc.).
+#### 1. Vertical Applications (Vocabularies)
+Vertical applications focus on **depth** within a single industry. They are designed by and for specialists to capture the complex, unique nuances of their specific field.
+
+*   **Logic:** A bank and a restaurant have completely different data needs. They create specialized XML tags (vocabularies) that only make sense within their "silo."
+*   **Examples:**
+    *   **FpML (Financial Products Markup Language):** Used exclusively by the financial industry to describe complex derivatives and structured products.
+    *   **RecipeML:** Used by the food, hotels, and publishing industries to define ingredients, cooking times, and portions.
+*   **Outcome:** High precision and seamless data exchange between different companies within the same sector.
+
+#### 2. Horizontal Applications
+Horizontal applications focus on **breadth** across multiple industries. They address business functions that are universal, regardless of what the company actually produces or sells.
+
+*   **Logic:** Every business—whether it’s a hospital, a law firm, or a factory—needs to perform certain functions like billing, shipping, or inventory management. Horizontal XML standards provide a "common language" for these tasks.
+*   **Example (E-commerce):** An XML standard for an **Electronic Invoice** or a **Purchase Order** is horizontal. A car manufacturer (Automotive) can send the same XML invoice format to a shipping company (Transportation) because the *function* of billing is identical across both.
+*   **Outcome:** Global interoperability, allowing diverse industries to communicate efficiently for shared business processes.
+
+> [!note] Definition: Silo
+> In an industrial context, a **silo** refers to an isolated environment or a distinct sector that operates independently.
+> - **Isolation:** Data/standards within one silo (e.g., Finance) don't naturally mix with another (e.g., Healthcare).
+> - **Vertical Flow:** Vertical applications are designed to work strictly *inside* these walls.
+> - **Breaking the Silo:** Horizontal applications allow data to flow "sideways" between these separate towers.
+
+### Summary: Vertical vs. Horizontal
+
+| Feature | Vertical Applications | Horizontal Applications |
+| :--- | :--- | :--- |
+| **Focus** | Industry-specific (The "Who") | Function-specific (The "What") |
+| **Scope** | Narrow and Deep | Broad and Universal |
+| **Goal** | Domain expertise & precision | Interoperability & efficiency |
+| **Direction** | Within an industry "silo" | Across different industry "silos" |
 
 > [!INFO] Visualizing Data Movement
 > **Figure 11.1 Representation:** Data flows horizontally across departments (Accounting, Management) and vertically through specific industries (Manufacturing, Transportation).
@@ -41,13 +63,24 @@ Data moves in two primary directions within the enterprise and industry:
 ## 3. XML vs. HTML
 Both are descendants of **SGML** (Standard Generalized Markup Language, standardized in the 1980s).
 
-| Feature | HTML (Hypertext Markup Language) | XML (Extensible Markup Language) |
-| :--- | :--- | :--- |
-| **Primary Function** | **Present** and format data. | **Describe** and define data. |
-| **Tags** | Predefined (e.g., `<body>`, `<font>`). | User-defined (e.g., `<supplier>`, `<price>`). |
-| **Strictness** | Loose. Browsers "guess" if tags aren't closed. | Strict. Must be "Well-Formed." |
-| **Ownership** | Open Standard. | Open Standard (W3C). |
-| **Validation** | No inherent data verification. | Can be validated via DTD. |
+| Feature              | HTML (Hypertext Markup Language)               | XML (Extensible Markup Language)              |
+| :------------------- | :--------------------------------------------- | :-------------------------------------------- |
+| **Primary Function** | **Present** and format data.                   | **Describe** and define data.                 |
+| **Tags**             | Predefined (e.g., `<body>`, `<font>`).         | User-defined (e.g., `<supplier>`, `<price>`). |
+| **Strictness**       | Loose. Browsers "guess" if tags aren't closed. | Strict. Must be "Well-Formed."                |
+| **Ownership**        | Open Standard.                                 | Open Standard (W3C).                          |
+| **Validation**       | No inherent data verification.                 | Can be validated via DTD.                     |
+
+### Key Differences Explained
+1.  **Primary Function:**
+    *   **HTML (Presentation):** Focuses on **how** the data looks. It instructs the browser to render text as bold, blue, or arranged in a table.
+    *   **XML (Description):** Focuses on **what** the data is. It describes the meaning of the content (e.g., `<price>`, `<author>`) for storage and transport, independent of display.
+
+2.  **Validation:**
+    *   **HTML (Loose):** Browsers are forgiving. If tags are missing or incorrectly nested, the browser "guesses" how to display the content rather than crashing or showing an error. It does not verify if the data content is logical.
+    *   **XML (Strict):** Can be strictly validated using a **DTD** or Schema.
+        *   **Well-Formed:** Follows basic syntax rules.
+        *   **Valid:** Conforms to specific structural rules (e.g., a `<supplier>` tag *must* contain an `<address>` tag). If it violates these rules, the parser rejects it.
 
 ### Advantages of XML
 1.  **Well-Formed:** Strict syntax ensures reliability.
@@ -139,8 +172,19 @@ We want to transfer a Supplier object containing a Name, Address, and Product in
 > [!help] PCDATA
 > PCDATA stands for Parsed Character Data and is simply standard character information parsed from the text file. Any numbers, such as integers, will need to be converted by the parser.
 
-*   `#PCDATA`: Parsed Character Data (standard text/numbers).
-*   `+`: Indicates the element can appear one or more times (used on `street` in the text example, though implied in the list).
+> [!TIP] DTD Occurrence Indicators (Cardinality)
+> In the DTD example `<!ELEMENT address ( street+, city, state, zip)>`, symbols are used to define how many times an element can appear:
+>
+> | Symbol | Name | Meaning | Frequency |
+> | :--- | :--- | :--- | :--- |
+> | **(None)** | Default | Exactly one | 1 |
+> | **`?`** | Question Mark | Zero or one (Optional) | 0 or 1 |
+> | **`*`** | Asterisk | Zero or more (Optional & Repeatable) | 0, 1, 2... |
+> | **`+`** | Plus Sign | **One or more (Mandatory & Repeatable)** | **1, 2, 3...** |
+>
+> **Example Analysis: `street+`**
+> - **Mandatory:** Every `<address>` must have at least one `<street>` tag.
+> - **Repeatable:** Allows for multi-line addresses (e.g., `<street>Line 1</street>`, `<street>Line 2</street>`).
 
 ---
 
@@ -182,7 +226,9 @@ The actual data file (`.xml`) must link to the DTD to be validated.
 A tool (formerly from Microsoft) used to visualize XML structure and validate against DTDs.
 *   **Visualizing:** Shows a tree view (Structure) and data view (Values).
 *   **Validation:** If you remove a required tag (e.g., `<name>`) from the XML, XML Notepad throws a specific error:
-    > *Element content is invalid according to the DTD/Schema. Expecting: address.*
+    > *Element content is invalid according to the DTD/Schema. Expecting: address.*    
+
+![[Pasted image 20260105113912.png]]
 
 ### Browser Behavior
 *   Browsers (like Internet Explorer) can display XML files.
@@ -199,6 +245,14 @@ Add a processing instruction to the top of the XML file:
 <?xml-stylesheet href="supplier.css" type="text/css" ?>
 ```
 
+**What this line does:**
+It acts as a bridge between the raw data and the visual presentation. Since XML doesn't know *how* to look (only *what* it is), this instruction tells the application (browser) to load a separate file for styling rules.
+
+*   **`<?xml-stylesheet ... ?>`**: Identifies this line as a processing instruction for linking a stylesheet.
+*   **`href="supplier.css"`**: Points to the location of the external CSS file.
+*   **`type="text/css"`**: Informs the parser that the stylesheet is written in CSS format.
+
+![[Pasted image 20260105120129.png]]
 ### Example CSS (`supplier.css`)
 This tells the browser how to render specific XML custom tags.
 
@@ -237,6 +291,7 @@ When `beta.xml` is opened in a browser with the CSS linked, instead of seeing th
 *   "The Beta Company" in large Blue Arial text.
 *   "12000 Ontario St" in Red Times New Roman.
 *   Etc.
+![[Pasted image 20260105120159.png]]
 
 ---
 
