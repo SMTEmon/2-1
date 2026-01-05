@@ -76,10 +76,13 @@ try {
     FileOutputStream fos = new FileOutputStream("Name.txt");
     ObjectOutputStream oos = new ObjectOutputStream(fos);
     oos.writeObject(p); // The Magic Line
-    oos.flush();
-    oos.close();
+    oos.flush();       // Forces any buffered data to the file
+    oos.close();       // Closes the stream and releases resources
 } catch (Exception e) { e.printStackTrace(); }
 ```
+
+> [!TIP] Why use `flush()`?
+> Output streams often use a **buffer** (temporary memory) to store data before writing it to disk to improve performance. `flush()` ensures that all data currently in that buffer is immediately pushed out to the destination file. While `close()` usually calls `flush()` automatically, explicit flushing is a best practice to ensure data integrity.
 
 #### Java Code Example: Reading
 ```java
@@ -148,8 +151,8 @@ The application acts as the Client, communicating with the Database Server via a
 
 ```mermaid
 flowchart LR
-    User[User App] <--> JDBC[Driver (JDBC/ODBC)]
-    JDBC <--> DB[(Database Server)]
+    User["User App"] <--> JDBC["Driver (JDBC/ODBC)"]
+    JDBC <--> DB[("Database Server")]
 ```
 
 ### JDBC (Java Database Connectivity)
