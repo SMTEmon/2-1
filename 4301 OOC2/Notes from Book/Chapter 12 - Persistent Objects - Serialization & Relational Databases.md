@@ -191,6 +191,37 @@ public class Person {
 }
 ```
 
+#### Serialization (Object to XML)
+To actually convert the object into XML (often called "Marshalling" in JAXB), you use the `JAXBContext` and `Marshaller` classes:
+
+```java
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
+import java.io.File;
+
+public class SerializationDemo {
+    public static void main(String[] args) throws Exception {
+        // 1. Create the Object
+        Person p = new Person();
+        p.setName("John Q. Public");
+        p.setAge(32);
+
+        // 2. Initialize JAXB Context
+        JAXBContext context = JAXBContext.newInstance(Person.class);
+
+        // 3. Create Marshaller (Object -> XML)
+        Marshaller marshaller = context.createMarshaller();
+        
+        // 4. (Optional) Format the output (newlines/indentation)
+        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+        
+        // 5. Output to Console or File
+        marshaller.marshal(p, System.out);
+        marshaller.marshal(p, new File("person.xml"));
+    }
+}
+```
+
 #### Generated XML Output
 (Identical for both languages as XML acts as the bridge)
 ```xml
@@ -200,9 +231,103 @@ public class Person {
 </person>
 ```
 
+#### Deserialization (XML to Object)
+To convert the XML back into a Java object (often called "Unmarshalling" in JAXB), you use the `Unmarshaller`:
+
+```java
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Unmarshaller;
+import java.io.File;
+
+public class DeserializationDemo {
+    public static void main(String[] args) throws Exception {
+        // 1. Initialize JAXB Context
+        JAXBContext context = JAXBContext.newInstance(Person.class);
+
+        // 2. Create Unmarshaller (XML -> Object)
+        Unmarshaller unmarshaller = context.createUnmarshaller();
+
+        // 3. Unmarshal from File
+        File file = new File("person.xml");
+        Person p = (Person) unmarshaller.unmarshal(file);
+
+        // 4. Verify data
+        System.out.println("Name: " + p.getName());
+        System.out.println("Age: " + p.getAge());
+    }
+}
+```
+
+#### Manual Implementation (DOM + Reflection)
+Alternatively, you can manually parse XML and map it to objects using DOM parsing and Java Reflection. This gives you more control but requires more boilerplate code.
+
+```java
+package org.lab4;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import java.io.StringReader;
+import java.lang.reflect.Field;
+import org.xml.sax.InputSource;
+
+public class XMLDeserializer {
+
+    public static <T> void deserializeAndPrint(String xml, Class<T> clazz) throws Exception {
+        
+        // Parse XML (DOM)
+        Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+                .parse(new InputSource(new StringReader(xml)));
+        Element root = doc.getDocumentElement();
+        
+        System.out.println("Class: " + clazz.getName());
+
+        for (Field field : clazz.getDeclaredFields()) {
+            field.setAccessible(true);
+            
+            // TODO: Get the field name
+            String fieldName = field.getName();
+            String value = "Not found in XML";
+
+            // Check if the root element contains a tag with the field name
+            if (root.getElementsByTagName(fieldName).getLength() > 0) {
+                // TODO: Get the value
+                // We take the first occurrence (.item(0)) and get its text content
+                value = root.getElementsByTagName(fieldName).item(0).getTextContent();
+            }
+
+            // TODO: print fieldName with value
+            System.out.println("  " + fieldName + ": " + value);
+        }
+    }
+}
+```
+
 ---
 
+
+
+
+
+
+
+
+
+
+
+> [!IMPORTANT]
+> **NOT IN MID SYLLABUS?**
+> (Skip for now, revisit after mid-term exams)
+
+
+
+
+
+
+
+
 ## 4. Relational Databases (RDBMS)
+
 
 Relational databases are the industry standard (e.g., Microsoft Access, SQL Server, Oracle).
 
