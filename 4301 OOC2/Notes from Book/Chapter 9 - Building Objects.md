@@ -27,12 +27,115 @@ Composition allows us to build systems by combining less complex parts.
 2.  **Interchangeability:** If parts are modular (e.g., all steering wheels fit the mount), they can be swapped.
 3.  **Repair/Maintenance:** You can fix a broken component without replacing the entire system.
 
+### Code Example: Why Composition?
+
+The following Java example demonstrates **Complexity Management**, **Interchangeability**, and **Repair/Maintenance**.
+
+```java
+// 1. COMPLEXITY MANAGEMENT (Abstraction)
+// We define a simple interface. The driver (user) only needs to know
+// "start", not how the fuel injects or how the battery discharges.
+interface Engine {
+    void start();
+}
+
+// 2. INTERCHANGEABILITY (Modular Parts)
+// Different modules that fit the same "mount" (Interface).
+
+class GasEngine implements Engine {
+    public void start() {
+        System.out.println("Vroom! Spark plugs firing. Burning gas.");
+    }
+}
+
+class ElectricEngine implements Engine {
+    public void start() {
+        System.out.println("Hummm. Battery circuits open. Silent start.");
+    }
+}
+
+// The "Whole" object composed of parts
+class Car {
+    private Engine myEngine; // The "Part"
+
+    // Constructor: We assemble the car with a specific part
+    public Car(Engine engine) {
+        this.myEngine = engine;
+    }
+
+    public void drive() {
+        // We delegate the work to the component.
+        // We don't care *how* it starts, just that it does.
+        myEngine.start(); 
+        System.out.println("Car is moving...");
+    }
+
+    // 3. REPAIR/MAINTENANCE (Swapping Parts)
+    // If the engine breaks or we want an upgrade, we don't buy a new car.
+    // We just swap the component.
+    public void setEngine(Engine newEngine) {
+        System.out.println("--- Replacing Engine ---");
+        this.myEngine = newEngine;
+    }
+}
+
+/* 
+ * WHY NOT INHERITANCE?
+ * If we used inheritance:
+ * class GasCar extends Car { ... }
+ * class ElectricCar extends Car { ... }
+ * 
+ * We could NEVER turn a GasCar into an ElectricCar at runtime. 
+ * We would have to destroy the GasCar object and create a new ElectricCar.
+ * With Composition, the 'Car' object stays the same; only the 'Engine' changes.
+ */
+
+// MAIN EXECUTION
+public class CompositionDemo {
+    public static void main(String[] args) {
+        // Assembly: Creating the parts first
+        Engine v8 = new GasEngine();
+        Engine teslaMotor = new ElectricEngine();
+
+        // 1. Complexity Management: 
+        // We say "drive()", hiding the engine's internal physics.
+        Car myCar = new Car(v8); 
+        myCar.drive(); 
+        // Output: Vroom! Spark plugs firing... Car is moving...
+
+        // 2. Interchangeability & 3. Repair/Maintenance:
+        // We want to go green. We swap the part, not the car.
+        myCar.setEngine(teslaMotor); 
+        myCar.drive(); 
+        // Output: Hummm. Battery circuits open... Car is moving...
+    }
+}
+```
+
+**Key Takeaways from Code:**
+1.  **Complexity Management:** The `Car.drive()` method hides the complexity. It simply calls `myEngine.start()`, abstracting away the internal mechanics of *how* the engine starts (spark plugs vs. batteries).
+2.  **Interchangeability:** Since `Car` depends on the `Engine` interface, not a specific class, we can plug in *any* implementation (`GasEngine`, `ElectricEngine`, `HybridEngine`) without changing the `Car` class.
+3.  **Repair/Maintenance:** The `setEngine()` method allows us to modify the car's behavior at runtime. Unlike inheritance, where a `GasCar` is stuck as a `GasCar` forever, composition allows the object to evolve or be repaired by simply swapping its components.
+
 ### Herbert Simon’s "The Architecture of Complexity" (1962)
-Stable complex systems usually follow these properties:
-1.  **Hierarchy:** Systems built from simpler subsystems.
-2.  **Near Decomposability:** Interactions *within* a component are stronger than interactions *between* components.
-3.  **Reuse:** Systems are composed of only a few different kinds of subsystems arranged differently.
-4.  **Evolution:** Complex systems evolve from simple systems that worked.
+> [!ABSTRACT] 
+> Simon proposed that stable complex systems (biological, social, or artificial) usually share specific properties. In the context of Object-Oriented Design, this is the theoretical foundation for **Composition**.
+> 
+> 1.  **Hierarchy:** 
+>     *   *Theory:* Complex systems are composed of subsystems, which are composed of even simpler subsystems.
+>     *   *OO Application:* A `CommerceSystem` contains a `Shop`, which contains a `CustomerList`, which contains `Customer` objects. You don't build the whole system as one giant block.
+> 
+> 2.  **Near Decomposability:** 
+>     *   *Theory:* Interactions *within* a component (intra-component) are much stronger and more frequent than interactions *between* components (inter-component).
+>     *   *OO Application:* **High Cohesion / Low Coupling**. The parts of an engine interact intensely (pistons, valves, explosions), but the engine interacts with the rest of the car only through a simple rotating shaft. If the AC breaks, the engine keeps running because they are nearly decomposable.
+> 
+> 3.  **Reuse:** 
+>     *   *Theory:* Complex systems are often composed of only a few different kinds of subsystems arranged in different combinations.
+>     *   *OO Application:* Nature reuses "Cells" to build everything. Programmers reuse `String`, `List`, and `Button` classes to build vastly different applications.
+> 
+> 4.  **Evolution:** 
+>     *   *Theory:* Complex systems that work invariably evolved from simple systems that worked. Complex systems designed from scratch usually fail.
+>     *   *OO Application:* **Iterative Development**. Start with a `Minimum Viable Product (MVP)`, ensure it works, then add complexity (features) incrementally.
 
 ### The Stereo System Example (Modular Design)
 **Scenario:** You have a Receiver, CD Player, and Speakers connected by patch cords.
@@ -91,6 +194,40 @@ classDiagram
 > **Aggregation:** The object is a *part* of the main object (e.g., A Head is part of a Dog).
 > **Association:** The object is separate but provides a service (e.g., A Spouse is associated with an Employee).
 
+> [!EXAMPLE] Code Comparison
+> The key difference is often in the **Lifecycle** (creation and destruction).
+> 
+> ```java
+> // 1. AGGREGATION (Strong Ownership)
+> // The "Part" belongs exclusively to the "Whole".
+> // If the Computer is destroyed, the CPU is destroyed with it.
+> class Computer {
+>     private CPU cpu;
+>     
+>     public Computer() {
+>         // The Whole creates the Part
+>         this.cpu = new CPU(); 
+>     }
+> }
+> 
+> // 2. ASSOCIATION (Weak Connection)
+> // The objects are independent. 
+> // If the Person ceases to exist, the Bank continues to exist.
+> class Person {
+>     private Bank bank; 
+>     
+>     // The Part is created outside and passed in
+>     public Person(Bank bank) {
+>         this.bank = bank; 
+>     }
+> }
+> ```
+> 
+> **Why the difference? (Garbage Collection)**
+> *   **Aggregation (Death Pact):** The `CPU` is created *inside* the `Computer`. No one else has a reference to it. When `Computer` is garbage collected, the `CPU` has zero references left, so it is destroyed too.
+> *   **Association (Independent Lives):** The `Bank` is created *outside* and passed in. Even if `Person` is garbage collected, the code that created the `Bank` (e.g., `main()`) still holds a reference to it, so the `Bank` survives.
+
+
 ---
 
 ## 4. Dependencies and Mixing Domains
@@ -101,6 +238,36 @@ A major design goal is **Avoiding Dependencies**.
     *   **Stability:** If one breaks, you lose both (Higher risk).
 
 **Guideline:** Keep domains separate (e.g., Business Logic vs. Database code) unless the convenience drastically outweighs the stability risk.
+
+> [!EXAMPLE] Code: Mixing vs. Separating Domains
+> 
+> **The "TV/VCR Combo" (Bad - Mixed Domains)**
+> Here, the `TaxCalculator` (Business Logic) is hardcoded to print to the console (Presentation Domain). You can't use this calculator in a Web App or Database script without rewriting it.
+> ```java
+> class TaxCalculator {
+>     public void calculateAndPrint(double price) {
+>         double tax = price * 0.08;
+>         // MIXING DOMAINS: Business Logic + Presentation
+>         System.out.println("The tax is: $" + tax); 
+>     }
+> }
+> ```
+> 
+> **The "Separate Components" (Good - Decoupled)**
+> Here, the Logic returns a value. It doesn't care who uses it (Console, Web, Database).
+> ```java
+> class TaxCalculator {
+>     public double calculate(double price) {
+>         return price * 0.08; // Pure Business Logic
+>     }
+> }
+> 
+> class ConsolePrinter {
+>     public void show(double amount) {
+>         System.out.println("The tax is: $" + amount); // Pure Presentation
+>     }
+> }
+> ```
 
 ---
 
