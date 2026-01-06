@@ -65,8 +65,17 @@ An interface is a syntactical contract that defines behavior but provides **no i
 *   **C++:** Uses abstract classes with multiple inheritance.
 *   **Java/.NET:** Do not support multiple inheritance of classes (to avoid complexity). They use Interfaces to support multiple behaviors.
 *   **Definition Inheritance vs. Implementation Inheritance:**
-    *   *Implementation Inheritance:* Class inheritance (Abstract classes).
-    *   *Definition Inheritance:* Interface implementation.
+    > [!NOTE] Implementation Inheritance (Code)
+    > **Source:** Abstract Classes.
+    > *   **What it means:** Inheriting the actual **logic** (the "how-to"). The parent class provides working code that the child "borrows."
+    > *   **Goal:** Code Reuse.
+    > *   **Analogy:** A "Pre-fabricated House"—the structure is built, you just move in.
+
+    > [!ABSTRACT] Definition Inheritance (Behavior)
+    > **Source:** Interfaces.
+    > *   **What it means:** Inheriting the **contract** (the "what-to"). The parent provides a "to-do list" without code.
+    > *   **Goal:** Polymorphism & Consistency.
+    > *   **Analogy:** A "Job Description"—it lists requirements you must fulfill yourself.
 
 ### The `Nameable` Example
 *   **Scenario:** We want diverse objects (Dogs, Cars, Planets) to be capable of having a name.
@@ -90,6 +99,13 @@ The decision to use one over the other depends on the relationship between the o
 | **Methods** | Can have concrete & abstract | Abstract only (mostly) |
 | **Inheritance** | Single Inheritance | Multiple Implementation |
 | **Coupling** | High (Related classes) | Low (Unrelated classes) |
+
+> [!TIP] Understanding Coupling
+> **Coupling** refers to the degree of dependency between classes.
+> *   **High Coupling (Abstract Classes):** The child class is tightly bound to the parent's implementation. Changing the parent's internal code can ripple through and break child classes. 
+>     *   *Analogy:* **DNA.** You are inextricably linked to your ancestry.
+> *   **Low Coupling (Interfaces):** The class is loosely connected only by a "contract." There is no shared code, so changes in one class don't affect others.
+>     *   *Analogy:* **Uniforms.** Anyone can put on a "Security Guard" uniform; the uniform doesn't care who is inside as long as they perform the duty.
 
 ### The "Is-A" Test
 *   **Abstract Class:** `Dog` **is a** `Mammal`. `Reptile` **is not a** `Mammal`. They cannot share a `Mammal` abstract class.
@@ -157,13 +173,30 @@ public class DonutShop extends Shop implements Nameable {
 ```
 
 #### 4. Dynamic Instantiation
-Using the framework allows the application to load the specific shop dynamically at runtime without changing the core application logic.
+Dynamic instantiation (via **Reflection**) is the "magic" that allows frameworks to load new features without rewriting or recompiling the original core code.
 
+**The Problem: Hardcoding**
 ```java
-// Java Example of dynamic loading
-String className = args[0]; // e.g., "PizzaShop"
+Shop myShop = new PizzaShop(); // Hardcoded: You must know the class at compile time.
+```
+To change to a `DonutShop`, you must edit the source code and recompile.
+
+**The Solution: Runtime Loading**
+```java
+// 1. Get the class name as a String (from a config file, user input, or command line)
+String className = args[0]; 
+
+// 2. Lookup: Find the class file on the disk by its name
+// 3. Creation: Create an instance of that class ("newInstance")
+// 4. Casting: Treat it as the generic "Shop" type (The Contract)
 Shop myShop = (Shop) Class.forName(className).newInstance();
 ```
+
+> [!INFO] Why is this amazing?
+> This is how **Plug-ins** work (e.g., Minecraft Mods, Photoshop Filters). 
+> 1. You write the core app once.
+> 2. You can add a `TacoShop` next year.
+> 3. The core app doesn't need to be changed; it just reads the new "TacoShop" string and loads the new logic dynamically.
 
 ---
 
