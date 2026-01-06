@@ -3,7 +3,7 @@
 > [!calendar] **Routine**
 > | Date | Subject | Time |
 > | :--- | :--- | :--- |
-> | **01/06/2026** | Theory of Computing (TOC) | 2:30 - 4:30 PM |
+> | **01/06/2026** | ~~Theory of Computing (TOC)~~ | 2:30 - 4:30 PM |
 > | **01/07/2026** | Object Oriented Concepts 2 (OOC 2) | 2:30 - 4:30 PM |
 > | **01/09/2026** | Data Structures (DS) | 2:30 - 4:30 PM |
 > | **01/12/2026** | Linear Algebra | 2:30 - 4:30 PM |
@@ -30,7 +30,7 @@
 > - [Clean Code - FreeCodeCamp](https://www.freecodecamp.org/news/how-to-write-clean-code/)
 > - [Clean Code - GitHub Guide](https://github.com/jbarroso/clean-code/blob/master/README.md)
 
-> [!database] **Database Management Systems (DBMS)**
+> [!danger] **Database Management Systems (DBMS)**
 > ### Lectures
 > - [[Lecture 1 - Introduction to Database Management Systems]]
 > - [[Lecture 2 - Introduction to the Relational Model]]
@@ -43,7 +43,7 @@
 > > - No ERD creation required.
 > > - Complicated ERD will be given; you must write queries based on it.
 
-> [!hint] **Theory of Computation (TOC)**
+> [!hint] ~~**Theory of Computation (TOC)**~~
 > ### Notes
 > - [[Lecture 1 - Introduction & Finite Automata]]
 > - [[Lecture 2 - Nondeterministic Finite Automata (NFA) & Regular Expressions]]
