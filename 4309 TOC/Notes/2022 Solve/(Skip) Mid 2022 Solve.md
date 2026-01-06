@@ -255,3 +255,23 @@ graph LR
 ```
 
 
+## Question 3
+
+### 3a) Pumping Lemma Proof
+
+Problem: Show $L = \{ww \mid w \in \{0, 1\}^*\}$ is not regular.
+Proof:
+
+1. Assume $L$ is regular. Let $p$ be the pumping length.    
+2. Choose string $s = 0^p 1 0^p 1$. Clearly $s \in L$ (where $w = 0^p 1$) and $|s| \ge p$.    
+3. According to Pumping Lemma, $s$ can be split into $xyz$ such that:
+    
+    - $|xy| \le p$        
+    - $|y| > 0$        
+    - $xy^iz \in L$ for all $i \ge 0$.
+        
+4. Since $|xy| \le p$, $xy$ lies entirely in the first block of $0$s. Therefore, $y$ consists only of $0$s ($y = 0^k, k > 0$).    
+5. Pump $y$ ($i=2$): The string becomes $0^{p+k} 1 0^p 1$.    
+6. This new string is not of the form $ww$ because the first half starts with $0^{p+k}$ while the second half (after the midpoint) cannot match this pattern due to the position of the $1$s shifting.
+7. Contradiction implies $L$ is not regular.
+
