@@ -120,7 +120,7 @@ Polymorphism ("Many Shapes") is a cornerstone of OO, allowing objects to be resp
 
 ---
 
-## 6. UML Visualization (Mermaid)
+## 6. UML Visualization
 
 ### Inheritance (Generalization)
 ```mermaid
