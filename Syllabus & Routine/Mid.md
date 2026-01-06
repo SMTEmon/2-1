@@ -43,7 +43,7 @@
 > > - No ERD creation required.
 > > - Complicated ERD will be given; you must write queries based on it.
 
-> [!brain] **Theory of Computation (TOC)**
+> [!hint] **Theory of Computation (TOC)**
 > ### Notes
 > - [[Lecture 1 - Introduction & Finite Automata]]
 > - [[Lecture 2 - Nondeterministic Finite Automata (NFA) & Regular Expressions]]
@@ -62,7 +62,7 @@
 > - [[Lecture 6 - Binary Search Trees]]
 > - [[Lecture 7 - Introduction to Graph]]
 
-> [!math] **Linear Algebra**
+> [!caution] **Linear Algebra**
 > ### Gilbert Strang Notes
 > 1. [[1. The Geometry of Linear Equations]]
 > 2. [[2. Elimination with Matrices]]
@@ -75,7 +75,7 @@
 > 9. [[9. Independence, Basis, and Dimension]]
 > 10. [[10. The Four Fundamental Subspaces]]
 
-> [!note] **Computer Organization and Architecture (COA)**
+> [!danger] **Computer Organization and Architecture (COA)**
 > - [[Lecture 1]]
 > - [[Lecture 2]]
 > - **L3 (ISA - RISC-V):** CISC vs. RISC, Formats (R, I, S, SB), Assembly Programming (ALU, Load/Store, Branching).
