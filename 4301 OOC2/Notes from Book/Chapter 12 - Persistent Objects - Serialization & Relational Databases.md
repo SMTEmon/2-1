@@ -418,6 +418,54 @@ public class XMLSerializer {
 }
 ```
 
+**4. DeserializeXML.java**
+This is the counterpart that reads the XML file back into Java objects.
+
+```java
+import java.beans.XMLDecoder;
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.util.List;
+
+public class DeserializeXML {
+
+    public static void main(String[] args) {
+        
+        try {
+            // Create the XMLDecoder to read from the file
+            XMLDecoder x = new XMLDecoder(
+                new BufferedInputStream(
+                    new FileInputStream("myCollegeData.xml")
+                )
+            );
+            
+            // Read the object from the XML file and cast it back to the College class
+            College c = (College) x.readObject();
+            
+            // Retrieve the list of students from the College object
+            List<Student> s = c.getStudents();
+            
+            // Iterate through the list and print the student values
+            for(Student value : s) {
+                System.out.println(value);
+            }
+            
+            // Always close the decoder
+            x.close();
+            
+        } catch (FileNotFoundException ex) {
+            ex.printStackTrace();
+        }
+    }
+}
+```
+
+**Key parts of the code:**
+*   **XMLDecoder:** This is the counterpart to `XMLEncoder`. It is used to read XML files that were serialized using Java Beans persistence.
+*   **FileInputStream & BufferedInputStream:** Used to open the specific file (e.g., "myCollegeData.xml") for reading.
+*   **readObject():** This method deserializes the XML data into a generic Java `Object`, which is then cast to the specific class type (`College`).
+
 ---
 
 
