@@ -129,6 +129,14 @@ XML documents can be checked for structural correctness using a **Document Type 
 > [!note] Document Validity
 > An XML document that specifies a DTD is either valid or invalid based on the DTD. If a document does not specify a DTD, the XML document is not judged either valid or invalid. An XML document can specify a DTD internally or externally. Because external DTDs provide a very powerful mechanism, we will use an external DTD here. The DTD is where you define the tags that describe your data. When you create an XML document, you can only use tags that are predefined. All XML documents are checked for validity. The XML processor reads the DTD and determines whether the document is valid. If the document is not valid, a syntax error is produced.
 
+> [!QUESTION] When exactly does the check happen?
+> Validation (checking against the DTD) occurs during **Deserialization (Reading)**, not during Serialization (Writing).
+> 
+> 1.  **Serialization (Writing):** When an application converts an object into XML, it generally only ensures the XML is **well-formed**. It trusts the code to follow the rules and doesn't typically check a DTD file at this stage.
+> 2.  **Deserialization (Reading):** When the receiving application uses a **validating parser** to read the XML, the parser reads the DTD and verifies the structure. The check happens **before** the data is converted back into an object.
+> 
+> **Key Insight:** The DTD acts as a gatekeeper for **incoming** data, ensuring it matches the expected model before the system processes it.
+
 *   **Well-Formed:** The XML follows basic syntax (tags nested correctly, root element exists).
 *   **Valid:** The XML specifically conforms to the rules defined in a DTD.
 
@@ -168,6 +176,12 @@ We want to transfer a Supplier object containing a Name, Address, and Product in
 <!ELEMENT price ( #PCDATA)>
 <!ELEMENT count ( #PCDATA)>
 ```
+
+> [!WARNING] Single Root Element Constraint
+> In the DTD above, `<supplier>` is defined as the root. Because valid XML must have **exactly one** root element, this DTD allows only **one** supplier per file.
+> 
+> **How to allow multiple?**
+> You would need a wrapper element defined in the DTD, e.g., `<!ELEMENT supplierList (supplier+)>`, making `<supplierList>` the new root.
 
 > [!help] PCDATA
 > PCDATA stands for Parsed Character Data and is simply standard character information parsed from the text file. Any numbers, such as integers, will need to be converted by the parser.
@@ -214,6 +228,15 @@ The actual data file (`.xml`) must link to the DTD to be validated.
 </supplier>
 ```
 
+> [!NOTE] Syntax Alert: Declaration vs. Comment vs. Instruction
+> XML uses three distinct types of "brackets" that look similar but perform different roles:
+> 
+> 1.  **`<!-- ... -->` (Comment):** For humans. The parser ignores everything inside.
+> 2.  **`<! ... >` (Declaration):** Defines the **Structure**. Used for `<!DOCTYPE>` to link DTDs or `<!ELEMENT>` within a DTD.
+> 3.  **`<? ... ?>` (Processing Instruction):** Tells the **Software** what to do. 
+>     *   `<?xml ...?>` tells the parser this is an XML file.
+>     *   `<?xml-stylesheet ...?>` tells the browser to load a CSS file for styling.
+
 ### Abstraction in XML
 *   **Abstract Tags:** Tags like `<address>` contain no data themselves; they only contain other tags.
 *   **Concrete Tags:** Tags like `<street>` contain the actual data (PCDATA).
@@ -240,10 +263,19 @@ A tool (formerly from Microsoft) used to visualize XML structure and validate ag
 XML defines data, but offers no native presentation. To display it nicely to a user, **Cascading Style Sheets (CSS)** can be used.
 
 ### The Mechanism
-Add a processing instruction to the top of the XML file:
+Add a processing instruction to the **header** of the XML file (after the XML declaration but before the root element):
+
 ```xml
+<?xml version="1.0" ?>
 <?xml-stylesheet href="supplier.css" type="text/css" ?>
+<!DOCTYPE supplier SYSTEM "supplier.dtd">
 ```
+
+> [!CAUTION] The Order Matters
+> 1. **XML Declaration (`<?xml ...?>`)**: MUST be the very first line. It cannot be replaced.
+> 2. **Processing Instructions**: Follow the declaration.
+> 3. **DTD Declaration**: Follows instructions.
+> 4. **Data**: The root element starts after all headers.
 
 **What this line does:**
 It acts as a bridge between the raw data and the visual presentation. Since XML doesn't know *how* to look (only *what* it is), this instruction tells the application (browser) to load a separate file for styling rules.
