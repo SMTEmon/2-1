@@ -1,10 +1,14 @@
-$localPath = "E:\Obsidian\2-1"
+$localPath = $PSScriptRoot
 $remotePath = "onedriveDev:2-1"
 
 Write-Host "Starting Sync to OneDrive (Excluding .git)..." -ForegroundColor Cyan
 
-# Use absolute path for rclone to ensure reliability in background tasks
-$rcloneExe = "C:\Users\SMTEmon\AppData\Local\Microsoft\WinGet\Packages\Rclone.Rclone_Microsoft.Winget.Source_8wekyb3d8bbwe\rclone-v1.72.1-windows-amd64\rclone.exe"
+# Try to find rclone in PATH, otherwise use fallback path
+if (Get-Command "rclone" -ErrorAction SilentlyContinue) {
+    $rcloneExe = "rclone"
+} else {
+    $rcloneExe = "C:\Users\SMTEmon\AppData\Local\Microsoft\WinGet\Packages\Rclone.Rclone_Microsoft.Winget.Source_8wekyb3d8bbwe\rclone-v1.72.1-windows-amd64\rclone.exe"
+}
 
 # 1. Sync files (Upload PDFs, delete non-PDFs on remote)
 & $rcloneExe sync $localPath $remotePath -P --include "**/*.pdf" --delete-excluded
