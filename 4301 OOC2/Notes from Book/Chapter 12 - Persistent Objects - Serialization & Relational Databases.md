@@ -303,6 +303,121 @@ public class XMLDeserializer {
 }
 ```
 
+#### Java Implementation (XMLEncoder)
+Another way to perform XML serialization in Java without external libraries (like JAXB) is using the `java.beans.XMLEncoder` class. This is particularly useful for serializing JavaBeans.
+
+**1. Student.java**
+This is the data class. **Note:** For `XMLEncoder` to work, this class *must* follow JavaBean conventions (public class, public no-arg constructor, and public getters/setters).
+
+```java
+public class Student {
+    
+    private int rollno;
+    private String name;
+
+    // Default constructor is required for Serialization
+    public Student() {}
+
+    public int getRollno() {
+        return rollno;
+    }
+
+    public void setRollno(int rollno) {
+        this.rollno = rollno;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return "Student [rollno=" + rollno + ", name=" + name + "]";
+    }
+}
+```
+
+**2. College.java**
+This acts as a container (wrapper) for the list of students.
+
+```java
+import java.util.List;
+
+public class College {
+    
+    private List<Student> students;
+
+    public List<Student> getStudents() {
+        return students;
+    }
+
+    public void setStudents(List<Student> students) {
+        this.students = students;
+    }
+}
+```
+
+**3. XMLSerializer.java**
+This is the main class that runs the serialization logic.
+
+```java
+import java.beans.XMLEncoder;
+import java.io.BufferedOutputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.List;
+
+public class XMLSerializer {
+    
+    public static void main(String[] args) {
+        
+        // 1. Create dummy data
+        Student st1 = new Student();
+        st1.setRollno(101);
+        st1.setName("Alice");
+
+        Student st2 = new Student();
+        st2.setRollno(102);
+        st2.setName("Bob");
+
+        // 2. Add data to a List
+        List<Student> studentList = new ArrayList<>();
+        studentList.add(st1);
+        studentList.add(st2);
+
+        // 3. Set the list into the main object (College)
+        College c = new College();
+        c.setStudents(studentList);
+
+        // 4. Perform XML Serialization
+        try {
+            // XMLEncoder is the standard class for writing JavaBeans to XML
+            XMLEncoder encoder = new XMLEncoder(
+                new BufferedOutputStream(
+                    new FileOutputStream("myCollegeData.xml")
+                )
+            );
+            
+            // Write the top-level object
+            encoder.writeObject(c);
+            
+            // Always close the encoder to ensure data is written properly
+            encoder.close();
+            
+            System.out.println("Success! File saved as myCollegeData.xml");
+            
+        } catch (FileNotFoundException ex) {
+            ex.printStackTrace();
+        }
+    }
+}
+```
+
 ---
 
 
