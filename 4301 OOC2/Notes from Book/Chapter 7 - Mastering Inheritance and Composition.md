@@ -159,3 +159,75 @@ classDiagram
 3.  **Complexity:** Don't over-engineer hierarchies (e.g., Yodeling dogs) unless the business case strictly requires it.
 4.  **Polymorphism:** Use abstract base classes or interfaces to write code that interacts with the general type (e.g., `Shape`), allowing concrete implementations (`Circle`, `Square`) to handle their own behavior.
 5.  **Modern Approach:** While inheritance is powerful, many designers lean toward composition to avoid the "fragile base class" problem and to maintain flexibility.
+
+---
+
+## 8. Common Confusion Points (FAQ)
+
+> [!QUESTION] **If I have to write the method in the new class anyway (delegation), how is Composition "reusing" code?**
+> **Answer:** You are reusing the *logic* (the 100 complex lines inside the helper object), not the *signature*.
+> *   **Inheritance:** You inherit the method name and the code.
+> *   **Composition:** You write a 1-line "wrapper" method that calls the complex method of the contained object.
+> *   **Benefit:** You avoid inheriting "garbage" methods you don't need, and you can swap the helper object (e.g., switch `GasEngine` to `ElectricEngine`) without breaking your class.
+
+> [!QUESTION] **Is Composition just about having `int` and `String` fields?**
+> **Answer:** No, it is about having **Smart Objects** as fields.
+> *   Instead of your class managing primitive data (e.g., `car.engineHorsepower`), your class manages other classes (e.g., `car.myEngine`).
+> *   The contained object (`Engine`) knows how to handle itself. The container (`Car`) just tells it what to do.
+
+---
+
+## 9. Deep Dive Examples
+
+> [!EXAMPLE] **Example 1: Delegation (The "1-Line Wrapper")**
+> Instead of rewriting complex logic, you point to the expert.
+>
+> **The Expert (`Engine.java`):**
+> ```java
+> class Engine {
+>     public void start() {
+>         // ... 100 lines of complex spark/fuel logic ...
+>         System.out.println("Engine started.");
+>     }
+> }
+> ```
+>
+> **The Reuser (`Car.java`):**
+> ```java
+> class Car {
+>     private Engine myEngine = new Engine();
+>
+>     public void startCar() {
+>         myEngine.start(); // REUSE: 1 line of code reuses 100 lines of logic.
+>     }
+> }
+> ```
+
+> [!EXAMPLE] **Example 2: Primitives vs. Smart Objects (Composition)**
+> Composition shifts the responsibility from the "Manager" to the "Part".
+>
+> **Bad: The "Primitive Trap" (Everything is just data)**
+> ```java
+> class Car {
+>     int horsepower;     // Dumb data
+>     boolean isStarted;  // Dumb data
+>     
+>     void start() {
+>         // Car has to manage the HOW of starting an engine
+>         this.isStarted = true; 
+>         // ... more engine logic here ...
+>     }
+> }
+> ```
+>
+> **Good: Composition (Everything is a Smart Object)**
+> ```java
+> class Car {
+>     private Engine myEngine = new Engine(); // Smart Object: Engine knows how to start itself.
+>     private Tire[] tires;    // Smart Object: Tire knows its own pressure.
+>
+>     void start() {
+>         myEngine.start(); // Car just gives the order.
+>     }
+> }
+> ```
