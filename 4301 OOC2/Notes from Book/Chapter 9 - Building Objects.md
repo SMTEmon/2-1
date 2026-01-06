@@ -387,4 +387,3 @@ classDiagram
 *   **Inheritance** creates new versions of existing objects.
 *   **Composition** (Aggregation/Association) represents interactions between various distinct objects.
 *   Good design involves balancing these relationships to create stable, maintainable systems using the "Is-a" and "Has-a" tests.
-```
