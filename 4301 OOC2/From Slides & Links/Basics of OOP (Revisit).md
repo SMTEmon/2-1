@@ -206,16 +206,21 @@ classDiagram
 
 **Rules:**
 1.  Static methods **cannot** access non-static (instance) variables or methods directly.
-2.  **Redefinition (Hiding):** You cannot "override" a static method. If you define a static method in a child with the same signature, it "hides" the parent's version.
-    *   *Static methods are bound at compile time based on reference type.*
+2.  **Redefinition (Hiding):** You cannot "override" a static method. If you define a static method in a child with the same signature, the **child's version hides the parent's version**.
+    *   **Binding:** Unlike instance methods (which use late/runtime binding), static methods use **early/static binding**.
+    *   **Decision:** The version executed depends on the **reference type** at compile time, not the actual object type at runtime.
 
 > [!EXAMPLE] Static Hiding in Action
+> If `doStuff()` is static:
 > ```java
 > Animal[] a = {new Animal(), new Dog(), new Animal()};
 > for(int x=0; x < a.length; x++) {
->     a[x].doStuff(); // If doStuff is static, it calls Animal.doStuff() every time.
+>     // Reference type is Animal, so Animal.doStuff() is called 
+>     // even if the actual object is a Dog.
+>     a[x].doStuff(); 
 > }
 > ```
+> *To call the Dog version, you would need a `Dog` reference or call it via `Dog.doStuff()`.*
 
 ---
 
