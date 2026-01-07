@@ -133,13 +133,14 @@ This is the most important rule. If a function does more than one thing, it is h
 >         .filter(this::isActiveClient)
 >         .forEach(this::email);
 > }
-> ```
-
+> 
 > private boolean isActiveClient(Client client) {
 > 
-> return client.isActive();
+> 	return client.isActive();
 > 
 > }
+> ```
+
 
 ### Function Names Should Say What They Do
 
