@@ -20,7 +20,7 @@
 > - **Chapter 10 (UML):** *Only drawing UML class diagrams*
 > 
 > ### Key Topics (Follow Slides)
-> - **Principles:** [[1. SOLID]], [[2. Single Responsibility Principle]], [[Lec 8 - SRP]], [[TDD]]
+> - **Principles:** [[1. SOLID]], [[Single Responsibility Principle]], [[Lec 8 - SRP]], [[TDD]]
 > - **Basics:** Coupling, Cohesion, Static variables
 > - **Testing:** Test Cases & Exception Handling
 > - **Relationships:** Association vs. Aggregation vs. Composition
