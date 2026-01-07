@@ -4,7 +4,7 @@
 > | Date | Subject | Time |
 > | :--- | :--- | :--- |
 > | **01/06/2026** | ~~Theory of Computing (TOC)~~ | 2:30 - 4:30 PM |
-> | **01/07/2026** | Object Oriented Concepts 2 (OOC 2) | 2:30 - 4:30 PM |
+> | **01/07/2026** | ~~Object Oriented Concepts 2 (OOC 2)~~ | 2:30 - 4:30 PM |
 > | **01/09/2026** | Data Structures (DS) | 2:30 - 4:30 PM |
 > | **01/12/2026** | Linear Algebra | 2:30 - 4:30 PM |
 > | **01/14/2026** | Computer Organization and Architecture (COA) | 2:30 - 4:30 PM |
@@ -12,7 +12,7 @@
 
 ---
 
-> [!abstract] **Object Oriented Concepts (OOC)**
+> [!abstract]- **Object Oriented Concepts (OOC)**
 > ### Chapters & UML
 > - **Chapter 7:** [[Chapter 7 - Mastering Inheritance and Composition]]
 > - **Chapter 8:** [[Chapter 8 - Frameworks and Reuse - Designing with Interfaces and Abstract Classes]]
@@ -29,6 +29,27 @@
 > ### Resources
 > - [Clean Code - FreeCodeCamp](https://www.freecodecamp.org/news/how-to-write-clean-code/)
 > - [Clean Code - GitHub Guide](https://github.com/jbarroso/clean-code/blob/master/README.md)
+\
+
+> [!hint]- **Theory of Computation (TOC)**
+> ### Notes
+> - [[Lecture 1 - Introduction & Finite Automata]]
+> - [[Lecture 2 - Nondeterministic Finite Automata (NFA) & Regular Expressions]]
+> - [[Lecture 3 - Non-Regular Languages & The Pumping Lemma]]
+> - **Textbook:** [[Introduction to the TheoryOfComputing 2nd.pdf]]
+> 	- Chapter 1 - Regular Languages
+
+
+> [!list] **Data Structures (DS)**
+> - [[Lecture 1- DSA Intro]]
+> - [[Lecture 1.2 - Complexity & Time-Space]]
+> - [[Lecture 2.1 - Arrays & Linked Lists]]
+> - [[Lecture 2.2 - Advanced Linked Lists]]
+> - [[Lecture 3 - Stack & Its Applications]]
+> - [[Lecture 4 - Queues & Deques]]
+> - [[Lecture 5 - Non-Linear Data Structures - Trees]]
+> - [[Lecture 6 - Binary Search Trees]]
+> - [[Lecture 7 - Introduction to Graph]]
 
 > [!danger] **Database Management Systems (DBMS)**
 > ### Lectures
@@ -43,24 +64,7 @@
 > > - No ERD creation required.
 > > - Complicated ERD will be given; you must write queries based on it.
 
-> [!hint] ~~**Theory of Computation (TOC)**~~
-> ### Notes
-> - [[Lecture 1 - Introduction & Finite Automata]]
-> - [[Lecture 2 - Nondeterministic Finite Automata (NFA) & Regular Expressions]]
-> - [[Lecture 3 - Non-Regular Languages & The Pumping Lemma]]
-> - **Textbook:** [[Introduction to the TheoryOfComputing 2nd.pdf]]
-> 	- Chapter 1 - Regular Languages
 
-> [!list] **Data Structures (DS)**
-> - [[Lecture 1- DSA Intro]]
-> - [[Lecture 1.2 - Complexity & Time-Space]]
-> - [[Lecture 2.1 - Arrays & Linked Lists]]
-> - [[Lecture 2.2 - Advanced Linked Lists]]
-> - [[Lecture 3 - Stack & Its Applications]]
-> - [[Lecture 4 - Queues & Deques]]
-> - [[Lecture 5 - Non-Linear Data Structures - Trees]]
-> - [[Lecture 6 - Binary Search Trees]]
-> - [[Lecture 7 - Introduction to Graph]]
 
 > [!caution] **Linear Algebra**
 > ### Gilbert Strang Notes
