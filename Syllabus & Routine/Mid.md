@@ -51,19 +51,6 @@
 > - [[Lecture 6 - Binary Search Trees]]
 > - [[Lecture 7 - Introduction to Graph]]
 
-> [!danger] **Database Management Systems (DBMS)**
-> ### Lectures
-> - [[Lecture 1 - Introduction to Database Management Systems]]
-> - [[Lecture 2 - Introduction to the Relational Model]]
-> - [[Lecture 3 - Introduction to SQL]]
-> - [[Lecture 4 - Intermediate SQL]]
-> - [[Lecture 5 - Database Design using ERD]]
-> 
-> > [!info] **Question Type Notes**
-> > - Covers Lectures 1 through 6 or 7?
-> > - No ERD creation required.
-> > - Complicated ERD will be given; you must write queries based on it.
-
 
 
 > [!caution] **Linear Algebra**
@@ -84,3 +71,17 @@
 > - [[Lecture 2]]
 > - **L3 (ISA - RISC-V):** CISC vs. RISC, Formats (R, I, S, SB), Assembly Programming (ALU, Load/Store, Branching).
 > - **L7 (I/O):** Input/Output systems.
+
+> [!danger] **Database Management Systems (DBMS)**
+> ### Lectures
+> - [[Lecture 1 - Introduction to Database Management Systems]]
+> - [[Lecture 2 - Introduction to the Relational Model]]
+> - [[Lecture 3 - Introduction to SQL]]
+> - [[Lecture 4 - Intermediate SQL]]
+> - [[Lecture 5 - Database Design using ERD]]
+> 
+> > [!info] **Question Type Notes**
+> > - Covers Lectures 1 through 6 or 7?
+> > - No ERD creation required.
+> > - Complicated ERD will be given; you must write queries based on it.
+> 
