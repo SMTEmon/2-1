@@ -4,7 +4,7 @@
 > | Date | Subject | Time |
 > | :--- | :--- | :--- |
 > | **01/06/2026** | ~~Theory of Computing (TOC)~~ | 2:30 - 4:30 PM |
-> | **01/07/2026** | Object Oriented Concepts 2 (OOC 2) | 2:30 - 4:30 PM |
+> | **01/07/2026** | ~~Object Oriented Concepts 2 (OOC 2)~~ | 2:30 - 4:30 PM |
 > | **01/09/2026** | Data Structures (DS) | 2:30 - 4:30 PM |
 > | **01/12/2026** | Linear Algebra | 2:30 - 4:30 PM |
 > | **01/14/2026** | Computer Organization and Architecture (COA) | 2:30 - 4:30 PM |
@@ -12,7 +12,7 @@
 
 ---
 
-> [!abstract] **Object Oriented Concepts (OOC)**
+> [!abstract]- **Object Oriented Concepts (OOC)**
 > ### Chapters & UML
 > - **Chapter 7:** [[Chapter 7 - Mastering Inheritance and Composition]]
 > - **Chapter 8:** [[Chapter 8 - Frameworks and Reuse - Designing with Interfaces and Abstract Classes]]
@@ -29,27 +29,16 @@
 > ### Resources
 > - [Clean Code - FreeCodeCamp](https://www.freecodecamp.org/news/how-to-write-clean-code/)
 > - [Clean Code - GitHub Guide](https://github.com/jbarroso/clean-code/blob/master/README.md)
+\
 
-> [!danger] **Database Management Systems (DBMS)**
-> ### Lectures
-> - [[Lecture 1 - Introduction to Database Management Systems]]
-> - [[Lecture 2 - Introduction to the Relational Model]]
-> - [[Lecture 3 - Introduction to SQL]]
-> - [[Lecture 4 - Intermediate SQL]]
-> - [[Lecture 5 - Database Design using ERD]]
-> 
-> > [!info] **Question Type Notes**
-> > - Covers Lectures 1 through 6 or 7?
-> > - No ERD creation required.
-> > - Complicated ERD will be given; you must write queries based on it.
-
-> [!hint] ~~**Theory of Computation (TOC)**~~
+> [!hint]- **Theory of Computation (TOC)**
 > ### Notes
 > - [[Lecture 1 - Introduction & Finite Automata]]
 > - [[Lecture 2 - Nondeterministic Finite Automata (NFA) & Regular Expressions]]
 > - [[Lecture 3 - Non-Regular Languages & The Pumping Lemma]]
 > - **Textbook:** [[Introduction to the TheoryOfComputing 2nd.pdf]]
 > 	- Chapter 1 - Regular Languages
+
 
 > [!list] **Data Structures (DS)**
 > - [[Lecture 1- DSA Intro]]
@@ -61,6 +50,8 @@
 > - [[Lecture 5 - Non-Linear Data Structures - Trees]]
 > - [[Lecture 6 - Binary Search Trees]]
 > - [[Lecture 7 - Introduction to Graph]]
+
+
 
 > [!caution] **Linear Algebra**
 > ### Gilbert Strang Notes
@@ -80,3 +71,17 @@
 > - [[Lecture 2]]
 > - **L3 (ISA - RISC-V):** CISC vs. RISC, Formats (R, I, S, SB), Assembly Programming (ALU, Load/Store, Branching).
 > - **L7 (I/O):** Input/Output systems.
+
+> [!danger] **Database Management Systems (DBMS)**
+> ### Lectures
+> - [[Lecture 1 - Introduction to Database Management Systems]]
+> - [[Lecture 2 - Introduction to the Relational Model]]
+> - [[Lecture 3 - Introduction to SQL]]
+> - [[Lecture 4 - Intermediate SQL]]
+> - [[Lecture 5 - Database Design using ERD]]
+> 
+> > [!info] **Question Type Notes**
+> > - Covers Lectures 1 through 6 or 7?
+> > - No ERD creation required.
+> > - Complicated ERD will be given; you must write queries based on it.
+> 
