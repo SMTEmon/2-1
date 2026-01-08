@@ -295,12 +295,6 @@ void DFS(int startNode, int V, vector<vector<int>>& adj) {
 
 **C++ Implementation:**
 ```cpp
-#include <iostream>
-#include <vector>
-#include <queue>
-
-using namespace std;
-
 void TopologicalSort(int V, vector<vector<int>>& adj) {
     vector<int> inDegree(V, 0);
     
