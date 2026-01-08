@@ -1,6 +1,6 @@
 ---
 course: CSE 4303 - Data Structures
-lecture: 07
+lecture: 7
 instructor: Asaduzzaman Herok
 date: 2025-12-25
 tags:
@@ -10,7 +10,6 @@ tags:
   - dfs
   - topological-sort
   - algorithms
-  - c++
 ---
 # Lecture 07: Introduction to Graphs
 
@@ -412,8 +411,8 @@ The most famous method is **Warshall’s Algorithm**, which uses a dynamic progr
 
 ## 8. Summary Comparison
 
-| Algorithm | Data Structure | Time Complexity | Space Complexity | Primary Use Case |
-| :--- | :--- | :--- | :--- | :--- |
-| **BFS** | Queue | $O(V + E)$ | $O(V)$ | Shortest Path (Unweighted), Level Order |
-| **DFS** | Stack / Recursion | $O(V + E)$ | $O(V)$ | Connectivity, Cycle Detection, Maze |
-| **Topo Sort**| Queue + In-Degree| $O(V + E)$ | $O(V)$ | Dependency Resolution, Compilation Order |
+| Algorithm     | Data Structure    | Time Complexity | Space Complexity | Primary Use Case                         |
+| :------------ | :---------------- | :-------------- | :--------------- | :--------------------------------------- |
+| **BFS**       | Queue             | $O(V + E)$      | $O(V)$           | Shortest Path (Unweighted), Level Order  |
+| **DFS**       | Stack / Recursion | $O(V + E)$      | $O(V)$           | Connectivity, Cycle Detection, Maze      |
+| **Topo Sort** | Queue + In-Degree | $O(V + E)$      | $O(V)$           | Dependency Resolution, Compilation Order |

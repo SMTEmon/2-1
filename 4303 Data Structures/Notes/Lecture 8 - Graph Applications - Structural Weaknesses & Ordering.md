@@ -173,4 +173,3 @@ graph LR
 *   *Data Structures Using C, 2nd Edition*, Reema Thareja (Chapter 13).
 *   CP-Algorithms: [Articulation Points](https://cp-algorithms.com/graph/cutpoints.html)
 *   CP-Algorithms: [Bridges](https://cp-algorithms.com/graph/bridge-searching.html)
-```
