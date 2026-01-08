@@ -134,7 +134,7 @@ Best for **Complete Binary Trees** (Heaps).
     *   If Node is at `i`:
     *   **Left Child:** `2*i + 1`
     *   **Right Child:** `2*i + 2`
-    *   **Parent:** `(i - 1) / 2`
+    *   **Parent:** $\lfloor(i - 1) / 2\rfloor$
 *   *Pros:* Fast access, no pointer overhead.
 *   *Cons:* Wasted space for skewed trees (sparse).
 
