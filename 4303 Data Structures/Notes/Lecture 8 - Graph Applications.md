@@ -105,7 +105,7 @@ graph TD
 
 
 >[!hint]- C++ Implementations
-```c++
+```cpp
 
 const int MAXN = 100005;
 vector<int> adj[MAXN];
@@ -204,7 +204,7 @@ Function DFS_Bridge(u, p = -1):
 ```
 
 >[! hint]- C++ Implementation
-```c++
+```cpp
 // Re-using variables from AP section
 vector<pair<int, int>> bridges; // Store result
 
