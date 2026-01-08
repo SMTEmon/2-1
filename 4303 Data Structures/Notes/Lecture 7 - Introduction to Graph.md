@@ -203,6 +203,25 @@ graph TD
     style F fill:#9999ff
 ```
 
+**Pseudo Code (BFS):**
+```text
+BFS(Graph, StartNode)
+    Initialize Queue Q
+    Initialize Visited Array to False
+    
+    Enqueue StartNode to Q
+    Mark StartNode as Visited
+    
+    WHILE Q is not Empty
+        U = Dequeue Q
+        Print U
+        
+        FOR each neighbor V of U
+            IF V is not Visited
+                Mark V as Visited
+                Enqueue V to Q
+```
+
 **C++ Implementation (BFS):**
 ```cpp
 #include <iostream>
@@ -247,6 +266,17 @@ Explores as **deep** as possible along each branch before backtracking.
 *   **Data Structure:** **Stack** (LIFO) or **Recursion**.
 *   **Usage:** Maze solving, Cycle detection, Pathfinding.
 *   **Complexity:** $O(V + E)$.
+
+**Pseudo Code (DFS - Recursive):**
+```text
+DFS(Graph, Node, Visited)
+    Mark Node as Visited
+    Print Node
+    
+    FOR each neighbor V of Node
+        IF V is not Visited
+            DFS(Graph, V, Visited)
+```
 
 **C++ Implementation (DFS - Recursive):**
 ```cpp
