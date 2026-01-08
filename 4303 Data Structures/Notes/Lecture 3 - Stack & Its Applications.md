@@ -170,6 +170,39 @@ Computers prefer Postfix because it eliminates precedence rules during calculati
 3.  Convert modified string to **Postfix**.
 4.  **Reverse** the resulting Postfix string to get Prefix.
 
+#### Step-by-Step Example
+**Expression:** `(A + B) * (C - D)`
+
+**Step 1: Reverse the String**
+*   Original: `(A + B) * (C - D)`
+*   Reversed: `)D - C( * )B + A(`
+
+**Step 2: Swap Brackets**
+*   Change `(` $\leftrightarrow$ `)`
+*   Modified Input: `(D - C) * (B + A)`
+
+**Step 3: Convert to Postfix (The Trace)**
+Now we run standard Infix $\to$ Postfix on the *Modified Input*.
+
+| Scan | Action | Stack State | Output String |
+| :---: | :--- | :--- | :--- |
+| `(` | Push `(` | `(` | |
+| `D` | Append Output | `(` | `D` |
+| `-` | Push `-` | `( -` | `D` |
+| `C` | Append Output | `( -` | `D C` |
+| `)` | Pop until `(` | *Empty* | `D C -` |
+| `*` | Push `*` | `*` | `D C -` |
+| `(` | Push `(` | `* (` | `D C -` |
+| `B` | Append Output | `* (` | `D C - B` |
+| `+` | Push `+` | `* ( +` | `D C - B` |
+| `A` | Append Output | `* ( +` | `D C - B A` |
+| `)` | Pop until `(` | `*` | `D C - B A +` |
+| *End* | Pop remaining | *Empty* | `D C - B A + *` |
+
+**Step 4: Reverse the Result**
+*   Postfix Result: `D C - B A + *`
+*   **Final Prefix:** `* + A B - C D`
+
 ### 7. Evaluating Prefix
 Similar to Postfix, but scan from **Right to Left**.
 **Algorithm:**
