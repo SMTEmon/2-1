@@ -50,6 +50,7 @@
 > - [[Lecture 5 - Non-Linear Data Structures - Trees]]
 > - [[Lecture 6 - Binary Search Trees]]
 > - [[Lecture 7 - Introduction to Graph]]
+> - [[Lecture 8 - Graph Applications]]
 
 
 
