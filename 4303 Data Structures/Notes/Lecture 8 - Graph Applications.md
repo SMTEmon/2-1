@@ -48,6 +48,76 @@ For a current node $u$ and neighbor $v$:
 * **Rule:** The root is an Articulation Point if and only if it has **more than 1 child** in the DFS tree.
 * *Why:* If it has two children in the DFS tree, there is no edge connecting their subtrees (or DFS would have combined them). Removing the root disconnects them.
 
+### Pseudocode & Implementation
+
+> [!notes]+ Pseudocode
+> ```
+> Initialize: 
+> 			timer = 0 
+> 			d[u] = 0, 
+> 			low[u] = 0 for all u 
+> 			visited[u] = false for all u 
+> 			is_cutpoint[u] = false 
+> Function DFS(u, p = -1): 
+> 			visited[u] = true 
+> 			d[u] = low[u] = ++timer 
+> 			children = 0 
+> 			
+> 			For each neighbor v of u: 
+> 				If v == p: 
+> 					Continue (Ignore parent) 
+> 				If v is visited: 
+> 					low[u] = min(low[u], d[v]) (Back Edge) 
+> 				Else: 
+> 					DFS(v, u) 
+> 					low[u] = min(low[u], low[v]) 
+> 					if low[v] >= d[u] AND p != -1: 
+> 						is_cutpoint[u] = true 
+> 					children++ 
+> 			If p == -1 AND children > 1: (Special Root Case) 
+> 				is_cutpoint[u] = true
+> ```
+
+
+>[!hint]- C++ Implementations
+```c++
+
+const int MAXN = 100005;
+vector<int> adj[MAXN];
+int tin[MAXN], low[MAXN]; // tin is 'd' in the slides
+int timer;
+bool is_cutpoint[MAXN]; // To store unique APs
+
+void dfs_articulation_point(int u, int p = -1) {
+    tin[u] = low[u] = ++timer;
+    int children = 0;
+
+    for (int v : adj[u]) {
+        if (v == p) continue; // Case A: Parent [cite: 72]
+
+        if (tin[v]) { 
+            // Case B: Back Edge [cite: 75-76]
+            low[u] = min(low[u], tin[v]);
+        } else {
+            // Case C: Tree Edge [cite: 88-90]
+            dfs_articulation_point(v, u);
+            low[u] = min(low[u], low[v]);
+            
+            // Check AP condition for non-root [cite: 95]
+            if (low[v] >= tin[u] && p != -1)
+                is_cutpoint[u] = true;
+            
+            children++;
+        }
+    }
+
+    // Root Check [cite: 113]
+    if (p == -1 && children > 1)
+        is_cutpoint[u] = true;
+}
+```
+
+
 ---
 
 ## 3. Finding Bridges (Cut Edges)
@@ -65,6 +135,59 @@ In the DFS tree, an edge $(u, v)$ is a bridge if and only if:
 * **Time:** $O(V+E)$ (Single DFS traversal).
 * **Space:** $O(V)$ (Recursion stack + Arrays $d, low, parent$).
 
+### Pseudocode & Implementation
+
+>[!notes] Pseudocode!
+```text
+Initialize:
+    timer = 0
+    d[u] = 0, low[u] = 0 for all u
+    visited[u] = false
+
+Function DFS_Bridge(u, p = -1):
+    visited[u] = true
+    d[u] = low[u] = ++timer
+
+    For each neighbor v of u:
+        If v == p:
+            Continue
+        If v is visited:
+            low[u] = min(low[u], d[v])
+        Else:
+            DFS_Bridge(v, u)
+            low[u] = min(low[u], low[v])
+            
+            If low[v] > d[u]:
+                Print "Bridge found: u - v"
+```
+
+>[! hint]- C++ Implementation
+```c++
+// Re-using variables from AP section
+vector<pair<int, int>> bridges; // Store result
+
+void dfs_bridges(int u, int p = -1) {
+    tin[u] = low[u] = ++timer;
+
+    for (int v : adj[u]) {
+        if (v == p) continue; // Ignore parent [cite: 312]
+
+        if (tin[v]) {
+            // Back Edge [cite: 315]
+            low[u] = min(low[u], tin[v]);
+        } else {
+            // Tree Edge [cite: 327-329]
+            dfs_bridges(v, u);
+            low[u] = min(low[u], low[v]);
+
+            // Bridge Condition [cite: 330]
+            if (low[v] > tin[u]) {
+                bridges.push_back({u, v});
+            }
+        }
+    }
+}
+```
 ---
 
 ## 4. Topological Sorting
