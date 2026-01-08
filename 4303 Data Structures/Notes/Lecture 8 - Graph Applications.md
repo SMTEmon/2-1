@@ -8,7 +8,7 @@ tags: [graph-theory, dfs, algorithms, articulation-points, bridges, topological-
 
 # Graph Applications: Structural Weaknesses & Ordering
 
-The goal is to find "single points of failure" in a network efficiently ($O(V+E)$) using DFS, rather than the naive $O(V(V+E))$ approach of removing each vertex one by one to check connectivity.
+The goal is to find "single points of failure" in a network efficiently ($O(V+E)$) using DFS, rather than the naive $O(V(V+E))$ approach of removing each vertex one by one to check connectivit y.
 
 ---
 
