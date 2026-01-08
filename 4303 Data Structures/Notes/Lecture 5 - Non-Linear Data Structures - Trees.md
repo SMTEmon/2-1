@@ -170,15 +170,39 @@ Uses Recursion (Stack).
 
 1.  **Pre-order (N-L-R):** Node $\to$ Left $\to$ Right.
     *   *Use:* Copying trees, Prefix expressions.
+    *   **Algorithm:**
+        1. If `Node == NULL`, Return.
+        2. Visit **Node**.
+        3. Traverse **Left** (`preOrder(node->left)`).
+        4. Traverse **Right** (`preOrder(node->right)`).
+
 2.  **In-order (L-N-R):** Left $\to$ Node $\to$ Right.
     *   *Use:* Getting sorted data from BST, Infix expressions.
     *   *Crucial:* In-order acts as a **separator** determining relative positions of nodes.
+    *   **Algorithm:**
+        1. If `Node == NULL`, Return.
+        2. Traverse **Left** (`inOrder(node->left)`).
+        3. Visit **Node**.
+        4. Traverse **Right** (`inOrder(node->right)`).
+
 3.  **Post-order (L-R-N):** Left $\to$ Right $\to$ Node.
     *   *Use:* Deleting trees (delete children first), Postfix expressions.
+    *   **Algorithm:**
+        1. If `Node == NULL`, Return.
+        2. Traverse **Left** (`postOrder(node->left)`).
+        3. Traverse **Right** (`postOrder(node->right)`).
+        4. Visit **Node**.
 
 ### B. Breadth First Search (BFS)
 4.  **Level Order:** Visit level-by-level (Top-down, Left-Right).
     *   *Data Structure:* **Queue** (FIFO).
+    *   **Algorithm:**
+        1. Create a Queue `Q` and Enqueue **Root**.
+        2. Loop while `Q` is not empty:
+            a. Dequeue `Current` node from `Q`.
+            b. Visit `Current`.
+            c. If `Current->Left != NULL`, Enqueue `Left`.
+            d. If `Current->Right != NULL`, Enqueue `Right`.
 
 ### C++ Implementation of Traversals
 
