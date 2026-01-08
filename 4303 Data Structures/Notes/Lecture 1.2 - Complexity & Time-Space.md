@@ -94,6 +94,16 @@ sumOfList(A, n) {
     *   Relational/Logical operations (`<`, `>`, `==`, `&&`).
     *   Memory allocation (`new`, `delete`).
 
+### Quick Analysis Cheatsheet
+
+| Pattern | Complexity | Why? |
+| :--- | :--- | :--- |
+| **No Loops / Recursion** | **$O(1)$** | Constant time (e.g., `arr[5]`). |
+| **Single Loop** | **$O(n)$** | Runs $n$ times. |
+| **Nested Loop** | **$O(n^2)$** | Outer $n$ $\times$ Inner $n$. |
+| **Cut in Half** | **$O(\log n)$** | Loop halves input (Binary Search). |
+| **Recursion (Simple)** | **$O(n)$** | Depth of recursion tree $\times$ work per node. |
+
 ---
 
 ## 4. Asymptotic Analysis
@@ -118,6 +128,14 @@ Evaluating performance in terms of input size (not on actual running time), spec
 *   **Tight Bound**.
 *   Bounded from both top and bottom by the same function type.
 *   **Formal Definition:** $f(n) = \Theta(g(n))$ if $f(n) = O(g(n))$ AND $f(n) = \Omega(g(n))$.
+
+### Notation Comparison & Analogies
+
+| Notation | Name | Role | "Ceiling or Floor?" | Analogy |
+| :--- | :--- | :--- | :--- | :--- |
+| **$O(n)$** | Big O | **Upper Bound** (Worst Case) | **Ceiling** | "It will take **at most** 1 hour." |
+| **$\Omega(n)$** | Big Omega | **Lower Bound** (Best Case) | **Floor** | "It will take **at least** 10 mins." |
+| **$\Theta(n)$** | Big Theta | **Tight Bound** (Exact) | **Exact** | "It takes **exactly** 30 mins." |
 
 ---
 

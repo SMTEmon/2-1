@@ -98,13 +98,66 @@ A list where the **Last Node** points back to the **First Node** instead of `NUL
 ### Structure
 A grid-like structure where nodes are linked in two dimensions (Horizontally and Vertically).
 **Node Structure (5 Fields):**
-1.  **ROW:** Row index (e.g., 3).
-2.  **COL:** Column index (e.g., 5).
-3.  **VAL:** Actual data (e.g., 99).
+1.  **ROW:** Row index.
+2.  **COL:** Column index.
+3.  **VAL:** Actual data.
 4.  **RIGHT:** Pointer to the next non-zero element in this **Row**.
 5.  **DOWN:** Pointer to the next non-zero element in this **Col**.
 
-*Why "Orthogonal"? Because links are perpendicular. You can traverse Row 2 quickly without scanning Row 3.*
+### Visualizing the Connections
+Imagine this $3 \times 3$ Matrix:
+```text
+      C0  C1  C2
+R0  |  0  10   0 |
+R1  | 20   0  30 |
+R2  |  0  40   0 |
+```
+
+**Orthogonal List Representation:**
+We only create nodes for **10, 20, 30, 40**.
+*   **Rows** link nodes Left $\to$ Right.
+*   **Cols** link nodes Top $\to$ Down.
+
+```mermaid
+graph TD
+    %% Headers
+    subgraph Row_Heads
+    R0[Row 0]
+    R1[Row 1]
+    R2[Row 2]
+    end
+
+    subgraph Col_Heads
+    C0[Col 0]
+    C1[Col 1]
+    C2[Col 2]
+    end
+
+    %% Data Nodes: (Row, Col, Val)
+    N1["10 <br> (0,1)"]
+    N2["20 <br> (1,0)"]
+    N3["30 <br> (1,2)"]
+    N4["40 <br> (2,1)"]
+
+    %% ROW Links (RIGHT Pointer)
+    R0 -->|Right| N1
+    R1 -->|Right| N2 -->|Right| N3
+    R2 -->|Right| N4
+
+    %% COL Links (DOWN Pointer)
+    C0 -->|Down| N2
+    C1 -->|Down| N1 -->|Down| N4
+    C2 -->|Down| N3
+
+    style N1 fill:#f9f,stroke:#333
+    style N2 fill:#f9f,stroke:#333
+    style N3 fill:#f9f,stroke:#333
+    style N4 fill:#f9f,stroke:#333
+```
+
+*   **To find (2,1):** Go to `Row 2 Head`, follow `Right` $\to$ Found Node 40.
+*   **To find (0,1):** Go to `Col 1 Head`, follow `Down` $\to$ Found Node 10.
+*   **Why "Orthogonal"?** Because links are perpendicular. You can traverse Row 2 quickly without scanning the empty cells in Row 3.
 
 ---
 
