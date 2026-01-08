@@ -7,10 +7,15 @@
 *   **ADT vs. Data Structure:**
     *   **ADT (Abstract Data Type):** Logical model defining *what* operations can be done (e.g., Stack Interface: `push`, `pop`).
     *   **Data Structure:** The concrete implementation of *how* data is stored (e.g., Array-based Stack vs. Linked Stack).
-*   **Time Complexity:**
-    *   **$O(1)$:** Direct access (Array index).
-    *   **$O(n)$:** Linear search / Traversal.
-    *   **$O(n^2)$:** Nested loops (Bubble sort).
+*   **Asymptotic Notations:**
+    *   **$O(n)$ (Big O):** **Upper Bound** (Worst Case). The "Ceiling". It takes *at most* this much time.
+    *   **$\Omega(n)$ (Big Omega):** **Lower Bound** (Best Case). The "Floor". It takes *at least* this much time.
+    *   **$\Theta(n)$ (Big Theta):** **Tight Bound**. Used when $O$ and $\Omega$ are the same. It grows *exactly* at this rate.
+*   **How to Calculate:**
+    1.  **Instruction Counting:** Count how many times each line runs based on input size $n$.
+    2.  **Drop Constants:** $T(n) = 2n + 3 \rightarrow O(n)$.
+    3.  **Keep Dominant Term:** $O(n^2 + n) \rightarrow O(n^2)$.
+    4.  **Growth Rate Rank:** $O(1) < O(\log n) < O(n) < O(n \log n) < O(n^2) < O(2^n)$.
 *   **Singly vs. Doubly Linked List:**
     *   SLL: Forward only, less memory (1 pointer). Hard to delete if you don't have the `prev` pointer.
     *   DLL: Bi-directional, more memory (2 pointers). Easy deletion (`curr->prev->next = curr->next`).
