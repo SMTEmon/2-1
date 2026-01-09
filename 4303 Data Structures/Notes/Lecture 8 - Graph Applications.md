@@ -8,7 +8,7 @@ tags: [graph-theory, dfs, algorithms, articulation-points, bridges, topological-
 
 # Graph Applications: Structural Weaknesses & Ordering
 
-The goal is to find "single points of failure" in a network efficiently ($O(V+E)$) using DFS, rather than the naive $O(V(V+E))$ approach of removing each vertex one by one to check connectivity.
+The goal is to find "single points of failure" in a network efficiently ($O(V+E)$) using DFS, rather than the naïve $O(V(V+E))$ approach of removing each vertex one by one to check connectivity.
 
 ---
 
@@ -36,13 +36,19 @@ We use DFS and maintain two arrays for every node $u$:
     *   *Insight:* $low[u]$ indicates if a "secret path" exists connecting descendants back to ancestors.
 
 #### Logic for Updating $low[u]$
-When at node $u$ looking at neighbor $v$:
+When at node $u$ looking at neighbour $v$:
 
-| Case | Scenario | Action | Reasoning |
-| :--- | :--- | :--- | :--- |
-| **A** | $v$ is Parent of $u$ | **Ignore** | Going back to parent doesn't count as a cycle. |
-| **B** | $v$ is Visited (Back Edge) | `low[u] = min(low[u], d[v])` | $u$ is part of a cycle connecting to ancestor $v$. |
-| **C** | $v$ is Unvisited (Tree Edge) | 1. Recurse DFS($v$)<br>2. `low[u] = min(low[u], low[v])` | Propagate the "highest reach" of the subtree up to $u$. |
+| Case  | Scenario                     | Action                                                   | Reasoning                                                                                                               |
+| :---- | :--------------------------- | :------------------------------------------------------- | :---------------------------------------------------------------------------------------------------------------------- |
+| **A** | $v$ is Parent of $u$         | **Ignore**                                               | Going back to parent doesn't count as a cycle.                                                                          |
+| **B** | $v$ is Visited (Back Edge)   | `low[u] = min(low[u], d[v])`                             | $u$ connects to ancestor $v$. We take $d[v]$ directly because the back-edge is a "tunnel" to that exact discovery time. |
+| **C** | $v$ is Unvisited (Tree Edge) | 1. Recurse DFS($v$)<br>2. `low[u] = min(low[u], low[v])` | Propagate the "highest reach" of the subtree up to $u$.                                                                 |
+
+### Deep Dive: Why Ignore the Parent?
+*   **The Question:** Since $u$ can technically reach its parent $v$ (it's connected), why don't we update `low[u]` using `d[parent]`?
+*   **The Answer:** Because going back the way you came is a **Trivial Cycle**.
+    *   **The Goal:** We want to find a *second*, independent path (a "back door") to an ancestor.
+    *   **The Bridge Check:** If we included the parent, `low[child]` would always become $\le d[parent]$, making the bridge condition (`low > d`) impossible to satisfy. We essentially ask: *"If the path to my parent is cut, can I still reach the rest of the graph?"*
 
 ### The Critical Conditions
 A node $u$ is an Articulation Point if:
@@ -73,6 +79,76 @@ graph TD
 *   **Node D (Tail):** Connected only to B.
 *   **Check for B:** D is a child of B. D cannot reach A (ancestor) without passing through B. Therefore, **B is an Articulation Point**.
 
+### Pseudocode & Implementation
+
+> [!notes]+ Pseudocode
+> ```
+> Initialize: 
+> 			timer = 0 
+> 			d[u] = 0, 
+> 			low[u] = 0 for all u 
+> 			visited[u] = false for all u 
+> 			is_cutpoint[u] = false 
+> Function DFS(u, p = -1): 
+> 			visited[u] = true 
+> 			d[u] = low[u] = ++timer 
+> 			children = 0 
+> 			
+> 			For each neighbor v of u: 
+> 				If v == p: 
+> 					Continue (Ignore parent) 
+> 				If v is visited: 
+> 					low[u] = min(low[u], d[v]) (Back Edge) 
+> 				Else: 
+> 					DFS(v, u) 
+> 					low[u] = min(low[u], low[v]) 
+> 					if low[v] >= d[u] AND p != -1: 
+> 						is_cutpoint[u] = true 
+> 					children++ 
+> 			If p == -1 AND children > 1: (Special Root Case) 
+> 				is_cutpoint[u] = true
+> ```
+
+
+>[!hint]- C++ Implementations
+```cpp
+
+const int MAXN = 100005;
+vector<int> adj[MAXN];
+int tin[MAXN], low[MAXN]; // tin is 'd' in the slides
+int timer;
+bool is_cutpoint[MAXN]; // To store unique APs
+
+void dfs_articulation_point(int u, int p = -1) {
+    tin[u] = low[u] = ++timer;
+    int children = 0;
+
+    for (int v : adj[u]) {
+        if (v == p) continue; // Case A: Parent [cite: 72]
+
+        if (tin[v]) { 
+            // Case B: Back Edge [cite: 75-76]
+            low[u] = min(low[u], tin[v]);
+        } else {
+            // Case C: Tree Edge [cite: 88-90]
+            dfs_articulation_point(v, u);
+            low[u] = min(low[u], low[v]);
+            
+            // Check AP condition for non-root [cite: 95]
+            if (low[v] >= tin[u] && p != -1)
+                is_cutpoint[u] = true;
+            
+            children++;
+        }
+    }
+
+    // Root Check [cite: 113]
+    if (p == -1 && children > 1)
+        is_cutpoint[u] = true;
+}
+```
+
+
 ---
 
 ## 3. Bridges (Cut Edges)
@@ -88,25 +164,104 @@ In the DFS tree, an edge $(u, v)$ (where $v$ is a child of $u$) is a Bridge if:
 > [!TIP] Inequality Check
 > *   **Articulation Point:** $low[v] >= d[u]$ (Back-edge to $u$ itself doesn't save $u$).
 > *   **Bridge:** $low[v] > d[u]$ (Strict inequality).
-> *   *Reasoning:* If $low[v] == d[u]$, there is a back-edge from the subtree to $u$. Removing the edge $(u, v)$ doesn't disconnect $v$ because it can still reach $u$ via the back-edge. We need $v$ to have *no* path to $u$ or above.
+> *   *Reasoning:* If $low[v] \le d[u]$, it means $v$ (or its subtree) has a back-edge to $u$ or an ancestor. This alternative path keeps $v$ connected even if the edge $(u, v)$ is removed. For $(u, v)$ to be a Bridge (a critical connection), $v$ must have *no* way back to $u$ or above, requiring the strict condition $low[v] > d[u]$.
 
-### Visual Representation
+### Visual Comparison: Bridge vs. Cycle
+
+To understand the inequality, let's look at the numbers. Imagine we are at node **U** checking the edge to child **V**.
+
+#### Scenario 1: The Safety Loop (Not a Bridge)
+Here, the subtree at **V** has a back-edge to **U**.
 
 ```mermaid
-graph LR
-    A((A)) --- B((B))
-    B --- C((C))
-    C -.- A
-    B ===|Bridge| D((D))
-    
-    style B fill:#fff,stroke:#333
-    style D fill:#fff,stroke:#333
-    linkStyle 3 stroke:red,stroke-width:4px;
+graph TD
+    U((U<br>d=1<br>low=1)) --> V((V<br>d=2<br>low=1))
+    V --> W((W<br>d=3<br>low=1))
+    W -.->|Back Edge| U
+
+    style U fill:#cfc,stroke:#333
+    style V fill:#cfc,stroke:#333
 ```
 
-*   **Triangle (A, B, C):** No bridges. Removing any edge leaves a path.
-*   **Edge (B, D):** If removed, D is isolated. $low[D] > d[B]$, so it is a Bridge.
+1.  We discover **U** ($d=1$). We go to **V** ($d=2$).
+2.  **V** goes to **W**. **W** finds a back-edge to **U**.
+3.  **W** updates its low-link: $low[W] = d[U] = 1$.
+4.  This propagates back up to **V**: $low[V] = 1$.
+5.  **Check:** $low[V] (1) \le d[U] (1)$.
+6.  **Result:** **NOT a Bridge**. If we cut $(U, V)$, $V$ can still reach $U$ via $W$.
 
+#### Scenario 2: The Dead End (Bridge)
+Here, **V** has nowhere to go but down.
+
+```mermaid
+graph TD
+    U((U<br>d=1<br>low=1)) -->|Bridge| V((V<br>d=2<br>low=2))
+    V --> W((W<br>d=3<br>low=3))
+
+    style U fill:#cfc,stroke:#333
+    style V fill:#f99,stroke:#333
+    linkStyle 0 stroke:red,stroke-width:4px;
+```
+
+1.  We discover **U** ($d=1$). We go to **V** ($d=2$).
+2.  **V** goes to **W**. **W** has no back-edges. $low[W] = 3$.
+3.  Propagates to **V**. **V** cannot reach anything higher than itself. $low[V] = 2$.
+4.  **Check:** $low[V] (2) > d[U] (1)$.
+5.  **Result:** **BRIDGE**. If we cut $(U, V)$, $V$ is completely cut off from $U$.
+
+### Pseudocode & Implementation
+
+>[!notes] Pseudocode!
+```text
+Initialize:
+    timer = 0
+    d[u] = 0, low[u] = 0 for all u
+    visited[u] = false
+
+Function DFS_Bridge(u, p = -1):
+    visited[u] = true
+    d[u] = low[u] = ++timer
+
+    For each neighbor v of u:
+        If v == p:
+            Continue
+        If v is visited:
+            low[u] = min(low[u], d[v])
+        Else:
+            DFS_Bridge(v, u)
+            low[u] = min(low[u], low[v])
+            
+            If low[v] > d[u]:
+                Print "Bridge found: u - v"
+```
+
+>[! hint]- C++ Implementation
+```cpp
+// Re-using variables from AP section
+vector<pair<int, int>> bridges; // Store result
+
+void dfs_bridges(int u, int p = -1) {
+    tin[u] = low[u] = ++timer;
+
+    for (int v : adj[u]) {
+        if (v == p) continue; // Ignore parent [cite: 312]
+
+        if (tin[v]) {
+            // Back Edge [cite: 315]
+            low[u] = min(low[u], tin[v]);
+        } else {
+            // Tree Edge [cite: 327-329]
+            dfs_bridges(v, u);
+            low[u] = min(low[u], low[v]);
+
+            // Bridge Condition [cite: 330]
+            if (low[v] > tin[u]) {
+                bridges.push_back({u, v});
+            }
+        }
+    }
+}
+```
 ---
 
 ## 4. Topological Sorting

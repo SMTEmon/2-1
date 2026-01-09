@@ -9,8 +9,6 @@ tags:
   - binary-search-tree
   - algorithms
 ---
-H.t/Lecture 06: Binary Search Trees (BST)
-
 ## 1. Introduction
 
 ### Definition

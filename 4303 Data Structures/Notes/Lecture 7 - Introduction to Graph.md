@@ -203,6 +203,25 @@ graph TD
     style F fill:#9999ff
 ```
 
+**Pseudo Code (BFS):**
+```text
+BFS(Graph, StartNode)
+    Initialize Queue Q
+    Initialize Visited Array to False
+    
+    Enqueue StartNode to Q
+    Mark StartNode as Visited
+    
+    WHILE Q is not Empty
+        U = Dequeue Q
+        Print U
+        
+        FOR each neighbor V of U
+            IF V is not Visited
+                Mark V as Visited
+                Enqueue V to Q
+```
+
 **C++ Implementation (BFS):**
 ```cpp
 #include <iostream>
@@ -248,6 +267,17 @@ Explores as **deep** as possible along each branch before backtracking.
 *   **Usage:** Maze solving, Cycle detection, Pathfinding.
 *   **Complexity:** $O(V + E)$.
 
+**Pseudo Code (DFS - Recursive):**
+```text
+DFS(Graph, Node, Visited)
+    Mark Node as Visited
+    Print Node
+    
+    FOR each neighbor V of Node
+        IF V is not Visited
+            DFS(Graph, V, Visited)
+```
+
 **C++ Implementation (DFS - Recursive):**
 ```cpp
 #include <iostream>
@@ -282,17 +312,44 @@ void DFS(int startNode, int V, vector<vector<int>>& adj) {
 
 **Definition:** A linear ordering of vertices in a **Directed Acyclic Graph (DAG)** such that for every directed edge $u \to v$, vertex $u$ comes before $v$.
 *   **Analogy:** Course prerequisites. You must take `Intro to C` ($u$) before `Data Structures` ($v$).
-*   **Algorithm (Kahn's / Source Removal):** Uses **In-Degree**.
+*   **Approach 1: Kahn's Algorithm (BFS / Source Removal):** Uses **In-Degree**.
 
 **Algorithm Steps:**
 1.  Calculate **In-Degree** for all nodes.
 2.  Add all nodes with `In-Degree == 0` to a Queue.
 3.  While Queue is not empty:
     *   Dequeue $u$ and add to sorted list.
-    *   For each neighbor $v$ of $u$: Decrement In-Degree of $v$.
+    *   For each neighbour $v$ of $u$: Decrement In-Degree of $v$.
     *   If In-Degree of $v$ becomes 0, Enqueue $v$.
 
-**C++ Implementation:**
+*   **Approach 2: DFS Based Algorithm:** Uses a **Stack** and recursion.
+
+**Core Idea:**
+In DFS, a node is "finished" after all its neighbors have been visited. If we push a node onto a stack at the moment it is finished, the nodes with no outgoing edges (or whose dependencies are already on the stack) will be at the bottom, and the "source" nodes will be at the top.
+
+**Pseudo Code (DFS-based Topo Sort):**
+```text
+TopologicalSort(Graph)
+    Initialize Visited array to False
+    Initialize Stack S
+    
+    FOR each vertex U in Graph
+        IF U is not Visited
+            DFS_Visit(U, Visited, S)
+            
+    Print Stack S (Top to Bottom)
+
+DFS_Visit(U, Visited, S)
+    Mark U as Visited
+    
+    FOR each neighbor V of U
+        IF V is not Visited
+            DFS_Visit(V, Visited, S)
+    
+    Push U to Stack S
+```
+
+**C++ Implementation (Kahn's):**
 ```cpp
 void TopologicalSort(int V, vector<vector<int>>& adj) {
     vector<int> inDegree(V, 0);
@@ -346,6 +403,45 @@ In Kahn's Algorithm, we look for nodes with **In-Degree 0** (no prerequisites) t
 2.  **C** is waiting for **B**.
 3.  **B** is waiting for **A**.
 *   **Result:** No node ever reaches an In-Degree of 0. The Queue stays empty, and the algorithm terminates without processing all nodes.
+
+### 5.2 Deep Dive: Complexity Analysis of Kahn's Algorithm
+Why is it $O(V+E)$ and not $O(V^2)$?
+
+**Time Complexity Breakdown:**
+
+1.  **Step 1: Calculate In-Degrees — $O(V + E)$**
+    *   We iterate through every node ($V$) and every outgoing edge ($E$) once to build the initial count.
+2.  **Step 2: Initial Discovery (Static Scan) — $O(V)$**
+    *   We scan the In-Degree array once to find all nodes starting with 0 dependencies and add them to the Queue.
+3.  **Step 3: Processing Loop (Dynamic Update) — $O(E)$**
+    *   **The Mechanism:** We do not rescan all nodes to find the next available task. Instead, we find them dynamically.
+    *   When processing node $u$, we visit only its neighbors $v$ and decrement `InDegree[v]`.
+    *   **Immediate Check:** If `InDegree[v]` drops to 0, we enqueue $v$ immediately.
+    *   Since every edge is visited exactly once for a decrement operation, this phase is $O(E)$.
+
+**Total Time:** $O(V + E) + O(V) + O(E) \approx \mathbf{O(V + E)}$
+
+---
+
+**Space Complexity: $O(V)$**
+We need auxiliary storage proportional to the number of vertices:
+*   **In-Degree Array:** Stores a count for all $V$ nodes $\to O(V)$.
+*   **Queue:** In the worst case (e.g., a graph with no edges), all $V$ nodes enter the queue $\to O(V)$.
+*   **Sorted Output List:** Stores the final result $\to O(V)$.
+*   *Note:* The graph itself (Adjacency List) takes $O(V+E)$, but auxiliary space is $O(V)$.
+
+---
+
+**Cycle Detection (Correctness)**
+Topological Sort doubles as a **Cycle Detection** algorithm.
+*   **Logic:** Maintain a counter of processed nodes. If `count < V` when the Queue becomes empty, it implies a **Cycle exists**.
+*   **Why?** Nodes in a cycle never reach In-Degree 0 because they are perpetually waiting on each other, so they never enter the Queue.
+
+**The "Ticket" Analogy (Understanding $O(E)$)**
+Imagine every **Edge** in the graph is a physical **ticket** held by the destination node.
+*   **The Algorithm's Job:** When Node A is processed (dequeued), it goes to its neighbors and **takes back its tickets**.
+*   **Crucial Point:** You only touch a ticket **once**—when you remove/decrement it. Once removed, it's gone.
+*   Therefore, the total number of times the inner loop (checking neighbors) runs is exactly equal to the **total number of edges ($E$)**.
 
 ---
 
