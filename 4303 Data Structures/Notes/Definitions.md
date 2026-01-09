@@ -45,20 +45,42 @@
 
 ## 4. Graphs
 
+### Basic Structure & Connectivity
 *   **Graph**: A non-linear structure $G = (V, E)$ consisting of Vertices (Nodes) and Edges (Connections). Can be cyclic.
+*   **Size of a Graph**: The total number of edges ($|E|$) in the graph.
 *   **Directed Graph (Digraph)**: Edges have a direction ($u \to v$).
 *   **Undirected Graph**: Edges have no direction ($u \leftrightarrow v$).
-*   **Weighted Graph**: Edges have assigned values (weights/costs).
-*   **Degree**: Number of edges connected to a node.
+*   **Adjacent Nodes (Neighbors)**: Two nodes $u$ and $v$ are adjacent if an edge $e = (u, v)$ connects them.
+*   **Degree**: Number of edges connected to a node ($deg(u)$).
     *   **In-Degree**: Number of edges entering a node (Directed).
     *   **Out-Degree**: Number of edges leaving a node (Directed).
-*   **Path**: A sequence of vertices where each pair is connected by an edge.
-*   **Cycle**: A path that starts and ends at the same vertex.
+    *   **Isolated Node**: A node with $deg(u) = 0$.
+*   **Regular Graph**: A graph where every vertex has the same degree.
+    *   **k-regular**: Every node has exactly degree $k$.
+
+### Paths & Cycles
+*   **Path**: A sequence of nodes $P = \{v_0, v_1, \dots, v_n\}$ where each consecutive pair is adjacent.
+*   **Simple Path**: A path where all nodes are distinct.
+*   **Closed Path**: A path where the start and end nodes are the same ($v_0 = v_n$).
+*   **Cycle**: A path where the first and last vertices are the same, but no vertices or edges are repeated (except the start/end).
+
+### Connectivity Types
+*   **Connected Graph**: A graph where a path exists between *any* two pairs of vertices.
+*   **Complete Graph ($K_n$)**: A graph where every node is connected to every other node. Has $n(n-1)/2$ edges.
+*   **Clique**: A subset of vertices where every two distinct vertices are connected (a complete subgraph).
 *   **DAG (Directed Acyclic Graph)**: A directed graph with no cycles. Required for Topological Sort.
+
+### Edge Properties
+*   **Weighted Graph**: Edges are assigned a value or cost ($w(e)$).
+*   **Labelled Graph**: Edges are assigned specific data/labels.
+*   **Loop**: An edge that connects a node to itself $(u, u)$.
+*   **Multi-graph**: A graph that contains Multiple Edges (parallel edges between the same nodes) or Loops.
+*   **Bridge (Cut Edge)**: An edge whose removal disconnects the graph.
+
+### Advanced Concepts
 *   **Adjacency Matrix**: A 2D array representation ($O(V^2)$). Good for dense graphs.
 *   **Adjacency List**: An array of linked lists ($O(V+E)$). Good for sparse graphs.
 *   **Adjacency Multi-list**: Represents edges as nodes to avoid duplication in undirected graphs.
 *   **Transitive Closure**: A graph representing reachability (an edge exists if a path exists).
-*   **Articulation Point (Cut Vertex)**: A node whose removal increases the number of connected components (disconnects the graph).
-*   **Bridge (Cut Edge)**: An edge whose removal disconnects the graph.
+*   **Articulation Point (Cut Vertex)**: A node whose removal increases the number of connected components.
 *   **Topological Sort**: A linear ordering of vertices in a DAG such that for every edge $u \to v$, $u$ comes before $v$.
