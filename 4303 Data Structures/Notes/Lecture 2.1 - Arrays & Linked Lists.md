@@ -19,12 +19,12 @@ tags:
 
 ### Complexity of Array Operations
 
-| Operation | Front / 1st | Arbitrary Position | Back / $n^{th}$ |
-| :--- | :---: | :---: | :---: |
-| **Find (Unsorted)** | $\Theta(1)$ | $\Theta(n)$ | $\Theta(n)$ |
-| **Find (Sorted)** | $\Theta(1)$ | $\Theta(\log n)$ | $\Theta(n)$ |
-| **Insert** | $\Theta(n)$ | $\Theta(n)$ | $\Theta(1)$ (if not full) |
-| **Erase** | $\Theta(n)$ | $\Theta(n)$ | $\Theta(1)$ |
+| Operation           | Front / 1st | Arbitrary Position |      Back / $n^{th}$      |
+| :------------------ | :---------: | :----------------: | :-----------------------: |
+| **Find (Unsorted)** | $\Theta(1)$ |    $\Theta(n)$     |        $\Theta(n)$        |
+| **Find (Sorted)**   | $\Theta(1)$ |  $\Theta(\log n)$  |        $\Theta(n)$        |
+| **Insert**          | $\Theta(n)$ |    $\Theta(n)$     | $\Theta(1)$ (if not full) |
+| **Erase**           | $\Theta(n)$ |    $\Theta(n)$     |        $\Theta(1)$        |
 
 > **Note:** Array insertion/deletion at the front or middle is slow ($\Theta(n)$) because elements must be shifted.
 
