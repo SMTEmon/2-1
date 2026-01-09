@@ -8,7 +8,7 @@ tags: [graph-theory, dfs, algorithms, articulation-points, bridges, topological-
 
 # Graph Applications: Structural Weaknesses & Ordering
 
-The goal is to find "single points of failure" in a network efficiently ($O(V+E)$) using DFS, rather than the naive $O(V(V+E))$ approach of removing each vertex one by one to check connectivit y.
+The goal is to find "single points of failure" in a network efficiently ($O(V+E)$) using DFS, rather than the naïve $O(V(V+E))$ approach of removing each vertex one by one to check connectivity.
 
 ---
 
@@ -164,24 +164,50 @@ In the DFS tree, an edge $(u, v)$ (where $v$ is a child of $u$) is a Bridge if:
 > [!TIP] Inequality Check
 > *   **Articulation Point:** $low[v] >= d[u]$ (Back-edge to $u$ itself doesn't save $u$).
 > *   **Bridge:** $low[v] > d[u]$ (Strict inequality).
-> *   *Reasoning:* If $low[v] == d[u]$, there is a back-edge from the subtree to $u$. Removing the edge $(u, v)$ doesn't disconnect $v$ because it can still reach $u$ via the back-edge. We need $v$ to have *no* path to $u$ or above.
+> *   *Reasoning:* If $low[v] \le d[u]$, it means $v$ (or its subtree) has a back-edge to $u$ or an ancestor. This alternative path keeps $v$ connected even if the edge $(u, v)$ is removed. For $(u, v)$ to be a Bridge (a critical connection), $v$ must have *no* way back to $u$ or above, requiring the strict condition $low[v] > d[u]$.
 
-### Visual Representation
+### Visual Comparison: Bridge vs. Cycle
+
+To understand the inequality, let's look at the numbers. Imagine we are at node **U** checking the edge to child **V**.
+
+#### Scenario 1: The Safety Loop (Not a Bridge)
+Here, the subtree at **V** has a back-edge to **U**.
 
 ```mermaid
-graph LR
-    A((A)) --- B((B))
-    B --- C((C))
-    C -.- A
-    B ===|Bridge| D((D))
-    
-    style B fill:#fff,stroke:#333
-    style D fill:#fff,stroke:#333
-    linkStyle 3 stroke:red,stroke-width:4px;
+graph TD
+    U((U<br>d=1<br>low=1)) --> V((V<br>d=2<br>low=1))
+    V --> W((W<br>d=3<br>low=1))
+    W -.->|Back Edge| U
+
+    style U fill:#cfc,stroke:#333
+    style V fill:#cfc,stroke:#333
 ```
 
-*   **Triangle (A, B, C):** No bridges. Removing any edge leaves a path.
-*   **Edge (B, D):** If removed, D is isolated. $low[D] > d[B]$, so it is a Bridge.
+1.  We discover **U** ($d=1$). We go to **V** ($d=2$).
+2.  **V** goes to **W**. **W** finds a back-edge to **U**.
+3.  **W** updates its low-link: $low[W] = d[U] = 1$.
+4.  This propagates back up to **V**: $low[V] = 1$.
+5.  **Check:** $low[V] (1) \le d[U] (1)$.
+6.  **Result:** **NOT a Bridge**. If we cut $(U, V)$, $V$ can still reach $U$ via $W$.
+
+#### Scenario 2: The Dead End (Bridge)
+Here, **V** has nowhere to go but down.
+
+```mermaid
+graph TD
+    U((U<br>d=1<br>low=1)) -->|Bridge| V((V<br>d=2<br>low=2))
+    V --> W((W<br>d=3<br>low=3))
+
+    style U fill:#cfc,stroke:#333
+    style V fill:#f99,stroke:#333
+    linkStyle 0 stroke:red,stroke-width:4px;
+```
+
+1.  We discover **U** ($d=1$). We go to **V** ($d=2$).
+2.  **V** goes to **W**. **W** has no back-edges. $low[W] = 3$.
+3.  Propagates to **V**. **V** cannot reach anything higher than itself. $low[V] = 2$.
+4.  **Check:** $low[V] (2) > d[U] (1)$.
+5.  **Result:** **BRIDGE**. If we cut $(U, V)$, $V$ is completely cut off from $U$.
 
 ### Pseudocode & Implementation
 
