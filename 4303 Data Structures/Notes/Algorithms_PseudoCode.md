@@ -152,6 +152,33 @@ POST-ORDER(NODE):
     Visit NODE
 ```
 
+### C. BST Node Deletion
+```cpp
+Node* deleteNode (Node* root , int val) {
+	if (root == nullptr) return root; // Case: Value not found
+	if (val < root ->data)
+		root ->left = deleteNode (root ->left , val);
+	else if (val > root ->data)
+		root ->right = deleteNode (root ->right , val);
+	else {
+		if (root ->left && root ->right) { // Case 3: Two Children
+			Node* temp = findLargestNode (root ->left);
+			root ->data = temp ->data; // Replace with predecessor
+			root ->left = deleteNode (root ->left , temp ->data);
+		}
+		else { // Case 1 & 2: Leaf node or One child
+		Node* temp = root;
+		if (root ->left == nullptr)
+			root = root ->right; // Replace with right child
+		else if (root ->right == nullptr)
+			root = root ->left; // Replace with left child
+		delete temp; // Free memory
+		}
+	}
+	return root;
+}
+```
+
 ---
 
 ## 5. Graph Algorithms

@@ -120,56 +120,39 @@ Decoding a Huffman encoded string is simple because of the **Prefix Property** (
 
 **Algorithm:**
 
-1. Start at the **Root** of the Huffman Tree.
-    
-2. Read the encoded binary string bit by bit.
-    
-3. **If the bit is '0':** Move to the **Left** child.
-    
+1. Start at the **Root** of the Huffman Tree.    
+2. Read the encoded binary string bit by bit.    
+3. **If the bit is '0':** Move to the **Left** child.    
 4. **If the bit is '1':** Move to the **Right** child.
     
 5. **Check Node:**
     
-    - If the current node is a **Leaf Node** (it has no children), you have found a character!
-        
-    - Print/Store the character.
-        
-    - Reset your position back to the **Root** to decode the next character.
-        
+    - If the current node is a **Leaf Node** (it has no children), you have found a character!        
+    - Print/Store the character.        
+    - Reset your position back to the **Root** to decode the next character.        
     - Repeat until the string ends.
         
 
 **Example Trace:**
 
-- **Encoded String:** `1001101`
-    
-- **Tree:** (Refer to diagram above)
-    
-    1. Start at Root. Read `1` -> Go Right (Node 55).
-        
-    2. Read `0` -> Go Left (Node 25).
-        
-    3. Read `0` -> Go Left (Node C). **Leaf Found!** Output: **C**. Reset to Root.
-        
-    4. Read `1` -> Go Right (Node 55).
-        
-    5. Read `1` -> Go Right (Node 30).
-        
-    6. Read `0` -> Go Left (Node 14).
-        
+- **Encoded String:** `1001101`    
+- **Tree:** (Refer to diagram above)    
+    1. Start at Root. Read `1` -> Go Right (Node 55).        
+    2. Read `0` -> Go Left (Node 25).        
+    3. Read `0` -> Go Left (Node C). **Leaf Found!** Output: **C**. Reset to Root.        
+    4. Read `1` -> Go Right (Node 55).        
+    5. Read `1` -> Go Right (Node 30).        
+    6. Read `0` -> Go Left (Node 14).        
     7. Read `1` -> Go Right (Node B). **Leaf Found!** Output: **B**. Reset to Root.
         
 - **Final Output:** `CB`
 ## 5. Complexity Analysis
 
-- **Time Complexity:** $O(n \log n)$
-    
-    - $n$ is the number of unique characters.
-        
+- **Time Complexity:** $O(n \log n)$    
+    - $n$ is the number of unique characters.        
     - The priority queue operations (insert/extract) take $\log n$. We do this $2n-1$ times.
         
-- **Space Complexity:** $O(n)$
-    
+- **Space Complexity:** $O(n)$    
     - To store the tree nodes.
 
 ---
