@@ -1,3 +1,4 @@
+link to AAR provided problem set: [Problem Set 0](https://docs.google.com/spreadsheets/d/1Xnus6eOdm1g7E4p7vGbA6h3a6tNJNc4OP11qM95eMSE/edit?gid=0#gid=0)
 ## Vectors & Linear Combinations
 - Determine if a set of vectors is linearly independent
 - Express a vector as a linear combination of given vectors
