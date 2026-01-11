@@ -84,8 +84,8 @@ There are three main reasons you would want to do this:
     
     - Row 1 started with a `3`. Eliminating with `3` would introduce fractions like $1/3$.        
     - Row 2 started with a `1`.        
-    - By swapping, the pivot became `1`, making the math much cleaner integers.
-    - 
+    - By swapping, the pivot became `1`, making the math much cleaner integers.   
+    
 3. For Precision (Computer Science):    
     Computers always swap rows to put the largest possible number in the pivot position (called "Partial Pivoting"). Dividing by a tiny number (like $0.00001$) causes massive rounding errors, so swapping for a larger number keeps the answer accurate.
 
@@ -158,3 +158,7 @@ To find the null space, we solve $Ax = 0$ (or $Rx = 0$). We write the equations 
 **Basis vector:**
 
 $$\left\{ \begin{bmatrix} -1 \\ -1 \\ -1 \\ 1 \end{bmatrix} \right\}$$
+## Transformation
+
+Let T : R3 → R3 be the linear transformation defined by $$T([x1, x2, x3]) = [2x1 + 3x2, x3, 4x1 − 2x2]$$. Find the standard matrix representation of T. Is T invertible? If so, find a formula for $T ^ {-1}$
+### Solution: 
