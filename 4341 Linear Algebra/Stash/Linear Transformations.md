@@ -75,3 +75,37 @@ A "Shear" pushes the top of the box sideways while the bottom stays fixed.
 
 **Matrix:**
 $$ A = \begin{bmatrix} 1 & 1 \\ 0 & 1 \end{bmatrix} $$
+
+---
+
+## 6. Finding A from Arbitrary Vectors
+
+What if you are given **arbitrary vectors** and their transformed versions, rather than the standard basis vectors?
+
+**The Rule:** To uniquely determine the matrix $A$ in $n$ dimensions, you need $n$ **linearly independent** input vectors and their outputs.
+
+**Method:**
+If you know that $T(v_1) = w_1$ and $T(v_2) = w_2$:
+1.  Form the **Input Matrix** $V = \begin{bmatrix} v_1 & v_2 \end{bmatrix}$.
+2.  Form the **Output Matrix** $W = \begin{bmatrix} w_1 & w_2 \end{bmatrix}$.
+3.  The relationship is $AV = W$.
+4.  Solve for $A$ by multiplying by the inverse of $V$:
+    $$ A = W V^{-1} $$
+
+**Example:**
+Find the matrix $T$ that maps $\begin{bmatrix}1\\1\end{bmatrix} \to \begin{bmatrix}2\\0\end{bmatrix}$ and $\begin{bmatrix}0\\1\end{bmatrix} \to \begin{bmatrix}1\\1\end{bmatrix}$.
+
+1.  Identify $V$ and $W$:
+    $$ V = \begin{bmatrix} 1 & 0 \\ 1 & 1 \end{bmatrix}, \quad W = \begin{bmatrix} 2 & 1 \\ 0 & 1 \end{bmatrix} $$
+
+2.  Find $V^{-1}$:
+    $$ \det(V) = (1)(1) - (0)(1) = 1 $$
+    $$ V^{-1} = \frac{1}{1} \begin{bmatrix} 1 & 0 \\ -1 & 1 \end{bmatrix} = \begin{bmatrix} 1 & 0 \\ -1 & 1 \end{bmatrix} $$
+
+3.  Calculate $A = W V^{-1}$:
+    $$ A = \begin{bmatrix} 2 & 1 \\ 0 & 1 \end{bmatrix} \begin{bmatrix} 1 & 0 \\ -1 & 1 \end{bmatrix} = \begin{bmatrix} (2)(1)+(1)(-1) & (2)(0)+(1)(1) \\ (0)(1)+(1)(-1) & (0)(0)+(1)(1) \end{bmatrix} $$
+    $$ A = \begin{bmatrix} 1 & 1 \\ -1 & 1 \end{bmatrix} $$
+
+**Check:**
+*   $A \begin{bmatrix}1\\1\end{bmatrix} = \begin{bmatrix} 1(1)+1(1) \\ -1(1)+1(1) \end{bmatrix} = \begin{bmatrix} 2 \\ 0 \end{bmatrix}$ ✅
+*   $A \begin{bmatrix}0\\1\end{bmatrix} = \begin{bmatrix} 1(0)+1(1) \\ -1(0)+1(1) \end{bmatrix} = \begin{bmatrix} 1 \\ 1 \end{bmatrix}$ ✅
