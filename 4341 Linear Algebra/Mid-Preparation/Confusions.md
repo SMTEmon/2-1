@@ -99,83 +99,62 @@ $$A = \begin{bmatrix} 3 & 4 & 0 & 7 \\ 1 & -5 & 2 & -2 \\ -1 & 4 & 0 & 3 \\ 1 & 
 
 ---
 
-### **Step 1: Get a Leading 1 (Pivot) in Row 1**
+### **Step 1: Identify the RREF**
 
-To avoid dealing with fractions early on (like dividing the first row by 3), we can swap **Row 1** and **Row 2**.
-- **Operation:** $R_1 \leftrightarrow R_2$    
+The problem asks to start by finding the Reduced Row Echelon Form (RREF). The solution in the image provides this for us:
 
-$$\begin{bmatrix} \mathbf{1} & -5 & 2 & -2 \\ 3 & 4 & 0 & 7 \\ -1 & 4 & 0 & 3 \\ 1 & -1 & 2 & 2 \end{bmatrix}$$
+$$\text{rref}(A) = R = \begin{bmatrix} \mathbf{1} & 0 & 0 & 1 \\ 0 & \mathbf{1} & 0 & 1 \\ 0 & 0 & \mathbf{1} & 1 \\ 0 & 0 & 0 & 0 \end{bmatrix}$$
 
-### **Step 2: Clear Column 1**
+From this matrix $R$, we can identify the key variables:
 
-Now, use the pivot in Row 1 (the bold **1**) to eliminate the numbers below it ($3$, $-1$, and $1$).
-
-- $R_2 \leftarrow R_2 - 3R_1$    
-- $R_3 \leftarrow R_3 + R_1$    
-- $R_4 \leftarrow R_4 - R_1$    
-
-**Calculations:**
-
-- $R_2$: $[3-3, 4-(-15), 0-6, 7-(-6)] \rightarrow [0, 19, -6, 13]$    
-- $R_3$: $[-1+1, 4-5, 0+2, 3-2] \rightarrow [0, -1, 2, 1]$    
-- $R_4$: $[1-1, -1-(-5), 2-2, 2-(-2)] \rightarrow [0, 4, 0, 4]$
+- **Pivot Columns:** Columns 1, 2, and 3 (columns with the leading 1s).
     
-
-$$\begin{bmatrix} 1 & -5 & 2 & -2 \\ 0 & 19 & -6 & 13 \\ 0 & -1 & 2 & 1 \\ 0 & 4 & 0 & 4 \end{bmatrix}$$
-
-### **Step 3: Get a Pivot in Row 2**
-
-We need a simple pivot for the second column. Notice that **Row 4** $[0, 4, 0, 4]$ is divisible by 4. Let's divide it and then swap it into the second row position.
-
-- **Operation 1:** $R_4 \leftarrow R_4 / 4$ (Result: $[0, 1, 0, 1]$)    
-- **Operation 2:** Swap $R_2 \leftrightarrow R_4$    
-
-$$\begin{bmatrix} 1 & -5 & 2 & -2 \\ 0 & \mathbf{1} & 0 & 1 \\ 0 & -1 & 2 & 1 \\ 0 & 19 & -6 & 13 \end{bmatrix}$$
-
-### **Step 4: Clear Column 2**
-
-Use the new pivot in Row 2 to eliminate the entries below it ($-1$ and $19$) and above it ($-5$).
-
-- $R_3 \leftarrow R_3 + R_2$    
-- $R_4 \leftarrow R_4 - 19R_2$    
-- $R_1 \leftarrow R_1 + 5R_2$
-    
-
-**Calculations:**
-
-- $R_3$: $[0, -1+1, 2+0, 1+1] \rightarrow [0, 0, 2, 2]$
-    
-- $R_4$: $[0, 19-19, -6-0, 13-19] \rightarrow [0, 0, -6, -6]$
-    
-- $R_1$: $[1, -5+5, 2+0, -2+5] \rightarrow [1, 0, 2, 3]$
-    
-
-$$\begin{bmatrix} 1 & 0 & 2 & 3 \\ 0 & 1 & 0 & 1 \\ 0 & 0 & 2 & 2 \\ 0 & 0 & -6 & -6 \end{bmatrix}$$
-
-### **Step 5: Normalize and Clear Column 3**
-
-First, turn the pivot in Row 3 into a **1**.
-
-- **Operation:** $R_3 \leftarrow R_3 / 2$
-    
-
-$$\begin{bmatrix} 1 & 0 & 2 & 3 \\ 0 & 1 & 0 & 1 \\ 0 & 0 & \mathbf{1} & 1 \\ 0 & 0 & -6 & -6 \end{bmatrix}$$
-
-Now, eliminate the entries below ($-6$) and above ($2$).
-
-- $R_4 \leftarrow R_4 + 6R_3$    
-- $R_1 \leftarrow R_1 - 2R_3$    
-
-**Calculations:**
-
-- $R_4$: $[0, 0, -6+6, -6+6] \rightarrow [0, 0, 0, 0]$    
-- $R_1$: $[1, 0, 2-2, 3-2] \rightarrow [1, 0, 0, 1]$
+- **Free Column:** Column 4 (no leading 1).
     
 
 ---
 
-### **Final Reduced Row Echelon Form (RREF)**
+### **Step 2: Basis for the Row Space**
 
-$$R = \begin{bmatrix} 1 & 0 & 0 & 1 \\ 0 & 1 & 0 & 1 \\ 0 & 0 & 1 & 1 \\ 0 & 0 & 0 & 0 \end{bmatrix}$$
+The basis for the row space is simply the **non-zero rows of the RREF matrix**. These rows are linearly independent and span the same space as the original rows.
 
-This matches the solution provided in the image.
+**Basis vectors:**
+
+$$\left\{ \begin{bmatrix} 1 \\ 0 \\ 0 \\ 1 \end{bmatrix}, \begin{bmatrix} 0 \\ 1 \\ 0 \\ 1 \end{bmatrix}, \begin{bmatrix} 0 \\ 0 \\ 1 \\ 1 \end{bmatrix} \right\}$$
+
+---
+
+### **Step 3: Basis for the Column Space**
+
+The basis for the column space consists of the **pivot columns from the original matrix $A$** (not the RREF matrix). Since columns 1, 2, and 3 are the pivot columns in $R$, we pick columns 1, 2, and 3 from $A$.
+
+$$A = \begin{bmatrix} \mathbf{3} & \mathbf{4} & \mathbf{0} & 7 \\ \mathbf{1} & \mathbf{-5} & \mathbf{2} & -2 \\ \mathbf{-1} & \mathbf{4} & \mathbf{0} & 3 \\ \mathbf{1} & \mathbf{-1} & \mathbf{2} & 2 \end{bmatrix}$$
+
+**Basis vectors:**
+
+$$\left\{ \begin{bmatrix} 3 \\ 1 \\ -1 \\ 1 \end{bmatrix}, \begin{bmatrix} 4 \\ -5 \\ 4 \\ -1 \end{bmatrix}, \begin{bmatrix} 0 \\ 2 \\ 0 \\ 2 \end{bmatrix} \right\}$$
+
+---
+
+### **Step 4: Basis for the Null Space**
+
+To find the null space, we solve $Ax = 0$ (or $Rx = 0$). We write the equations from the non-zero rows of the RREF and solve for the pivot variables in terms of the free variable ($x_4$).
+
+1. **Equations from RREF:**
+    
+    - $x_1 + 1x_4 = 0 \implies x_1 = -x_4$
+        
+    - $x_2 + 1x_4 = 0 \implies x_2 = -x_4$
+        
+    - $x_3 + 1x_4 = 0 \implies x_3 = -x_4$
+        
+2. Form the vector:
+    
+    Let the free variable $x_4 = 1$.
+    
+    $$x = \begin{bmatrix} x_1 \\ x_2 \\ x_3 \\ x_4 \end{bmatrix} = \begin{bmatrix} -1 \\ -1 \\ -1 \\ 1 \end{bmatrix}$$
+    
+
+**Basis vector:**
+
+$$\left\{ \begin{bmatrix} -1 \\ -1 \\ -1 \\ 1 \end{bmatrix} \right\}$$
