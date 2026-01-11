@@ -160,5 +160,11 @@ To find the null space, we solve $Ax = 0$ (or $Rx = 0$). We write the equations 
 $$\left\{ \begin{bmatrix} -1 \\ -1 \\ -1 \\ 1 \end{bmatrix} \right\}$$
 ## Transformation
 
+### Example 1
 Let T : R3 → R3 be the linear transformation defined by $$T([x1, x2, x3]) = [2x1 + 3x2, x3, 4x1 − 2x2]$$. Find the standard matrix representation of T. Is T invertible? If so, find a formula for $T ^ {-1}$
 ### Solution: 
+The standard matrix representation of $T$ is $A = \begin{bmatrix} 2 & 3 & 0 \\ 0 & 0 & 1 \\ 4 & -2 & 0 \end{bmatrix}$.
+
+$A^{-1} = \begin{bmatrix} 1/8 & 0 & 3/16 \\ 1/4 & 0 & -1/8 \\ 0 & 1 & 0 \end{bmatrix}$. Since $A$ is invertible, $T$ is invertible. $$T^{-1}([x_1, x_2, x_3]) = [\frac{1}{8}x_1 + \frac{3}{16}x_3, \frac{1}{4}x_1 - \frac{1}{8}x_3, x_2]$$
+
+
