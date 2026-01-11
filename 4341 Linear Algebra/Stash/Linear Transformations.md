@@ -1,5 +1,3 @@
-# 11. Linear Transformations
-
 ## 1. What is a Linear Transformation?
 
 A **Linear Transformation** $T$ is a function that maps a vector space to another (or to itself), preserving linear combinations. Geometrically, this means:
