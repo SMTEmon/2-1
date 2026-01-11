@@ -12,7 +12,6 @@ $$\left\{ \mathbf{v}_1, \mathbf{v}_2 \right\}$$
 A "basis" is just the smallest list of vectors required to generate the entire space.
 
 - If you say the space is made of "all combinations of vector A and vector B," you have already identified the ingredients.
-    
 - As long as vector A is not a multiple of vector B (meaning they point in different directions), they are the basis.
 
 
