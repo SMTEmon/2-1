@@ -1,5 +1,5 @@
 
-## Basis Vectors 
+# Basis Vectors 
 
 If the null space consists of all linear combinations of 2 vectors (let's call them $\mathbf{v}_1$ and $\mathbf{v}_2$), then **those two vectors themselves are the basis vectors**.
 
@@ -46,7 +46,7 @@ The two vectors must be Linearly Independent.
 
 If your two vectors are multiples of each other (e.g., $\mathbf{v}_1 = (1,1)$ and $\mathbf{v}_2 = (2,2)$), then they define the same line. In that case, the basis is just one of them, not both. However, in Gaussian elimination problems, the "Special Solutions" you find are always independent.
 
-## Row Exchange
+# Row Exchange
 
 Yes, absolutely. You can **always** exchange (swap) rows in an augmented matrix during elimination.
 
@@ -90,7 +90,7 @@ There are three main reasons you would want to do this:
     Computers always swap rows to put the largest possible number in the pivot position (called "Partial Pivoting"). Dividing by a tiny number (like $0.00001$) causes massive rounding errors, so swapping for a larger number keeps the answer accurate.
 
 
-## Four Fundamental Spaces
+# Four Fundamental Spaces
 
 Find a basis for the row space, column space, and null space of the matrix given below: 
 ### **The Original Matrix**
@@ -259,7 +259,6 @@ $$\text{Rank} + \text{Nullity} = n$$
 1. Find $n$ (Total Columns):
 
 Look at the vector given in the nullspace: $x = (2, 1, 0, 1)$.
-
 Since the vector has 4 components, the matrix must have 4 columns.
 
 $$n = 4$$
@@ -267,11 +266,8 @@ $$n = 4$$
 2. Find the Nullity (Dimension of Nullspace):
 
 The problem states the nullspace is "all multiples of $x$".
-
-- "All multiples of **one** vector" describes a **line**.
-    
-- A line is **1-dimensional**.
-    
+- "All multiples of **one** vector" describes a **line**.    
+- A line is **1-dimensional**.    
 - Therefore, the **Nullity is 1**. (This also means there is exactly **1 free variable**).
     
 
@@ -293,8 +289,7 @@ Step 1: Assign Columns
 
 Usually, the free variable corresponds to the last non-zero entry in the nullspace vector. In $x = (2, 1, 0, \mathbf{1})$, the last component corresponds to column 4.
 
-- **Free Column:** Column 4.
-    
+- **Free Column:** Column 4.    
 - **Pivot Columns:** Columns 1, 2, and 3.
     
 
@@ -310,10 +305,8 @@ $$\begin{bmatrix} 1 & 0 & 0 & a \\ 0 & 1 & 0 & b \\ 0 & 0 & 1 & c \end{bmatrix} 
 
 This creates three simple equations:
 
-1. **(Row 1):** $1(2) + 0(1) + 0(0) + a(1) = 0 \implies 2 + a = 0 \implies \mathbf{a = -2}$
-    
-2. **(Row 2):** $0(2) + 1(1) + 0(0) + b(1) = 0 \implies 1 + b = 0 \implies \mathbf{b = -1}$
-    
+1. **(Row 1):** $1(2) + 0(1) + 0(0) + a(1) = 0 \implies 2 + a = 0 \implies \mathbf{a = -2}$    
+2. **(Row 2):** $0(2) + 1(1) + 0(0) + b(1) = 0 \implies 1 + b = 0 \implies \mathbf{b = -1}$    
 3. **(Row 3):** $0(2) + 0(1) + 1(0) + c(1) = 0 \implies 0 + c = 0 \implies \mathbf{c = 0}$
     
 
@@ -322,12 +315,114 @@ This creates three simple equations:
 $$R = \begin{bmatrix} 1 & 0 & 0 & \mathbf{-2} \\ 0 & 1 & 0 & \mathbf{-1} \\ 0 & 0 & 1 & \mathbf{0} \end{bmatrix}$$
 
 **Summary:**
-
-- **Rank:** 3
-    
+- **Rank:** 3    
 - **Matrix $R$:** The $3 \times 4$ matrix shown above.
 
-## Transformation
+
+## Example 4:
+
+![[Pasted image 20260111214535.png]]
+
+This problem asks you to work **backwards**. Usually, you go from the Matrix $R$ $\rightarrow$ Nullspace Matrix $N$. Here, you have the answers ($N$) and need to find the questions ($R$).
+
+### **The Golden Rule**
+
+The relationship between the Reduced Row Echelon Matrix ($R$) and the Nullspace Matrix ($N$) is simple.
+
+If we group the pivot columns and free columns, they look like this:
+
+- Matrix R: Contains an Identity Matrix ($I$) and a "Free" part ($F$).
+    
+    $$R = \begin{bmatrix} I & F \\ 0 & 0 \end{bmatrix}$$
+    
+- Nullspace N: Contains the negative of that "Free" part ($-F$) and an Identity Matrix ($I$) for the free variables.
+    
+    $$N = \begin{bmatrix} -F \\ I \end{bmatrix}$$
+    
+
+**The Shortcut:** To get $R$ from $N$, find the "Identity" part in $N$ to locate the free variables. Then, take the _other_ numbers, **switch their signs**, and put them into the rows of $R$.
+
+---
+
+### **Case 1: First Matrix**
+
+$$N = \begin{bmatrix} 2 & 3 \\ 1 & 0 \\ 0 & 1 \end{bmatrix}$$
+
+**Step 1: Identify Variables**
+- Look for the Identity Matrix pattern in $N$. It is in **rows 2 and 3** ($\begin{bmatrix} 1 & 0 \\ 0 & 1 \end{bmatrix}$).    
+- This means **$x_2$ and $x_3$ are Free Variables**.    
+- Therefore, **$x_1$ is the Pivot Variable**.
+    
+
+**Step 2: Determine Rank**
+
+- Total columns ($n$) = 3.    
+- Free variables = 2.    
+- Rank = $3 - 2 = 1$. (So $R$ has **1 non-zero row**).    
+
+Step 3: Build the Row
+
+The equation for the pivot row is: $x_1 + (\text{val})x_2 + (\text{val})x_3 = 0$.
+- From column 1 of $N$: $x_1 = 2$ when $x_2=1$. So the coefficient in the matrix must be **-2**.    
+- From column 2 of $N$: $x_1 = 3$ when $x_3=1$. So the coefficient in the matrix must be **-3**.
+    
+Solution for Case 1:
+$$R = \begin{bmatrix} \mathbf{1} & \mathbf{-2} & \mathbf{-3} \\ 0 & 0 & 0 \\ 0 & 0 & 0 \end{bmatrix}$$
+
+(The nonzero row is $\begin{bmatrix} 1 & -2 & -3 \end{bmatrix}$)
+
+---
+
+### **Case 2: Second Matrix**
+
+$$N = \begin{bmatrix} 0 \\ 0 \\ 1 \end{bmatrix}$$
+
+**Step 1: Identify Variables**
+
+- The "1" is in **Row 3**.    
+- This means **$x_3$ is the Free Variable**.    
+- Therefore, **$x_1$ and $x_2$ are Pivot Variables**.
+    
+
+**Step 2: Determine Rank**
+
+- Total columns = 3.    
+- Free variables = 1.    
+- Rank = $3 - 1 = 2$. (So $R$ has **2 non-zero rows**).    
+
+**Step 3: Build the Rows**
+- **Row 1 ($x_1$):** Look at the value for $x_1$ in $N$. It is $0$. So the entry in $R$ is $-0 = 0$.    
+- **Row 2 ($x_2$):** Look at the value for $x_2$ in $N$. It is $0$. So the entry in $R$ is $-0 = 0$.    
+
+Solution for Case 2:
+
+$$R = \begin{bmatrix} \mathbf{1} & 0 & \mathbf{0} \\ 0 & \mathbf{1} & \mathbf{0} \\ 0 & 0 & 0 \end{bmatrix}$$
+
+(The nonzero rows are $\begin{bmatrix} 1 & 0 & 0 \end{bmatrix}$ and $\begin{bmatrix} 0 & 1 & 0 \end{bmatrix}$)
+
+---
+
+### **Case 3: Third Matrix**
+
+$$N = [ \quad ] \quad \text{(empty)}$$
+
+**Step 1: Identify Variables**
+- The nullspace is empty (contains only the zero vector).    
+- This means there are **0 Free Variables**.    
+- All variables ($x_1, x_2, x_3$) are **Pivot Variables**.    
+
+**Step 2: Determine Rank**
+- Rank = 3. (So $R$ has **3 non-zero rows**).
+    
+
+Step 3: Build the Rows
+Since all columns are pivot columns, the matrix is simply the Identity Matrix.
+Solution for Case 3:
+
+$$R = \begin{bmatrix} \mathbf{1} & 0 & 0 \\ 0 & \mathbf{1} & 0 \\ 0 & 0 & \mathbf{1} \end{bmatrix}$$
+
+(The nonzero rows are the rows of the Identity Matrix)
+# Transformation
 
 ### Example 1
 
