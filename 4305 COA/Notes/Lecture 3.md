@@ -280,13 +280,13 @@ Exit:
 How does the processor know where the data is?
 
 1.  **Immediate Addressing:** The data is inside the instruction.
-    *   Ex: `addi x1, x2, **10**`
+    *   Ex: `addi x1, x2, 10`
 2.  **Register Addressing:** The data is in a register.
-    *   Ex: `add **x1**, **x2**, **x3**`
+    *   Ex: `add x1, x2, x3`
 3.  **Base (Displacement) Addressing:** Memory address = Register + Immediate.
-    *   Ex: `lw x1, **100(x2)**`
+    *   Ex: `lw x1, 100(x2)`
 4.  **PC-Relative Addressing:** Branch Target = PC + (Immediate * 2).
-    *   Ex: `bne x1, x2, **Label**`
+    *   Ex: `bne x1, x2, Label`
     *   The "Label" is converted by the assembler into an offset.
     *   Since instructions are 32-bits (4 bytes) aligned in memory, the bottom bits are always 00, allowing the immediate to store a larger range by implicit shifting.
 

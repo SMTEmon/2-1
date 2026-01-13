@@ -143,5 +143,3 @@ Used for high-speed, high-volume data transfers (e.g., Disk to Memory). The CPU 
 
 > [!INFO] Vector Interrupt
 > In the Daisy Chain method, when a device identifies itself, it sends a unique "Vector" (address or ID) to the CPU. The CPU uses this vector to jump directly to the specific software routine needed to handle that device, avoiding the need to poll.
-
-```
