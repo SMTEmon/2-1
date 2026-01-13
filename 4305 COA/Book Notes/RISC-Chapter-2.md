@@ -140,7 +140,7 @@ Absolutely! I can make a **similar table and example code** for **AND, OR, and X
 
 ---
 
-### 1️⃣ AND Instruction
+#### AND Instruction
 
 **Assembly example:**
 
@@ -159,7 +159,7 @@ and x11, x19, x20   # x11 = x19 & x20
 
 ---
 
-###  OR Instruction
+#### OR Instruction
 
 **Assembly example:**
 
@@ -171,7 +171,7 @@ or x11, x19, x20   # x11 = x19 | x20
 |---|---|---|---|---|---|
 |0000000|5 bits|5 bits|110|5 bits|0110011|
 
-### XOR Instruction
+#### XOR Instruction
 
 **Assembly example:**
 
@@ -183,7 +183,9 @@ xor x11, x19, x20   # x11 = x19 ^ x20
 |---|---|---|---|---|---|
 |0000000|5 bits|5 bits|100|5 bits|0110011|
 
-## BEQ — Branch if Equal
+### Branch Instructions
+
+#### BEQ — Branch if Equal
 
 **Assembly example:**
 
@@ -197,7 +199,7 @@ beq x11, x12, label   # if (x11 == x12) goto label
 |---|---|---|---|---|---|---|---|
 |1 bit|6 bits|5 bits|5 bits|000|4 bits|1 bit|1100011|
 
-## BNE — Branch if Not Equal
+#### BNE — Branch if Not Equal
 
 **Assembly example:**
 
@@ -209,7 +211,7 @@ bne x11, x12, label   # if (x11 != x12) goto label
 |---|---|---|---|---|---|---|---|
 |1 bit|6 bits|5 bits|5 bits|001|4 bits|1 bit|1100011|
 
-## BLT — Branch if Less Than (signed)
+#### BLT — Branch if Less Than (signed)
 
 **Assembly example:**
 
@@ -221,7 +223,7 @@ blt x11, x12, label   # if (x11 < x12) goto label
 |---|---|---|---|---|---|---|---|
 |1 bit|6 bits|5 bits|5 bits|100|4 bits|1 bit|1100011|
 
-## BGE — Branch if Greater or Equal (signed)
+#### BGE — Branch if Greater or Equal (signed)
 
 **Assembly example:**
 
@@ -233,7 +235,7 @@ bge x11, x12, label   # if (x11 >= x12) goto label
 |---|---|---|---|---|---|---|---|
 |1 bit|6 bits|5 bits|5 bits|101|4 bits|1 bit|1100011|
 
-## BLTU — Branch if Less Than Unsigned
+#### BLTU — Branch if Less Than Unsigned
 
 **Assembly example:**
 
@@ -245,7 +247,7 @@ bltu x11, x12, label   # if (x11 < x12) unsigned
 |---|---|---|---|---|---|---|---|
 |1 bit|6 bits|5 bits|5 bits|110|4 bits|1 bit|1100011|
 
-## BGEU — Branch if Greater or Equal Unsigned
+#### BGEU — Branch if Greater or Equal Unsigned
 
 **Assembly example:**
 
