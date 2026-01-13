@@ -34,7 +34,7 @@ An external device is not just the physical mechanism; it connects to the I/O mo
 ## 2. The I/O Module
 ### Why not connect peripherals directly to the System Bus?
 Direct connection is impractical for several reasons:
-1.  **Variety:** Peripherals have diverse methods of operation. It is impossible to incorporate the logic for every device into the [[CPU]].
+1.  **Variety:** Peripherals have diverse methods of operation. It is impossible to incorporate the logic for every device into the CPU.
 2.  **Data Transfer Rates:**
     *   Most peripherals are much **slower** than the CPU/RAM (e.g., keyboard).
     *   Some are **faster** (e.g., high-speed network, GPU).
