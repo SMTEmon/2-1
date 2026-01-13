@@ -117,6 +117,8 @@ immediate (12): 12 bit immediates $[-2^{11},2^{11})$
 
 #### Load I
 
+`lw x14, 8(x2)`
+
 | imm=+8<br>12 bits        | rs1<br>5 bits | func3<br>3 bits<br> | rd=14<br>destination <br>register | opcode |
 | ------------------------ | ------------- | ------------------- | --------------------------------- | ------ |
 | offset[11:0]<br>(signed) | base<br>      | width               | dst                               | LOAD   |
@@ -125,7 +127,7 @@ immediate (12): 12 bit immediates $[-2^{11},2^{11})$
 | imm[11:5]<br>7 bits | rs2<br>5 bits  | rs1<br>5 bits         | func3<br>3 bits | imm[4:0]<br>5 bits | opcode<br>7 bits |
 | ------------------- | -------------- | --------------------- | --------------- | ------------------ | ---------------- |
 | byte offset         | value to Store | base address register | store size      | byte offset        | STORE            |
-why is the imm split? 
+**why is the imm split?** 
 Because RISC-V wants to reuse the same bit positions for fields across different instruction formats. As rd exists in I-type and S-type has no rd, so RISC-V reuses the same positions for rs2 and splits the immediate. 
 
 ### Logical Operations 
@@ -136,7 +138,6 @@ Because RISC-V wants to reuse the same bit positions for fields across different
 | func6  | imm    | rs1    | func3  | rd     | opcode |
 | ------ | ------ | ------ | ------ | ------ | ------ |
 | 6 bits | 6 bits | 5 bits | 3 bits | 5 bits | 7 bits |
-Absolutely! I can make a **similar table and example code** for **AND, OR, and XOR** instructions in RISC-V (RV32I). Let’s do it step by step.
 
 ---
 
