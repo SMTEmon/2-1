@@ -1018,6 +1018,14 @@ Exit:  ...
 
 **Note:** `beq x0, x0, Exit` is always true (x0 always equals x0), creating an unconditional branch.
 
+1. **The Test:** The assembly does the **opposite** of the C code. The C code asks "are they equal?", but the assembly asks "are they different?". If they are different, it skips the "True" block.
+    
+2. **The "True" Block:** If they are equal, the code falls through to the `add` instruction.
+    
+3. **The Jump-Out:** After the `add`, we must jump over the `sub` instruction using the `beq x0, x0, Exit` command. Without this, the program would execute $f = g + h$ and then immediately overwrite it with $f = g - h$.
+    
+4. **The "Else" Block:** If the jump was taken at the start, only the `sub` instruction is executed.
+
 ### WHILE Loop Example
 
 **C Code:**
