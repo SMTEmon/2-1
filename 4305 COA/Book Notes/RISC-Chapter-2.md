@@ -117,6 +117,8 @@ immediate (12): 12 bit immediates $[-2^{11},2^{11})$
 
 #### Load I
 
+`lw x14, 8(x2)`
+
 | imm=+8<br>12 bits        | rs1<br>5 bits | func3<br>3 bits<br> | rd=14<br>destination <br>register | opcode |
 | ------------------------ | ------------- | ------------------- | --------------------------------- | ------ |
 | offset[11:0]<br>(signed) | base<br>      | width               | dst                               | LOAD   |
