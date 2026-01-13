@@ -421,6 +421,8 @@ Solution for Case 3:
 $$R = \begin{bmatrix} \mathbf{1} & 0 & 0 \\ 0 & \mathbf{1} & 0 \\ 0 & 0 & \mathbf{1} \end{bmatrix}$$
 
 (The nonzero rows are the rows of the Identity Matrix)
+
+
 # Transformation
 
 ### Example 1
