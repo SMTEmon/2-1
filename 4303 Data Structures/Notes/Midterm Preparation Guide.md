@@ -159,60 +159,46 @@ D   E
 ---
 
 ## 🕸️ Set 4: Graphs
-*Focus: Networks, Connectivity, DFS/BFS, Structural Weakness.*
+*Focus: Networks, Connectivity, BFS/DFS.*
 
 ### 1. Definition & Analysis
-*   **Graph vs. Tree:**
-    *   Trees are hierarchical (Parent-Child) and acyclic.
-    *   Graphs are Many-to-Many and **can contain cycles**.
-*   **Representations (Lecture 7):**
-    *   **Adjacency Matrix:** $O(V^2)$ space. Best for *Dense* graphs. $O(1)$ edge check.
-    *   **Adjacency List:** $O(V+E)$ space. Best for *Sparse* graphs.
-*   **DFS Tree Properties (Lecture 8):**
-    *   **Tree Edge:** Normal path to unvisited node.
-    *   **Back Edge:** Path to an already visited ancestor (creates a Cycle).
-    *   *Significance:* Back edges are crucial for finding **Articulation Points** (Single points of failure).
+*   **Graph:** Collection of Vertices ($V$) and Edges ($E$).
+*   **Representation:**
+    *   *Adjacency Matrix:* $O(V^2)$ space. Good for dense graphs. $O(1)$ to check edge.
+    *   *Adjacency List:* $O(V+E)$ space. Good for sparse graphs.
+*   **Articulation Point:** A node which, if removed, disconnects the graph.
 
 ### 2. Scenario & Selection
-*   **Scenario A:** "People You May Know" feature in a Social Network (finding friends of friends).
-    *   **Selection:** **BFS (Breadth-First Search)**.
-    *   **Reason:** Explores layer-by-layer (Level 1 friends, then Level 2). Good for shortest path in unweighted graphs.
-*   **Scenario B:** A Build System (like Makefile) determining compile order where file B depends on file A.
-    *   **Selection:** **Topological Sort (DAG)**.
-    *   **Reason:** Linearly orders tasks respecting dependencies. Fails if there is a circular dependency (Cycle).
+*   **Scenario A:** Google Maps finding the shortest route from Home to University.
+    *   **Selection:** **Graph + BFS (or Dijkstra)**.
+    *   **Reason:** Maps are networks. BFS finds shortest path in unweighted graphs.
+*   **Scenario B:** Determining the order of tasks where Task B depends on Task A.
+    *   **Selection:** **DAG + Topological Sort**.
+    *   **Reason:** Resolves dependencies linearly.
 
-### 3. Pseudo Code (DFS - Recursive)
-*Used for Cycle Detection and Pathfinding.*
+### 3. Pseudo Code (BFS - Breadth First Search)
 ```text
-FUNCTION DFS(u, visited, adj)
-    SET visited[u] = TRUE
-    PRINT u
-    
-    FOR each neighbor v in adj[u]
-        IF visited[v] is FALSE
-            DFS(v, visited, adj)
-        END IF
-    END FOR
+FUNCTION BFS(START_NODE)
+    CREATE Queue Q
+    MARK START_NODE as Visited
+    ENQUEUE START_NODE into Q
+
+    WHILE Q is not Empty
+        SET U = DEQUEUE(Q)
+        PRINT U
+        
+        FOR each neighbor V of U
+            IF V is not Visited
+                MARK V as Visited
+                ENQUEUE V into Q
 END FUNCTION
 ```
 
-### 4. Simulation (Topological Sort - Kahn's Algo)
-**Graph:** $A \to B, A \to C, B \to D, C \to D$.
-**Task:** Show the state of In-Degrees and Queue at each step.
-
-**Step-by-Step Trace:**
-1.  **Init:** Calculate In-Degrees.
-    *   $A=0, B=1 (from A), C=1 (from A), D=2 (from B, C)$.
-    *   **Queue:** `[A]` (Nodes with 0 in-degree).
-2.  **Process A:** Pop $A$. Output `A`.
-    *   Decrement neighbors $B$ ($1 \to 0$) and $C$ ($1 \to 0$).
-    *   Push $B, C$. **Queue:** `[B, C]`.
-3.  **Process B:** Pop $B$. Output `B`.
-    *   Decrement neighbor $D$ ($2 \to 1$).
-    *   **Queue:** `[C]`.
-4.  **Process C:** Pop $C$. Output `C`.
-    *   Decrement neighbor $D$ ($1 \to 0$).
-    *   Push $D$. **Queue:** `[D]`.
-5.  **Process D:** Pop $D$. Output `D`.
-**Final Order:** `A, B, C, D` (or `A, C, B, D`).
+### 4. Simulation (Adjacency List)
+**Graph:** Node 0 connected to 1, 2. Node 1 connected to 2.
+**Task:** Draw Adjacency List.
+**Answer:**
+*   `Arr[0]` $\to$  `[1] -> [2] -> NULL`
+*   `Arr[1]` $\to$  `[2] -> NULL` (and `[0]` if undirected)
+*   `Arr[2]` $\to$  `NULL` (and `[0], [1]` if undirected)
 

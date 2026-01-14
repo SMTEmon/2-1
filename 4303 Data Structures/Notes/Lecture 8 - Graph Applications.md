@@ -8,7 +8,7 @@ tags: [graph-theory, dfs, algorithms, articulation-points, bridges, topological-
 
 # Graph Applications: Structural Weaknesses & Ordering
 
-The goal is to find "single points of failure" in a network efficiently ($O(V+E)$) using DFS, rather than the naïve $O(V(V+E))$ approach of removing each vertex one by one to check connectivity.
+The goal is to find "single points of failure" in a network efficiently ($O(V+E)$) using DFS, rather than the naive $O(V(V+E))$ approach of removing each vertex one by one to check connectivit y.
 
 ---
 
@@ -36,19 +36,13 @@ We use DFS and maintain two arrays for every node $u$:
     *   *Insight:* $low[u]$ indicates if a "secret path" exists connecting descendants back to ancestors.
 
 #### Logic for Updating $low[u]$
-When at node $u$ looking at neighbour $v$:
+When at node $u$ looking at neighbor $v$:
 
-| Case  | Scenario                     | Action                                                   | Reasoning                                                                                                               |
-| :---- | :--------------------------- | :------------------------------------------------------- | :---------------------------------------------------------------------------------------------------------------------- |
-| **A** | $v$ is Parent of $u$         | **Ignore**                                               | Going back to parent doesn't count as a cycle.                                                                          |
-| **B** | $v$ is Visited (Back Edge)   | `low[u] = min(low[u], d[v])`                             | $u$ connects to ancestor $v$. We take $d[v]$ directly because the back-edge is a "tunnel" to that exact discovery time. |
-| **C** | $v$ is Unvisited (Tree Edge) | 1. Recurse DFS($v$)<br>2. `low[u] = min(low[u], low[v])` | Propagate the "highest reach" of the subtree up to $u$.                                                                 |
-
-### Deep Dive: Why Ignore the Parent?
-*   **The Question:** Since $u$ can technically reach its parent $v$ (it's connected), why don't we update `low[u]` using `d[parent]`?
-*   **The Answer:** Because going back the way you came is a **Trivial Cycle**.
-    *   **The Goal:** We want to find a *second*, independent path (a "back door") to an ancestor.
-    *   **The Bridge Check:** If we included the parent, `low[child]` would always become $\le d[parent]$, making the bridge condition (`low > d`) impossible to satisfy. We essentially ask: *"If the path to my parent is cut, can I still reach the rest of the graph?"*
+| Case | Scenario | Action | Reasoning |
+| :--- | :--- | :--- | :--- |
+| **A** | $v$ is Parent of $u$ | **Ignore** | Going back to parent doesn't count as a cycle. |
+| **B** | $v$ is Visited (Back Edge) | `low[u] = min(low[u], d[v])` | $u$ is part of a cycle connecting to ancestor $v$. |
+| **C** | $v$ is Unvisited (Tree Edge) | 1. Recurse DFS($v$)<br>2. `low[u] = min(low[u], low[v])` | Propagate the "highest reach" of the subtree up to $u$. |
 
 ### The Critical Conditions
 A node $u$ is an Articulation Point if:
@@ -164,50 +158,24 @@ In the DFS tree, an edge $(u, v)$ (where $v$ is a child of $u$) is a Bridge if:
 > [!TIP] Inequality Check
 > *   **Articulation Point:** $low[v] >= d[u]$ (Back-edge to $u$ itself doesn't save $u$).
 > *   **Bridge:** $low[v] > d[u]$ (Strict inequality).
-> *   *Reasoning:* If $low[v] \le d[u]$, it means $v$ (or its subtree) has a back-edge to $u$ or an ancestor. This alternative path keeps $v$ connected even if the edge $(u, v)$ is removed. For $(u, v)$ to be a Bridge (a critical connection), $v$ must have *no* way back to $u$ or above, requiring the strict condition $low[v] > d[u]$.
+> *   *Reasoning:* If $low[v] == d[u]$, there is a back-edge from the subtree to $u$. Removing the edge $(u, v)$ doesn't disconnect $v$ because it can still reach $u$ via the back-edge. We need $v$ to have *no* path to $u$ or above.
 
-### Visual Comparison: Bridge vs. Cycle
-
-To understand the inequality, let's look at the numbers. Imagine we are at node **U** checking the edge to child **V**.
-
-#### Scenario 1: The Safety Loop (Not a Bridge)
-Here, the subtree at **V** has a back-edge to **U**.
+### Visual Representation
 
 ```mermaid
-graph TD
-    U((U<br>d=1<br>low=1)) --> V((V<br>d=2<br>low=1))
-    V --> W((W<br>d=3<br>low=1))
-    W -.->|Back Edge| U
-
-    style U fill:#cfc,stroke:#333
-    style V fill:#cfc,stroke:#333
+graph LR
+    A((A)) --- B((B))
+    B --- C((C))
+    C -.- A
+    B ===|Bridge| D((D))
+    
+    style B fill:#fff,stroke:#333
+    style D fill:#fff,stroke:#333
+    linkStyle 3 stroke:red,stroke-width:4px;
 ```
 
-1.  We discover **U** ($d=1$). We go to **V** ($d=2$).
-2.  **V** goes to **W**. **W** finds a back-edge to **U**.
-3.  **W** updates its low-link: $low[W] = d[U] = 1$.
-4.  This propagates back up to **V**: $low[V] = 1$.
-5.  **Check:** $low[V] (1) \le d[U] (1)$.
-6.  **Result:** **NOT a Bridge**. If we cut $(U, V)$, $V$ can still reach $U$ via $W$.
-
-#### Scenario 2: The Dead End (Bridge)
-Here, **V** has nowhere to go but down.
-
-```mermaid
-graph TD
-    U((U<br>d=1<br>low=1)) -->|Bridge| V((V<br>d=2<br>low=2))
-    V --> W((W<br>d=3<br>low=3))
-
-    style U fill:#cfc,stroke:#333
-    style V fill:#f99,stroke:#333
-    linkStyle 0 stroke:red,stroke-width:4px;
-```
-
-1.  We discover **U** ($d=1$). We go to **V** ($d=2$).
-2.  **V** goes to **W**. **W** has no back-edges. $low[W] = 3$.
-3.  Propagates to **V**. **V** cannot reach anything higher than itself. $low[V] = 2$.
-4.  **Check:** $low[V] (2) > d[U] (1)$.
-5.  **Result:** **BRIDGE**. If we cut $(U, V)$, $V$ is completely cut off from $U$.
+*   **Triangle (A, B, C):** No bridges. Removing any edge leaves a path.
+*   **Edge (B, D):** If removed, D is isolated. $low[D] > d[B]$, so it is a Bridge.
 
 ### Pseudocode & Implementation
 

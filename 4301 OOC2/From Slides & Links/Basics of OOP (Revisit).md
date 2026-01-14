@@ -6,7 +6,6 @@ topic: Object Orientation Recap
 
 # OOP Recap (SCJP Chapter 2)
 
-
 ## 1. Encapsulation
 **Concept:** Protecting data by hiding implementation details. Variables should be `private` and accessed via `public` getters and setters.
 
