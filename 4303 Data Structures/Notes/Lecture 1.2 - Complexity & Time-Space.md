@@ -150,8 +150,6 @@ From fastest to slowest growth:
 6.  **$\Theta(n^3)$** - Cubic
 7.  **$2^n, e^n$** - Exponential
 
-$$\Theta(1)< \Theta(\log(n))<\Theta(n)<\Theta(n\log(n))<\Theta(n^2)<\Theta(n^3)<\Theta(2^n)$$
-
 > [!TIP] Dominant Terms
 > When calculating complexity, take the dominant term.
 > *   $n^6 - 23n^5 + ...$ $\rightarrow$ **$O(n^6)$**

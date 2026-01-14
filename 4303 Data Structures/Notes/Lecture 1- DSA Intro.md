@@ -23,7 +23,6 @@ tags:
         2.  **Efficiency**: How to perform operations on it.
 
 ### The "What" vs. The "How"
-
 > [!NOTE] Key Distinction
 > **ADT** defines the behavior (interface), while **DS** defines the implementation.
 
@@ -37,11 +36,10 @@ tags:
 ---
 
 ## 2. Why Study Data Structures?
-
 Efficient data structures are critical for solving real-world problems.
 *   **File Systems**: Mapping file names to hard drive sectors.
 *   **Search Engines**: Google maps keywords to web pages.
-*   **Bioinformatics**: DNA sub-sequence matching.P
+*   **Bioinformatics**: DNA subsequence matching.
 *   **Geographic Systems**: Location data management.
 *   **Blockchain**: Uses [[Linked Lists]].
 *   **Maps**: Finding shortest paths (Distance/Time).
@@ -50,7 +48,6 @@ Efficient data structures are critical for solving real-world problems.
 ---
 
 ## 3. How We Study Data Structures
-
 We focus on three main pillars:
 1.  **Logical Structure**: How elements relate to each other (e.g., file system hierarchy).
 2.  **Operations**:
