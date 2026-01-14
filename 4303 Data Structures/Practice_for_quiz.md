@@ -2,6 +2,7 @@
 1.  **Algorithmic Simulation:** Step-by-step tracing of algorithms.
 2.  **Pseudo Code:** Logic for applying a specific Data Structure.
 
+
 ---
 
 ## Part 1: Stacks & Complexity (Lectures 1-3)
