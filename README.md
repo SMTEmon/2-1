@@ -15,3 +15,8 @@ git clone https://www.github.com/SMTEmon/2-1
     
 
 ✅ Done! You’re synced and ready to go.
+
+
+If you would like to access or sync the PDF files, you can use the following SharePoint link:
+
+[**Access PDF Resources (SharePoint/OneDrive)**](https://w16yd-my.sharepoint.com/:f:/g/personal/smtemon_w16yd_onmicrosoft_com/IgAg9x7YMXYLSZSVnWdxmoyqAQK7ICP5C9ua9GPQ3MUwFYI?e=haGCN4)
