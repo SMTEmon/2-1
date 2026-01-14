@@ -13,7 +13,7 @@
 #### Cost of an IC
 $$Cost\,per\,Die = \frac{Cost\,per\,Wafer}{Dies\,per\,Wafer * Yield}$$
 $$Dies\,per\,Area = \frac{Die\,Area}{Wafer\,Area}$$
-$$Yield = \frac{1}{(1+\left( \frac{Defects\,per\,Area\,*\,Die\,Area}{2} \right))^2}$$
+$$Yield = \frac{1}{(1+\frac{Defects\,per\,Area\,*\,Die\,Area}{2})^2}$$
 #### Performance v Execution Time
 
 >If computer A runs a program in 10 seconds and computer B runs the same program in 15 seconds, how much faster is A than B?
