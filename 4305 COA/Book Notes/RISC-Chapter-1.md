@@ -12,7 +12,7 @@
 
 #### Cost of an IC
 $$Cost\,per\,Die = \frac{Cost\,per\,Wafer}{Dies\,per\,Wafer * Yield}$$
-$$Dies\,per\,Area = \frac{Wafer\,Area}{Die\,Area}$$
+$$Dies\,per\,Area = \frac{Die\,Area}{Wafer\,Area}$$
 $$Yield = \frac{1}{(1+\left( \frac{Defects\,per\,Area\,*\,Die\,Area}{2} \right))^2}$$
 #### Performance v Execution Time
 
