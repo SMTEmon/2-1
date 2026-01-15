@@ -89,6 +89,7 @@ CREATE TABLE instructor (
     FOREIGN KEY (dept_name) REFERENCES department(dept_name)
 );
 
+//Some ALTER and DROP commands for practice
 
 ALTER TABLE instructor 
 ADD COLUMN bonus NUMERIC(4,2) DEFAULT 0;
