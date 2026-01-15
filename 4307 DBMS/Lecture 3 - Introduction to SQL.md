@@ -1,4 +1,3 @@
-# L3: Introduction to SQL
 
 *Date: December 19, 2025*
 *Course: CSE 4307: Database Management Systems*
