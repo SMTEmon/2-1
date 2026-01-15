@@ -130,7 +130,7 @@ When you see a new problem, ask yourself:
 3. **Is it a "Negation" or "ALL" problem?**    
     - If **"ALL"**, immediately think: _"Count valid items vs Count total items"_ (Easiest for SQL) OR _"Double Not Exists"_ (Easiest for Algebra theory).
 
-# ## IUT Scenario 
+## IUT Scenario 
 
 • IUT has a number of departments.
 • In each department, students are admitted.
@@ -255,3 +255,46 @@ CREATE TABLE Takes (
 - **Composite Primary Key:** In `Takes`, I combined `(student_id, course_id, semester, year)` as the Primary Key. This ensures a student cannot register for the exact same course twice in the same semester, but _can_ retake it in a different semester.
     
 - **Foreign Keys:** The `FOREIGN KEY` constraints ensure that you cannot add a student to a non-existent department or register a student for a course that doesn't exist.
+
+
+```mermaid
+flowchart TD
+    %% ENTITIES (Rectangles)
+    Dept[Department]
+    Stud[Student]
+    Crse[Course]
+
+    %% RELATIONSHIPS (Diamonds)
+    Admits{Admits}
+    Offers{Offers}
+    Takes{Takes}
+
+    %% ATTRIBUTES (Ovals/Rounded - Optional visual aid)
+    %% To keep it clean, I will just link entities, but you can add attributes similarly.
+
+    %% CONNECTIONS
+    %% Department Admits Students (1:N)
+    Dept ---|1| Admits
+    Admits ---|N| Stud
+
+    %% Department Offers Courses (1:N)
+    Dept ---|1| Offers
+    Offers ---|N| Crse
+
+    %% Student Takes Courses (M:N)
+    Stud ---|M| Takes
+    Takes ---|N| Crse
+
+    %% Attributes of the Relationship "Takes"
+    Takes --- Sem(Semester)
+    Takes --- Grade(Grade)
+
+    %% Styling to match ERD standards
+    classDef entity fill:#f9f,stroke:#333,stroke-width:2px;
+    classDef relation fill:#ff9,stroke:#333,stroke-width:2px,shape:diamond;
+    classDef attribute fill:#fff,stroke:#333,stroke-dasharray: 5 5;
+
+    class Dept,Stud,Crse entity;
+    class Admits,Offers,Takes relation;
+    class Sem,Grade attribute;
+```
