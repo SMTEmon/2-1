@@ -26,15 +26,15 @@ The "Kingdom of Kod" analogy highlights the inefficiencies of traditional, flat-
 
 ### 2.2 DBMS Solves File System Problems
 
-| Problem in File Systems | Solution Offered by DBMS |
-| :--- | :--- |
-| **Data Redundancy & Inconsistency** | Centralized storage eliminates duplication. |
-| **Difficulty in Accessing Data** | Query languages (SQL) simplify data retrieval. |
-| **Data Isolation** | Provides a single, unified view of the data. |
-| **Integrity Problems** | Constraints (e.g., `balance > 0`) are defined explicitly in the schema. |
-| **Atomicity of Updates** | Transactions ensure updates either complete entirely or not at all (e.g., a funds transfer). |
-| **Concurrent Access by Multiple Users** | Concurrency-control manager prevents inconsistencies during simultaneous updates. |
-| **Security Problems** | Provides fine-grained access control (authorization management). |
+| Problem in File Systems                 | Solution Offered by DBMS                                                                     |
+| :-------------------------------------- | :------------------------------------------------------------------------------------------- |
+| **Data Redundancy & Inconsistency**     | Centralized storage eliminates duplication.                                                  |
+| **Difficulty in Accessing Data**        | Query languages (SQL) simplify data retrieval.                                               |
+| **Data Isolation**                      | Provides a single, unified view of the data.                                                 |
+| **Integrity Problems**                  | Constraints (e.g., `balance > 0`) are defined explicitly in the schema.                      |
+| **Atomicity of Updates**                | Transactions ensure updates either complete entirely or not at all (e.g., a funds transfer). |
+| **Concurrent Access by Multiple Users** | Concurrency-control manager prevents inconsistencies during simultaneous updates.            |
+| **Security Problems**                   | Provides fine-grained access control (authorization management).                             |
 
 ***
 
