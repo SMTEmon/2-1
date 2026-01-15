@@ -88,6 +88,24 @@ CREATE TABLE instructor (
     PRIMARY KEY (ID),
     FOREIGN KEY (dept_name) REFERENCES department(dept_name)
 );
+
+
+ALTER TABLE instructor 
+ADD COLUMN bonus NUMERIC(4,2) DEFAULT 0;
+
+ALTER TABLE instructor
+ALTER COLUMN salary TYPE NUMERIC(9,1);
+
+ALTER TABLE instructor
+RENAME COLUMN dept_name TO department;
+
+ALTER TABLE instructor
+RENAME TO instructor;
+
+ALTER TABLE instructor
+DROP COLUMN bonus;
+
+DROP TABLE instructor;
 ```
 
 ### 3.2.3 Modifying and Deleting Tables
