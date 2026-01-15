@@ -89,7 +89,7 @@ CREATE TABLE instructor (
     FOREIGN KEY (dept_name) REFERENCES department(dept_name)
 );
 
-//Some ALTER and DROP commands for practice
+-- Some ALTER and DROP commands for practice
 
 ALTER TABLE instructor 
 ADD COLUMN bonus NUMERIC(4,2) DEFAULT 0;
@@ -105,6 +105,9 @@ RENAME TO instructor;
 
 ALTER TABLE instructor
 DROP COLUMN bonus;
+
+
+-- You can combine multiple ALTER Commands, into one by just simply adding ,
 
 DROP TABLE instructor;
 ```
