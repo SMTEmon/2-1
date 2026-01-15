@@ -264,6 +264,7 @@ SELECT name FROM instructor WHERE salary >= 90000 AND salary <= 100000;
 Set operations combine the results of two compatible queries into a single result set.
 
 -   `UNION`: Combines results and **removes duplicates**.
+		  (column name and domain must be same)
 -   `UNION ALL`: Combines results and **keeps all duplicates**.
 -   `INTERSECT`: Returns only rows that appear in **both** query results, removing duplicates.
 -   `INTERSECT ALL`: Returns common rows, keeping the minimum number of duplicate occurrences from both sides.
