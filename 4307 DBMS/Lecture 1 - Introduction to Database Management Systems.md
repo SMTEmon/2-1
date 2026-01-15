@@ -13,7 +13,7 @@ The "Kingdom of Kod" analogy highlights the inefficiencies of traditional, flat-
 ***
 
 > [!summary] **The Solution**
-> A **[[Database]]** provides **uniform data management** from a single source, which **prevents data conflicts**, **eliminates duplicated data**, and allows for **easy integration** of new departments.
+> A ==Database== provides **uniform data management** from a single source, which **prevents data conflicts**, **eliminates duplicated data**, and allows for **easy integration** of new departments.
 
 ## 2. Database Management System (DBMS)
 
