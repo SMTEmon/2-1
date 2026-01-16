@@ -2,140 +2,377 @@
 course: "CSE 4307: Database Management Systems"
 instructor: Md. Tariquzzaman
 ---
----
+## 1. What a Relational Database Really Is
 
-## 1. Structure of Relational Databases
+A **relational database** is just a collection of **tables**.
 
-A relational database consists of a collection of **tables** (relations), each assigned a unique name.
+Each table:
 
-### Core Concepts
+- Has **columns** → called **attributes**
+- Has **rows** → called **tuples**
+- Has a **name**
 
-*   **Relation Instance ($r(R)$):** The "filled form" with real data. It changes over time as rows are added/removed.
-    *   *Analogy:* An actual building or the actual ingredients used today.
-*   **Relation Schema ($R$):** The logical design or structure. It usually remains static.
-    *   *Notation:* `instructor = (ID, name, dept_name, salary)`
-    *   *Analogy:* The blueprint or a recipe card.
-*   **Tuple:** A row in the table. Represents a specific record.
-*   **Attribute:** A column in the table.
-*   **Domain:** The set of allowed values for an attribute (e.g., `salary` must be a number).
+Example table:
 
-### Properties
-1.  **Atomic Values:** Attribute values must be indivisible (e.g., a phone number is a single string, not a set of numbers).
-2.  **Unordered:** The order of rows (tuples) does not matter.
-3.  **Null Values:** Represents "unknown" or "not applicable". Note: Nulls cause complications in operations.
+**Instructor**
 
-> [!INFO] Analogy Table
-> | Concept | Analogy |
-> | :--- | :--- |
-> | **Schema** | Recipe card (design) |
-> | **Instance** | Actual ingredients cooked today |
-> | **Attribute** | Ingredient slot (e.g., sugar) |
-> | **Tuple** | One complete recipe execution |
+|ID|name|dept_name|salary|
+|---|---|---|---|
+|101|Alice|Physics|90000|
+|102|Bob|CS|95000|
 
----
+### Two Important Ideas
 
-## 2. Keys
+- **Schema** → structure/design of the table  
+    `Instructor(ID, name, dept_name, salary)`
+    
+- **Instance** → actual data inside the table (the rows)
+    
 
-Keys are attributes used to identify or relate records.
-
-### Types of Keys
-1.  **Super Key:** Any set of attributes that uniquely identifies a tuple. Can contain *extra/unnecessary* attributes.
-    *   *Example:* `{ID, name}`
-2.  **Candidate Key:** A **minimal** super key. Contains no extra attributes.
-    *   *Example:* `{ID}`
-3.  **Primary Key:** The specific candidate key chosen by the designer to be the main identifier.
-    *   **Constraint:** Cannot be NULL.
-4.  **Alternate Key:** Candidate keys that were *not* chosen as the Primary Key.
-5.  **Composite Key:** A key consisting of two or more attributes.
-6.  **Foreign Key:** An attribute in one table that refers to the **Primary Key** of another table.
-    *   *Purpose:* Enforces **Referential Integrity** (Parent-Child relationship).
-    *   *Rule:* A value in the referencing table *must* exist in the referenced table.
-
-> [!NOTE] Foreign Key Analogy
-> A teacher's record book (referencing) lists a student's roll number. That roll number must actually exist in the main school register (referenced).
+Schema = blueprint  
+Instance = real data
 
 ---
 
-## 3. Schema Diagrams
+## 2. Keys (VERY IMPORTANT)
 
-A visual representation of the database structure.
-*   **Boxes:** Relations (Tables).
-*   **Arrows/Lines:** Connections via Foreign Keys.
-*   **Underlined Text:** Primary Keys.
-*   *Analogy:* A **City Map** where buildings are tables and roads are the connections.
+Keys are about **uniquely identifying rows** and **connecting tables**.
 
----
+### Super Key
 
-## 4. Relational Query Languages
+Any set of attributes that can uniquely identify a row.
 
-Languages used to request data from the database.
+Example:
 
-*   **Procedural:** User specifies *what* data is needed and *how* to get it.
-*   **Non-Procedural (Declarative):** User specifies *what* is needed, without specifying how (e.g., SQL).
+- `{ID}`
+- `{ID, name}`
+- `{ID, dept_name}`
+    
 
-### Pure Languages
-1.  **Relational Algebra** (Procedural)
-2.  Tuple Relational Calculus (Non-procedural)
-3.  Domain Relational Calculus (Non-procedural)
-
-> [!TIP] Chef Analogy
-> *   **Procedural:** Chef follows a recipe step-by-step.
-> *   **Declarative:** Chef is told "Make Lasagna" and decides the steps themselves.
-> *   **Relational Algebra:** The tools (knife, pan, blender) used to build the result.
+⚠️ Super keys may have **extra unnecessary attributes**
 
 ---
 
-## 5. Relational Algebra
+### Candidate Key
 
-A procedural language consisting of a set of operations.
-*   **Input:** One or two relations.
-*   **Output:** A new relation.
-*   **Concept:** Like **LEGO** pieces; outputs can be chained as inputs to the next operation.
+A **minimal** super key  
+→ remove anything extra and it still uniquely identifies a row
 
-### Basic Operators
+Example:
 
-#### 1. Select ($\sigma$)
-*   **Function:** Filters **rows** (tuples) based on a predicate (condition).
-*   **Syntax:** $\sigma_{predicate}(relation)$
-*   **Analogy:** Using a "Filter" in Excel.
-*   **Example:** Find Physics instructors.
-    *   $\sigma_{dept\_name = "Physics"}(instructor)$
+- `{ID}` ✅
+- `{ID, name}` ❌ (name is extra)
+    
 
-#### 2. Project ($\Pi$)
-*   **Function:** Selects specific **columns** (attributes) and discards the rest. Removes duplicates.
-*   **Syntax:** $\Pi_{A1, A2}(relation)$
-*   **Analogy:** Hiding columns in Excel.
-*   **Example:** Show only names and salaries.
-    *   $\Pi_{name, salary}(instructor)$
+A table can have **multiple candidate keys**.
 
-#### 3. Cartesian Product ($\times$)
-*   **Function:** Combines every tuple of one relation with every tuple of another (all possible pairs).
-*   **Syntax:** $r \times s$
-*   **Analogy:** Pairing every shirt you own with every pair of pants.
-*   **Note:** If attributes have the same name, prefix with relation name (e.g., `instructor.ID`).
+---
 
-#### 4. Join ($\bowtie$)
-*   **Function:** Combines related tuples from two relations based on a match condition.
-*   **Logic:** Cartesian Product + Select.
-*   **Syntax:** $r \bowtie_{\theta} s = \sigma_{\theta}(r \times s)$
-*   **Analogy:** The "matchmaker" combining only related pairs.
+### Primary Key
 
-#### 5. Set Operations
-For these to work, relations must be **compatible** (same number of attributes and compatible domains).
-*   **Union ($\cup$):** Tuples in $r$ **OR** $s$ (or both).
-*   **Intersection ($\cap$):** Tuples in **BOTH** $r$ and $s$.
-*   **Set Difference ($-$):** Tuples in $r$ but **NOT** in $s$.
+The **one candidate key chosen** to identify rows.
 
-#### 6. Assignment ($\leftarrow$)
-*   **Function:** Stores a query result in a temporary variable for complex queries.
-*   **Syntax:** $Temp \leftarrow \sigma_{salary > 90000}(instructor)$
+Rules:
 
-#### 7. Rename ($\rho$)
-*   **Function:** Gives a name to the results of an expression or renames attributes.
-*   **Syntax:** $\rho_{x}(E)$ (names result $x$) or $\rho_{x(A1, A2)}(E)$ (names result $x$ and attributes $A1, A2$).
+- Must be **unique**
+- **Cannot be NULL**
+    
 
-### Composition & Equivalence
-*   **Composition:** Chaining operations together.
-    *   $\Pi_{name}(\sigma_{dept\_name="Physics"}(instructor))$
-*   **Equivalent Queries:** Different algebra expressions can yield the same result.
-    *   "Many paths, one destination."
+Example:
+
+- Primary Key = `ID`
+    
+
+---
+
+### Alternate Key
+
+Candidate keys that were **not chosen** as the primary key.
+
+If:
+
+- Candidate keys = `{ID}`, `{email}`
+- Primary key = `{ID}`
+    
+
+Then:
+
+- `{email}` is an **alternate key**
+    
+
+---
+
+### Composite Key
+
+A key made from **multiple attributes**.
+
+Example:  
+**Enrollment**
+
+|student_id|course_id|grade|
+|---|---|---|
+
+Primary Key = `{student_id, course_id}`  
+(neither alone is enough)
+
+---
+
+### Foreign Key (CONNECTS TABLES)
+
+A **foreign key** in one table refers to a **primary key** in another table.
+
+Example:
+
+**Student**
+
+|student_id|name|
+|---|---|
+|1|John|
+
+**Enrollment**
+
+|student_id|course_id|
+|---|---|
+|1|CS101|
+
+Here:
+
+- `Enrollment.student_id` is a **foreign key**
+- It references `Student.student_id`
+    
+
+Rule:
+
+> A foreign key value **must exist** in the referenced table
+
+This enforces **referential integrity**.
+
+---
+
+## 3. Relational Algebra (The Core Query Logic)
+
+Relational algebra is:
+
+- **Procedural**
+- Operates on tables
+- Takes tables as input
+- Produces tables as output
+    
+
+Think:
+
+> Tables in → operation → table out
+
+---
+
+## 4. The Most Important Relational Algebra Operations
+
+### 1. SELECT (σ) — Filters ROWS
+
+Used when you want **specific rows**.
+
+Syntax:
+
+```
+σ_condition(Table)
+```
+
+Example:
+
+> Get instructors from Physics
+
+```
+σ_dept_name = "Physics"(Instructor)
+```
+
+This keeps all columns, but removes rows that don’t match.
+
+---
+
+### 2. PROJECT (Π) — Chooses COLUMNS
+
+Used when you want **specific attributes**.
+
+Syntax:
+
+```
+Π_column1, column2(Table)
+```
+
+Example:
+
+> Show only names and salaries
+
+```
+Π_name, salary(Instructor)
+```
+
+Important:
+
+- **Duplicates are removed**
+    
+- Order doesn’t matter
+    
+
+---
+
+### SELECT vs PROJECT (Common Confusion)
+
+|Operation|Filters|
+|---|---|
+|SELECT (σ)|rows|
+|PROJECT (Π)|columns|
+
+---
+
+### 3. CARTESIAN PRODUCT (×) — All Possible Pairs
+
+Combines **every row of one table** with **every row of another table**.
+
+If:
+
+- Table A has 3 rows
+    
+- Table B has 4 rows
+    
+
+Result has:
+
+> 3 × 4 = 12 rows
+
+Example:
+
+```
+Instructor × Department
+```
+
+⚠️ Rarely used directly because it creates **huge useless tables**
+
+---
+
+### 4. JOIN (⨝) — The Useful Version of ×
+
+A **join** connects related rows.
+
+Definition:
+
+```
+R ⨝_condition S = σ_condition(R × S)
+```
+
+Example:
+
+> Match instructors with their departments
+
+```
+Instructor ⨝ Instructor.dept_name = Department.dept_name Department
+```
+
+This:
+
+1. Creates pairs
+2. Keeps only matching ones
+    
+
+---
+
+### 5. SET OPERATIONS (Like Math Sets)
+
+Requirements:
+
+- Same number of columns
+- Same domains
+    
+
+#### UNION (∪)
+
+Rows in **either** table
+
+```
+CS_Students ∪ Math_Students
+```
+
+---
+
+#### INTERSECTION (∩)
+
+Rows in **both** tables
+
+---
+
+#### DIFFERENCE (−)
+
+Rows in first table but **not** in second
+
+```
+CS_Students − Graduated_Students
+```
+
+---
+
+### 6. RENAME (ρ)
+
+Used to:
+
+- Rename a table
+    
+- Rename attributes
+    
+- Avoid ambiguity
+    
+
+Example:
+
+```
+ρ_S1(Student)
+```
+
+Or:
+
+```
+ρ_S1(sid, sname)(Student)
+```
+
+---
+
+### 7. ASSIGNMENT (←)
+
+Used for **breaking complex queries into steps**.
+
+Example:
+
+```
+HighPaid ← σ_salary > 90000(Instructor)
+Result ← Π_name(HighPaid)
+```
+
+---
+
+## 5. Putting It All Together (Composition)
+
+Example:
+
+> Names of Physics instructors
+
+```
+Π_name(σ_dept_name = "Physics"(Instructor))
+```
+
+Read inside → out:
+
+1. Filter Physics instructors
+2. Show only their names
+    
+
+---
+
+## Final Mental Model
+
+- **Tables** are everything
+- **Keys** = identity + relationships
+- **σ (select)** → rows
+- **Π (project)** → columns
+- **×** → all combinations (avoid)
+- **⨝** → meaningful combinations
+- Everything returns a **table**, so you can chain operations
+    
