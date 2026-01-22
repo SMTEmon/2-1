@@ -1,113 +1,385 @@
+tags: [DataStructures, Algorithms, Heaps, PriorityQueue, CSE4303, LectureNotes]
+course: CSE 4303 - Data Structures
+lecture: 9
+topic: Binary Heap
+lecturer: Asaduzzaman Herok
+date: 2026-01-22
+reference: Data Structures Using C (2nd Edition), Reema Thareja - Chapter 12
+---
+# Binary Heap
 
-**
-### 🎓 Part 1: Learning the Concepts
+## 1. Recap: The Need for a Better Priority Queue
 
-#### 1. The Problem: Why do we need Heaps?
+### What is a Priority Queue?
+An abstract data type where every element has a **priority**.
+*   **Rule:** Elements with higher priority are served before elements with lower priority (e.g., CPU scheduling).
+*   **Key Operations:** `insert(item)` and `extract_max()` (or `extract_min()`).
 
-We use a **Priority Queue** when we need to manage tasks where some are more important than others (e.g., CPU scheduling).
+### The Problem with Naive Implementations
+If we implement a Priority Queue using simple Arrays or Linked Lists, we hit a performance bottleneck.
 
-- **Naive Approach:** If we use a simple sorted array, inserting a new item is slow ($O(N)$). If we use an unsorted array, finding the highest priority item is slow ($O(N)$)1.
-    
-- **The Solution:** The Binary Heap balances these operations, allowing us to Insert and Extract the maximum element both in **$O(\log N)$** time2.
-    
+| Approach | Insert | Extract Max | Verdict |
+| :--- | :--- | :--- | :--- |
+| **Unsorted Array** | $O(1)$ | $O(N)$ | Too slow to find the max (Linear Scan). |
+| **Sorted Array** | $O(N)$ | $O(1)$ | Too slow to add (Shifting elements). |
+| **Binary Heap** | $O(\log N)$ | $O(\log N)$ | **Balances both efficiently.** |
 
-#### 2. What is a Binary Heap?
-
-It is a binary tree that satisfies two strict properties:
-
-1. **Heap Property (Max-Heap):** The value of every parent node is greater than or equal to its children ($Parent \ge Children$). This guarantees the largest element is always at the **Root**.
-    
-2. **Shape Property:** It must be a **Complete Binary Tree**. This means all levels are fully filled, except possibly the last level, which is filled from left to right.
-    
-
-#### 3. How is it Implemented?
-
-Instead of using pointers (like a standard Linked List tree), we use an **Array**. This is possible because the tree is "complete."
-
-- **Navigation:** For any node at index $i$ (using 1-based indexing from the slides 5):
-    
-    - **Left Child:** $2 \times i$        
-    - **Right Child:** $(2 \times i) + 1$        
-    - **Parent:** $\lfloor i/2 \rfloor$
-        
-- **Leaves:** In a heap of size $N$, nodes from $\lfloor N/2 \rfloor + 1$ to $N$ are always leaf nodes6.
-#### 4. Key Operations
-
-**A. Heapify Down (Fixing Violations)*
-
-If a parent is smaller than a child (violating the Max-Heap property), we "demote" it.
-
-- **Rule:** Swap the parent with the **largest** of its two children7.    
-- **Repeat:** Continue swapping down until the node fits or becomes a leaf.    
-
-**B. Build Heap (The "Bottom-Up" Magic)**
-
-- **Naive way (Top-Down):** Inserting elements one by one or calling heapify from the root fails because the bottom remains unordered8.    
-- **Correct way (Bottom-Up):** Start from the last internal node (index $\lfloor N/2 \rfloor$) and move backwards to index 1, calling `max_heapify` on each9.    
-- **Complexity:** Surprisingly, this takes **$O(N)$** linear time, not $O(N \log N)$, because most nodes (the leaves) require 0 work10101010.
-    
-
-**C. Heap Sort**
-
-1. Build a Max Heap from the array ($O(N)$).    
-2. Swap the Root (max) with the Last element.    
-3. Reduce heap size by 1 (the max is now "sorted" at the end).    
-4. Heapify the new Root.    
-5. Repeat until the heap is empty.
-    
-    - **Total Complexity:** $O(N \log N)$.        
-
+> [!summary] Conclusion
+> Arrays are either too slow to insert or too slow to search. We need a structure that balances both operations. Enter the **Binary Heap**.
 
 ---
 
-## 1. Definition
-A **Binary Heap** is a complete binary tree that satisfies the **Heap Property**.
-* **Max-Heap:** $Parent(i) \ge Children(i)$. Root is the maximum.
-* **Min-Heap:** $Parent(i) \le Children(i)$. Root is the minimum.
-* **Array Storage:** * Root at index 1.
-    * Left Child: $2i$
-    * Right Child: $2i+1$
-    * Parent: $\lfloor i/2 \rfloor$
+## 2. What is a Binary Heap?
 
-### 2. Complexity Overview
+A Binary Heap is a binary tree with two specific constraints:
 
-| Operation | Complexity | Note |
-| :--- | :--- | :--- |
-| **Insert** | $O(\log N)$ | [cite_start]Add to end, Percolate Up (Swap with parent) [cite: 582] |
-| **Extract Max** | $O(\log N)$ | [cite_start]Swap Root/Last, remove Last, Percolate Down [cite: 582] |
-| **Peek Max** | $O(1)$ | [cite_start]Return `A[1]` [cite: 582] |
-| **Build Heap** | **$O(N)$** | [cite_start]Efficient bottom-up construction [cite: 430] |
-| **Heap Sort** | $O(N \log N)$ | [cite_start]In-place sorting  |
+### A. Heap Property (Max-Heap)
+For every node $i$, the value of the parent is greater than or equal to the values of its children.
+$$ \text{Parent}(i) \ge \text{Children}(i) $$ 
+*   **Result:** The largest element is *always* at the root.
 
-### 3. Key Algorithms
-
-### Build Heap (Bottom-Up)
-Instead of starting at the root, start at the **last internal node** and walk backwards.
-"Fix the small sub-trees first, then move up."
-
-**Why is it $O(N)$?**
-* Sum of heights of all nodes.
-* 50% of nodes are leaves (height 0, cost 0).
-* 25% of nodes are height 1.
-* Mathematically converges to $O(N)$ rather than $O(N \log N)$.
-
-### Deletion (Arbitrary Node)
-1.  **Find Node:** $O(N)$ (Heaps are not sorted like BSTs, so we must scan).
-2.  **Delete:** Swap with last element, remove last, then fix up (`Percolate Up`) or fix down (`Heapify`) depending on the value replaced.
-
-### 4. Formulas
-* **Internal Nodes:** indices $1 \dots \lfloor N/2 \rfloor$.
-* **Leaf Nodes:** indices $\lfloor N/2 \rfloor + 1 \dots N$.
+### B. Shape Property
+It must be a **Complete Binary Tree**.
+1.  All levels are fully filled, except possibly the last.
+2.  Nodes are filled from **left to right**.
 
 ---
 
-### 💻 Part 3: C++ Implementation
+## 3. Implementation: Array vs. Linked List
+
+### Option 1: Linked Nodes
+*   Uses pointers: `left`, `right`, `parent`.
+*   **The Problem:** Heaps must remain *Complete*. Finding the next free spot (bottom-left-most available leaf) requires a Level Order Traversal ($O(N)$) or complex tracking.
+*   **Verdict:** Inefficient for Heaps.
+
+### Option 2: Array (The Standard)
+*   Stores nodes in **Level Order**.
+*   No pointers needed (**Implicit structure**).
+*   **The Advantage:** The next free spot is always at `index = size`.
+*   **Verdict:** $O(1)$ access to the insertion point.
+
+### Mapping Levels to Indices (0-based vs 1-based)
+*Although the slides mention 0-based in the title, the visual diagrams and formulas use **1-based indexing**. The notes below follow the 1-based convention shown in the slide formulas.*
+
+**Formulas for Node $i$:**
+*   **Left Child:** $2 \times i$
+*   **Right Child:** $(2 \times i) + 1$
+*   **Parent:** $\lfloor \frac{i}{2} \rfloor$
+
+**Visual Map (Array Representation):**
+Tree: Root(90) $\to$ Left(85), Right(80)...
+Array: `[Empty, 90, 85, 80, 75, 72, 74, 78, 70, 65, 50, 62, 40, 55]`
+
+> [!TIP] Optimization Insight: The Leaf Node Property
+> In a heap of size $N$, we can instantly calculate where the leaves start.
+> *   **Internal Nodes:** Indices $1$ to $\lfloor N/2 \rfloor$.
+> *   **Leaf Nodes:** Indices $\lfloor N/2 \rfloor + 1$ to $N$.
+>
+> *Example (N=13):*
+> *   Indices 1 to 6 are Internal nodes.
+> *   Indices 7 to 13 are Leaf nodes.
+
+---
+
+## 4. Fixing a Violation: Heapify Down
+
+### The Scenario
+A node (Parent) violates the Max-Heap property because it is **smaller** than one or both of its children.
+*   **The Fix (Percolate Down):** We must "demote" the node down the tree until it finds its correct spot.
+
+### The "Swap with Largest" Rule
+To maintain the structure, you must swap the parent with the **LARGEST** of its two children.
+1.  Compare $A[i]$, $A[Left]$, and $A[Right]$.
+2.  If $A[i]$ is largest $\to$ Done.
+3.  Else $\to$ Swap $A[i]$ with the largest child and repeat.
+
+> [!WARNING] Why specifically the largest?
+> If we swapped with the smaller child, the larger child would remain below, and since it is larger than the original parent, it would still violate the property with the swapped node.
+
+### Detailed Visual Example: The Cascade Effect
+**Initial State:** Root is 10. Children are 90 and 50. (Violation: $10 < 90$). 
+
+**Step 1:** Compare 10, 90, 50. Largest is 90. **Swap 10 $\leftrightarrow$ 90.**
+```mermaid
+graph TD
+    subgraph "Step 1: Swap 10 & 90"
+    A1((90)):::ok --> B1((10)):::violation
+    A1 --> C1((50))
+    B1 --> D1((80))
+    B1 --> E1((60))
+    end
+    classDef violation fill:#ffaaaa,stroke:#333;
+    classDef ok fill:#aaffaa,stroke:#333;
+```
+
+**Step 2:** New position of 10. Children are 80 and 60. (Violation: $10 < 80$).
+Largest is 80. **Swap 10 $\leftrightarrow$ 80.**
+```mermaid
+graph TD
+    subgraph "Step 2: Swap 10 & 80"
+    A2((90)) --> B2((80)):::ok
+    A2 --> C2((50))
+    B2 --> D2((10)):::violation
+    B2 --> E2((60))
+    end
+    classDef violation fill:#ffaaaa,stroke:#333;
+    classDef ok fill:#aaffaa,stroke:#333;
+```
+*Result:* Node 10 is now a leaf. No more violations. Time Complexity: $O(\log N)$.
+
+### Pseudocode: `max_heapify(i)`
+```cpp
+l = 2 * i;
+r = 2 * i + 1;
+// Find largest among Root, Left, and Right
+if (l <= heapSize && heap[l] > heap[i])
+    largest = l;
+else
+    largest = i;
+
+if (r <= heapSize && heap[r] > heap[largest])
+    largest = r;
+
+// If root is not largest, swap and recurse
+if (largest != i) {
+    exchange heap[i] <-> heap[largest];
+    max_heapify(largest);
+}
+```
+
+---
+
+## 5. Building a Heap
+
+### Why Top-Down Build Fails
+**Naive Idea:** Iterate from $1 \to N$ calling `max_heapify`.
+**Why it fails:** `max_heapify(i)` assumes the subtrees of $i$ are *already* valid heaps. If we start at the root, the bottom is unordered.
+*   *Example failure:* Elements `[6, 20, 30, 5, 100]`. If we heapify root `6`, it swaps with `30`. The "Giant" `100` at the bottom never gets checked against `30` or `6`. The algorithm terminates with an invalid heap.
+
+### The Solution: Bottom-Up Build Heap
+**Strategy:** Fix the small sub-trees first, then move up.
+1.  **Start:** Index $\lfloor N/2 \rfloor$ (The last internal node).
+2.  **Direction:** Iterate backwards down to 1.
+3.  **Guarantee:** By the time we reach node $i$, we guarantee that `left(i)` and `right(i)` are already valid heaps.
+
+**Pseudocode:**
+```cpp
+for i = heapSize / 2 down to 1:
+    max_heapify(heap, i, heapSize)
+```
+
+### Visual Walkthrough: Bottom-Up Build
+**Array:** `[6, 20, 30, 5, 100]`
+**Internal Nodes:** Indices 1 (Val 6) and 2 (Val 20). Start at 2.
+
+**Step 1: Fix Index 2 (Val 20)**
+*   Children: 5, 100.
+*   Swap 20 with 100.
+```mermaid
+graph TD
+    subgraph "Index 2 Fixed"
+    A((6)) --> B((100)):::swapped
+    A --> C((30))
+    B --> D((5))
+    B --> E((20)):::swapped
+    end
+    classDef swapped fill:#ffffaa,stroke:#333;
+```
+
+**Step 2: Fix Index 1 (Val 6)**
+*   Children: 100, 30.
+*   Swap 6 with 100.
+```mermaid
+graph TD
+    subgraph "Index 1 Swap"
+    A((100)):::swapped --> B((6)):::swapped
+    A --> C((30))
+    B --> D((5))
+    B --> E((20))
+    end
+```
+
+**Step 3: Cascade Fix on New Index 2 (Val 6)**
+*   Node 6 moved down. Children: 5, 20.
+*   Swap 6 with 20.
+```mermaid
+graph TD
+    subgraph "Final Result"
+    A((100)) --> B((20)):::swapped
+    A --> C((30))
+    B --> D((5))
+    B --> E((6)):::swapped
+    end
+```
+**Result:** The "Giant" (100) successfully moved from bottom leaf to Root.
+
+---
+
+## 6. Analysis: Build Heap Complexity
+
+### The Naive Analysis ($O(N \log N)$)
+*   We call `max_heapify` for $N/2$ nodes.
+*   Each call takes $O(\log N)$.
+*   Total $\approx O(N \log N)$. *(Upper bound, but not tight!)*
+
+### The Better Analysis ($O(N)$)
+`max_heapify` takes time proportional to the **height** of the node, not always $\log N$.
+*   **Leaves (50% of nodes):** Height 0. Work = 0.
+*   **Next Level (25% of nodes):** Height 1. Work = 1 step.
+*   **Only the Root (1 node):** Height $\log N$.
+
+**Mathematical Proof:**
+Total Work $S = \text{Sum of heights of all nodes}$.
+$$ S = \sum_{h=0}^{\lg N} \frac{N}{2^{h+1}} \cdot O(h) = N \sum_{h=0}^{\lg N} \frac{h}{2^{h+1}} $$ 
+This is an **Arithmetico-Geometric Series** that converges to 2.
+$$ S \approx N \cdot \left( \frac{1}{2^1} + \frac{2}{2^2} + \frac{3}{2^3} + \dots \right) \le N \cdot 2 = O(N) $$ 
+
+> [!SUCCESS] Verdict
+> Building a heap from an unordered array takes **Linear Time $O(N)$**.
+
+---
+
+## 7. Insertion (Percolate Up)
+
+### Algorithm
+1.  **Shape First:** Insert the new key at the end of the array (next available leaf).
+    *   `parent_index = current_index / 2`
+2.  **Order Second:** Compare the new key with its Parent.
+3.  **Swap:** If Child > Parent, swap. Repeat until heap property is restored.
+    *   *"The new guy has to earn his way to the top."*
+
+### Visual Walkthrough
+**Initial Heap:** `90, 85, 50, 70, 75, 40` (Size 6).
+**Task:** Insert `80`.
+
+**Step 1:** Insert at end (Index 7). Parent is Index 3 (Val 50).
+**Step 2:** Compare 80 vs 50. $80 > 50$. **Swap.**
+```mermaid
+graph TD
+    subgraph "Swap 80 & 50"
+    A((90)) --> B((85))
+    A --> C((80)):::new
+    B --> D((70))
+    B --> E((75))
+    C --> F((40))
+    C --> G((50))
+    end
+    classDef new fill:#aaffaa,stroke:#333;
+```
+**Step 3:** Current Index 3. Parent is Index 1 (Val 90).
+**Step 4:** Compare 80 vs 90. $80 < 90$. **Stop.**
+
+### Complexity
+*   Time: $O(\log N)$ (Height of tree).
+*   Space: $O(1)$.
+
+---
+
+## 8. Extract Max (Delete Root)
+
+### The Challenge
+Removing the root leaves two disconnected sub-trees. We must preserve the Shape Property.
+
+### Algorithm ($O(\log N)$)
+1.  **Swap:** Exchange the Root with the **Last Leaf** (last index).
+2.  **Remove:** Decrement `heap_size` (effectively removing the Max).
+3.  **Fix:** The new Root is likely small. Call `max_heapify(1)` (Bubble Down).
+
+### Visual Walkthrough
+**Heap:** Root `90`, Last Leaf `30`.
+
+**Step 1 (Swap & Remove):** 30 becomes Root. 90 is removed.
+**Step 2 (Violation):** Root 30 is smaller than children 85 and 50.
+*   Swap 30 with 85 (Largest Child).
+```mermaid
+graph TD
+    subgraph "First Fix"
+    A((85)):::swapped --> B((30)):::swapped
+    A --> C((50))
+    B --> D((70))
+    B --> E((75))
+    C --> F((40))
+    end
+    classDef swapped fill:#ffffaa,stroke:#333;
+```
+**Step 3 (Cascade):** 30 is at Index 2. Children 70 and 75.
+*   Swap 30 with 75 (Largest Child).
+```mermaid
+graph TD
+    subgraph "Final Fix"
+    A((85)) --> B((75)):::swapped
+    A --> C((50))
+    B --> D((70))
+    B --> E((30)):::swapped
+    C --> F((40))
+    end
+```
+**Step 4:** 30 is a leaf. **Stop.**
+
+---
+
+## 9. Advanced Operations
+
+### Arbitrary Deletion
+Task: Delete a node with value $X$ (not necessarily the root).
+1.  **Find the node:** Heaps are weakly ordered. We must scan linearly. **Cost: $O(N)$**.
+2.  **Delete at Index $i$:**
+    *   Swap $A[i]$ with $A[size]$.
+    *   Decrease size.
+    *   **Case A:** If new $A[i] > Parent 	o$ **Percolate Up**.
+    *   **Case B:** Else $	o$ **max_heapify(i)** (Down).
+    *   **Cost:** $O(\log N)$.
+
+### Modifying Keys
+1.  **Increase Key (Value goes UP):**
+    *   Node becomes larger than children (Safe).
+    *   Might be larger than Parent.
+    *   **Action:** Update value, then **Percolate Up**.
+2.  **Decrease Key (Value goes DOWN):**
+    *   Node becomes smaller than Parent (Safe).
+    *   Might be smaller than Children.
+    *   **Action:** Update value, then **Heapify Down**.
+
+---
+
+## 10. Application: Heap Sort
+
+**Idea:** If we can extract the maximum element in $O(\log N)$, do it $N-1$ times to get it sorted.
+
+### Algorithm
+1.  **Build Max Heap** from unordered array. ($O(N)$)
+2.  **Loop** $i$ from $N$ down to 2: ($O(N \log N)$)
+    *   Swap Root ($A[1]$) with Last ($A[i]$).
+    *   *The largest element is now "sorted" at the end.*
+    *   Reduce heap size by 1.
+    *   Call `max_heapify(1)` to fix the root.
+
+### Complexity
+*   **Time:** $O(N \log N)$ (Best, Average, and Worst case).
+*   **Space:** $O(1)$ (In-place sorting).
+
+---
+
+## 11. Summary: Priority Queue Implementation
+
+A Binary Heap is the standard implementation for a Priority Queue.
+
+| PQ Operation | Heap Equivalent | Complexity | Details |
+| :--- | :--- | :--- | :--- |
+| `peek_max()` | Return `A[1]` | $O(1)$ | Root is always max. |
+| `insert(k)` | 1. Add to end `A[++size]`<br>2. Percolate Up | $O(\log N)$ | Path to root. |
+| `extract_max()` | 1. Swap Root $\leftrightarrow$ Last<br>2. `size--`<br>3. `max_heapify(1)` | $O(\log N)$ | Path to leaf. |
+
+> [!NOTE] Min-Heaps
+> All logic is identical for Min-Heaps, but inequalities are reversed ($Parent \le Child$). 
+
+---
+
+## 12. C++ Implementation
 
 This implementation follows the logic from the slides.
 
 _Note: The slides use **1-based indexing**. The code below uses standard C++ **0-based indexing**, so the formulas are slightly adjusted (Left = $2i+1$, Right = $2i+2$, Parent = $(i-1)/2$)._
-
-C++
 
 ```cpp
 #include <iostream>
