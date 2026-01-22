@@ -41,7 +41,7 @@ $$ \text{Parent}(i) \ge \text{Children}(i) $$
 ### B. Shape Property
 It must be a **Complete Binary Tree**.
 1.  All levels are fully filled, except possibly the last.
-2.  Nodes are filled from **left to right**.
+2.  Nodes are filled from **left to right**. (Why? So in their array representation, they are filled sequentially.)
 
 ---
 
@@ -229,10 +229,37 @@ graph TD
 *   **Only the Root (1 node):** Height $\log N$.
 
 **Mathematical Proof:**
-Total Work $S = \text{Sum of heights of all nodes}$.
-$$ S = \sum_{h=0}^{\lg N} \frac{N}{2^{h+1}} \cdot O(h) = N \sum_{h=0}^{\lg N} \frac{h}{2^{h+1}} $$ 
-This is an **Arithmetico-Geometric Series** that converges to 2.
-$$ S \approx N \cdot \left( \frac{1}{2^1} + \frac{2}{2^2} + \frac{3}{2^3} + \dots \right) \le N \cdot 2 = O(N) $$ 
+Total Work $S = \text{Sum of work for all nodes}$.
+Nodes at height $h$ require $O(h)$ work (swaps).
+The number of nodes at height $h$ is at most $\lceil \frac{N}{2^{h+1}} \rceil$.
+
+$$ S = \sum_{h=0}^{\lfloor \lg N \rfloor} \frac{N}{2^{h+1}} \cdot h = \frac{N}{2} \sum_{h=0}^{\lfloor \lg N \rfloor} \frac{h}{2^h} $$
+
+Let's solve the infinite series part $S_{AG} = \sum_{h=0}^{\infty} \frac{h}{2^h}$.
+$$ \begin{aligned}
+S_{AG} &= \frac{0}{2^0} + \frac{1}{2^1} + \frac{2}{2^2} + \frac{3}{2^3} + \dots \\
+S_{AG} &= 0 + \frac{1}{2} + \frac{2}{4} + \frac{3}{8} + \dots \quad \text{(Equation 1)}
+\end{aligned} $$
+
+Multiply Equation 1 by 2:
+$$ \begin{aligned}
+2 \cdot S_{AG} &= 2 \left( \frac{1}{2} + \frac{2}{4} + \frac{3}{8} + \dots \right) \\
+2 \cdot S_{AG} &= 1 + \frac{2}{2} + \frac{3}{4} + \dots \quad \text{(Equation 2)}
+\end{aligned} $$
+
+Subtract Equation 1 from Equation 2:
+$$ \begin{aligned}
+2 S_{AG} - S_{AG} &= 1 + \left( \frac{2}{2} - \frac{1}{2} \right) + \left( \frac{3}{4} - \frac{2}{4} \right) + \dots \\
+S_{AG} &= 1 + \frac{1}{2} + \frac{1}{4} + \dots
+\end{aligned} $$
+
+This is a Geometric Series with $a=1, r=1/2$. Sum $= \frac{a}{1-r}$:
+$$ S_{AG} = \frac{1}{1 - 0.5} = 2 $$
+
+Substituting back into total work:
+$$ S = \frac{N}{2} \cdot S_{AG} = \frac{N}{2} \cdot 2 = N $$
+
+$$ S = O(N) $$ 
 
 > [!SUCCESS] Verdict
 > Building a heap from an unordered array takes **Linear Time $O(N)$**.
