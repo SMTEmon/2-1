@@ -34,7 +34,11 @@ The communication flow follows these steps:
 4.  **Exception Handling:** Manage `SQLException`.
 
 ### 2.2 Establishing Connections
-Modern JDBC (Java 7+ / JDBC 4.0+) uses `try-with-resources` to ensure connections close automatically.
+Modern JDBC (Java 7+ / JDBC 4.0+) uses `try-with-resources` to ensure connections close automatically. 
+```java
+try(){}
+catch(){}
+```
 
 ```java
 // Connection String Format: jdbc:driver:protocol:@host:port:database
