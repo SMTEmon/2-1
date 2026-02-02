@@ -2,7 +2,7 @@
 **Context:** CSE 4307: Database Management Systems (Chapter 5)
 **Read this instead of Slide?**: Not Recommended 
 						- Extra Details might not be needed for exams 
-						- Checked upto Triggers 
+						- Checked upto Triggers
 						- Didn't Include if-else, loop in embedded SQL (lazy, check slides)
 
 ---
