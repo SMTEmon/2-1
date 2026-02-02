@@ -82,31 +82,102 @@ while (rs.next()) {
 
 ### 2.4 SQL Injection & Prepared Statements
 
-**The Vulnerability:**
-Constructing queries by concatenating strings allows attackers to manipulate the SQL logic.
-*   *Bad Code:* `"SELECT * FROM users WHERE name = '" + userName + "'"`
-*   *Input:* `' OR '1'='1`
-*   *Result:* `SELECT * FROM users WHERE name = '' OR '1'='1'` (Returns all users).
+#### 🧠 The Concept
+**Prepared Statements** act as a barrier between user input and the database engine. They specifically neutralize **"Piggybacked" queries**, where an attacker attempts to append a second, malicious command to a standard lookup.
 
-**The Solution: Prepared Statements**
-Precompiled SQL queries where user input is treated as literal data, never executable code.
+---
 
-> [!check] **Best Practice**
-> Always use `PreparedStatement` for any query involving user input.
+#### 🛑 The Attack Scenario
+**The Goal:** The attacker wants to execute a malicious UPDATE command along with the standard SELECT command.
+
+**1. The Malicious Input:**
+An attacker enters the following string into a "Name" text field:
+`X'; update instructor set salary = salary + 10000; --`
+
+**2. The Vulnerability (String Concatenation):**
+If the application constructs the query using simple string concatenation (e.g., `"WHERE name = '" + userInput + "'"`), the database receives this:
+
+```sql
+SELECT * FROM instructor WHERE name = 'X'; update instructor set salary = salary + 10000; --'
+```
+
+##### 📉 Visualizing the Breakdown
+Here is how the Database Engine interprets that concatenated string:
+
+| Component | Code Segment | Action |
+| :--- | :--- | :--- |
+| **1. Original Query** | `SELECT ... name = 'X';` | Finishes the intended query legitimately. |
+| **2. Injection** | `update instructor ...` | **Executes a totally new, unauthorized command.** |
+| **3. Cleanup** | `--` | Comments out the closing quote (`'`) to prevent syntax errors. |
+
+---
+
+#### ✅ The Solution: Prepared Statements
+Instead of merging data into the query string *before* sending it to the database, Prepared Statements send the **Query Structure** and the **Data** separately.
+
+##### 🛠️ How it works Internally (The "Escaped" Line)
+When you use a Prepared Statement, the database driver treats the input strictly as data, not executable code.
+
+> [!EXAMPLE] Visualizing the Escape
+> If the attacker tries the input `X' or 'Y'='Y`, the database interprets it internally like this:
+> 
+> `select * from instructor where name = 'X\' or \'Y\' = \'Y'`
+
+**The Anatomy of Protection:**
+
+```mermaid
+graph TD
+    A[Input: X' OR 'Y'='Y] --> B{Prepared Statement};
+    B -- Escapes Special Chars --> C[DB Interpretation];
+    C --> D["name = 'X\' OR \'Y\' = \'Y'"];
+    
+    style C fill:#f9f,stroke:#333,stroke-width:2px
+    style D fill:#bbf,stroke:#333,stroke-width:2px,stroke-dasharray: 5 5
+```
+
+1.  **The Backslash (`\`):** This is an *escape character*. It tells the DB: "Treat the following quote as a literal character, not a code delimiter."
+2.  **Literal Interpretation:** The DB looks for an instructor whose name is literally the text string: `X' or 'Y' = 'Y`.
+3.  **Neutralization:** The logic `OR 'Y'='Y'` is never evaluated as a boolean; it is treated as "dumb text."
+
+---
+
+#### ☕ Java + PostgreSQL Implementation
+
+Here is the secure implementation using Java JDBC.
 
 ```java
-// ? acts as a placeholder
-String sql = "INSERT INTO instructor VALUES(?, ?, ?, ?)";
-PreparedStatement pStmt = conn.prepareStatement(sql);
+// 1. Define the SQL template with a placeholder (?)
+// The '?' tells the DB "Data will go here later"
+String sql = "SELECT * FROM instructor WHERE name = ?";
 
-// Bind values (Indices are 1-based)
-pStmt.setString(1, "88877");
-pStmt.setString(2, "Perry");
-pStmt.setString(3, "Finance");
-pStmt.setInt(4, 125000);
+try (Connection conn = DriverManager.getConnection(url, user, password);
+     PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-pStmt.executeUpdate(); // Execute without passing the SQL string again
+    // 2. Malicious input is passed as a single parameter
+    String userInput = "X'; update instructor set salary = salary + 10000; --";
+    
+    // 3. Bind the data
+    // The driver automatically handles the escaping (the backslashes from the slide)
+    // The DB now knows this entire string is just a VALUE, not CODE.
+    pstmt.setString(1, userInput);
+
+    // 4. Execute safely
+    ResultSet rs = pstmt.executeQuery();
+}
 ```
+
+---
+
+#### 💡 Key Takeaways
+
+> [!danger] Rule
+> **Never** use `+` or `String.format()` to build SQL queries with user input.
+
+*   [x] **Benefit:** Prepared Statements prevent SQLi completely.
+*   [x] **Bonus:** They improve performance via **Query Plan Caching** (the DB parses the query structure once and reuses it).
+*   [x] **Mechanism:** The "Escaping" (Backslashes) is the armor the system puts around the input to ensure quotes are treated as text, not delimiters.
+
+---
 
 ### 2.5 Metadata
 JDBC allows introspection of the database schema (useful for generic tools like IDEs).
@@ -127,6 +198,103 @@ try {
     conn.rollback(); // Undo if error occurs
 }
 ```
+
+### 2.7 CallableStatement
+Used to execute **Stored Procedures** and **Functions** explicitly.
+
+> [!NOTE] Syntax Difference
+> *   **Function:** `{? = call some_func(?)}` (First `?` is the return value).
+> *   **Procedure:** `{call some_proc(?,?)}` (Parameters can be IN, OUT, or INOUT).
+
+#### Java Example: Calling a Procedure with OUT Parameter
+```java
+// Assuming procedure signature: create_user(IN username, OUT user_id)
+String sql = "{call create_user(?, ?)}";
+
+try (CallableStatement cs = conn.prepareCall(sql)) {
+    // 1. Set Input Parameter
+    cs.setString(1, "john_doe");
+
+    // 2. Register Output Parameter (Must define type)
+    cs.registerOutParameter(2, java.sql.Types.INTEGER);
+
+    // 3. Execute
+    cs.execute();
+
+    // 4. Retrieve Output
+    int newId = cs.getInt(2);
+    System.out.println("Created User ID: " + newId);
+}
+```
+
+### 2.8 Large Object Types (LOBs)
+Standard types (`INT`, `VARCHAR`) cannot handle massive files. JDBC handles this via LOBs.
+
+| Type | Full Name | Use Case | Java Method |
+| :--- | :--- | :--- | :--- |
+| **BLOB** | Binary Large Object | Images, Audio, PDF, Raw Binary. | `rs.getBlob()` |
+| **CLOB** | Character Large Object | Massive Text, XML, JSON logs. | `rs.getClob()` |
+
+> [!TIP] Performance Hint
+> For very large LOBs, avoid loading the whole object into memory. Use **Streams**:
+> `InputStream is = blob.getBinaryStream();`
+
+### 2.9 SQLJ: Embedded SQL in Java
+
+SQLJ is a language extension that embeds static SQL directly into Java, offering compile-time safety.
+
+#### 🚨 The Problem: JDBC is "Dynamic"
+In JDBC, SQL is just a String. Errors happen at **Runtime**.
+```java
+// JDBC: If table name is typo'd, you won't know until the app crashes
+String sql = "SELECT * FROM instructr"; // Typo!
+```
+
+#### ✅ The Solution: SQLJ is "Static"
+SQLJ uses a **Precompiler** to check syntax against the DB schema during the build.
+
+#### 💻 SQLJ Implementation Example
+This demonstrates using a **Typed Iterator** (safer version of `ResultSet`).
+
+```java
+// 1. Define Typed Iterator (Strongly typed columns)
+#sql iterator DeptInfoIter (String dept_name, int avgSal);
+//This line tells the SQLJ precompiler to generate a new Java class named `DeptInfoIter`. Which we use later
+
+
+public class SqljExample {
+    public static void main(String[] args) {
+        DeptInfoIter iter = null;
+
+        // 2. Execute Embedded SQL
+        // The precompiler validates this query structure immediately
+        #sql iter = {
+            SELECT dept_name, AVG(salary) 
+            FROM instructor 
+            GROUP BY dept_name
+        };
+
+        // 3. Process Results (Methods are auto-generated)
+        while (iter.next()) {
+            System.out.println(iter.dept_name() + " " + iter.avgSal());
+        }
+        
+        iter.close();
+    }
+}
+```
+
+#### 🥊 Showdown: JDBC vs. SQLJ
+
+| Feature | JDBC 🐢 | SQLJ 🐇 |
+| :--- | :--- | :--- |
+| **Syntax Style** | Verbose / Call-level API | Concise / Embedded keywords |
+| **Error Checking** | **Runtime** (Late detection) | **Compile-time** (Early detection) |
+| **Coding Effort** | High (Boilerplate code) | Low (SQL is native) |
+| **Performance** | Dynamic overhead | Potential for pre-optimized SQL |
+| **Tooling** | Standard Java Compiler | Requires SQLJ Precompiler |
+
+---
 
 ---
 
@@ -223,13 +391,37 @@ BEGIN
 END $$;
 ```
 
-### 5.2 Functions vs. Procedures (PostgreSQL 11+)
+### 5.2 Functions vs. Stored Procedures
 
-| Feature | Function | Procedure |
+In database programming, understanding the distinction between a Function and a Procedure is critical for architectural decisions.
+
+#### 🧠 Conceptual Flow
+```mermaid
+flowchart LR
+    subgraph Function
+    A[Input] --> B(Calculation)
+    B --> C{Return Value?}
+    C -- Yes (Must) --> D[Result]
+    end
+
+    subgraph Procedure
+    X[Input] --> Y(Business Logic / DML)
+    Y --> Z[Database Modification]
+    Z -.-> W[Optional OUT Params]
+    end
+```
+
+#### ⚖️ Detailed Comparison
+
+| Feature | Function 🧮 | Stored Procedure ⚙️ |
 | :--- | :--- | :--- |
-| **Invocation** | `SELECT func_name();` | `CALL proc_name();` |
-| **Return** | Must return value (or void). | No return value (uses `INOUT` params). |
-| **Transactions** | **Cannot** manage transactions. | **Can** use `COMMIT` / `ROLLBACK`. |
+| **Purpose** | Calculate and return a value. | Execute a series of tasks/operations. |
+| **Return Value** | **Must** return exactly one value. | May return 0, 1, or multiple values (via `OUT` params). |
+| **SQL Usage** | Can be used in `SELECT`, `WHERE`, `HAVING`. | **Cannot** be called inside a `SELECT` statement. |
+| **DML Operations** | Generally Read-only (no `INSERT`/`UPDATE`). | Can perform modifications and complex logic. |
+| **Transactions** | Cannot manage transactions. | Can manage transactions (`COMMIT`/`ROLLBACK`). |
+| **Error Handling** | No Try-Catch support usually. | Supports Try-Catch for complex handling. |
+| **Calling** | Part of an expression: `x = myFunc()`. | Explicit call: `CALL myProc()`. |
 
 **Function Example (Returns Table):**
 ```sql
