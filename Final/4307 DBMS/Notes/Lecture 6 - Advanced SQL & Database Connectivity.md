@@ -1,5 +1,7 @@
 **Tags:** #database #sql #jdbc #python #plpgsql #triggers #olap #recursive-queries
 **Context:** CSE 4307: Database Management Systems (Chapter 5)
+**Read this instead of Slide?**: Not Recommended 
+						- Extra Details might not be needed for exams 
 
 ---
 
@@ -22,18 +24,44 @@ There are two primary paradigms for connecting applications to databases:
 
 ---
 
-## 2. Java Database Connectivity (JDBC)
+## 2. ODBC vs. JDBC vs. Embedded SQL
+
+### 2.1 Comparison Summary
+
+| Feature | ODBC | JDBC | Embedded SQL |
+| :--- | :--- | :--- | :--- |
+| **Language** | C API (C++, C#, etc.) | Strictly Java | Varies (C, C++, etc.) |
+| **Portability** | Relies on OS-specific drivers (DLLs/.so) | Platform independent (JVM) | Dependent on pre-compiler |
+| **Architecture** | Call-Level Interface (CLI) | Call-Level Interface (CLI) | Mixed with source code |
+| **Compilation** | Standard runtime library | Standard Java compilation | Requires a Special Pre-compiler |
+
+### 2.2 Key Comparisons
+
+#### 1. ODBC vs. JDBC (The "Platform" Battle)
+*   **ODBC** is like a "native" translator. It's fast, but because it uses system files (like `.dll` on Windows), it isn't easily moved from one type of computer to another without changing the drivers.
+*   **JDBC** is built for the "Write Once, Run Anywhere" philosophy of Java. As long as you have a JVM, your database connection code remains the same.
+
+#### 2. ODBC vs. Embedded SQL (The "Mechanism" Battle)
+*   **Embedded SQL** is "baked in." You write SQL commands directly into your code (e.g., `EXEC SQL SELECT...`), and a pre-compiler transforms those lines into something the computer understands before the final compilation.
+*   **ODBC** is "on-demand." It's just a library of functions your code calls while the program is actually running. No special pre-processing is needed.
+
+> [!TIP] **Usage Note**
+> ODBC is generally preferred when you need high performance across different languages like C++ or Python, whereas JDBC is the gold standard for anything in the Java ecosystem.
+
+---
+
+## 3. Java Database Connectivity (JDBC)
 
 JDBC is the industry-standard Java API for connecting to relational databases. It allows Java applications to execute SQL statements, retrieve results, and handle errors.
 
-### 2.1 The JDBC Architecture Model
+### 3.1 The JDBC Architecture Model
 The communication flow follows these steps:
 1.  **Open Connection:** Connect to the specific DB using a URL.
 2.  **Create Statement:** An object used to carry the SQL query.
 3.  **Execute Query:** Send SQL to the DB and fetch the `ResultSet`.
 4.  **Exception Handling:** Manage `SQLException`.
 
-### 2.2 Establishing Connections
+### 3.2 Establishing Connections
 Modern JDBC (Java 7+ / JDBC 4.0+) uses `try-with-resources` to ensure connections close automatically. 
 ```java
 try(){}
@@ -58,7 +86,7 @@ try (Connection conn = DriverManager.getConnection(url, "user", "pass");
 > [!INFO] **Legacy Approach**
 > Older JDBC code required `Class.forName("driver")` to load drivers and explicit `.close()` calls in a `finally` block. This was error-prone and is no longer recommended.
 
-### 2.3 Executing Commands
+### 3.3 Executing Commands
 
 | Operation | Method | Return Type | Usage |
 | :--- | :--- | :--- | :--- |
@@ -80,7 +108,7 @@ while (rs.next()) {
 }
 ```
 
-### 2.4 SQL Injection & Prepared Statements
+### 3.4 SQL Injection & Prepared Statements
 
 #### 🧠 The Concept
 **Prepared Statements** act as a barrier between user input and the database engine. They specifically neutralize **"Piggybacked" queries**, where an attacker attempts to append a second, malicious command to a standard lookup.
@@ -179,12 +207,12 @@ try (Connection conn = DriverManager.getConnection(url, user, password);
 
 ---
 
-### 2.5 Metadata
+### 3.5 Metadata
 JDBC allows introspection of the database schema (useful for generic tools like IDEs).
 1.  **ResultSetMetaData:** Information about the *returned data* (column names, types).
 2.  **DatabaseMetaData:** Information about the *whole database* (tables, primary keys, driver info).
 
-### 2.6 Transactions in JDBC
+### 3.6 Transactions in JDBC
 By default, JDBC is in **Auto-Commit** mode (every statement is a transaction).
 To group operations atomically:
 ```java
@@ -199,7 +227,7 @@ try {
 }
 ```
 
-### 2.7 CallableStatement
+### 3.7 CallableStatement
 Used to execute **Stored Procedures** and **Functions** explicitly.
 
 > [!NOTE] Syntax Difference
@@ -227,7 +255,7 @@ try (CallableStatement cs = conn.prepareCall(sql)) {
 }
 ```
 
-### 2.8 Large Object Types (LOBs)
+### 3.8 Large Object Types (LOBs)
 Standard types (`INT`, `VARCHAR`) cannot handle massive files. JDBC handles this via LOBs.
 
 | Type | Full Name | Use Case | Java Method |
@@ -239,7 +267,7 @@ Standard types (`INT`, `VARCHAR`) cannot handle massive files. JDBC handles this
 > For very large LOBs, avoid loading the whole object into memory. Use **Streams**:
 > `InputStream is = blob.getBinaryStream();`
 
-### 2.9 SQLJ: Embedded SQL in Java
+### 3.9 SQLJ: Embedded SQL in Java
 
 SQLJ is a language extension that embeds static SQL directly into Java, offering compile-time safety.
 
@@ -298,7 +326,7 @@ public class SqljExample {
 
 ---
 
-## 3. Python Database Access (DB-API)
+## 4. Python Database Access (DB-API)
 
 Python uses a standard specification (PEP 249 - DB-API 2.0). Most drivers (`psycopg2`, `sqlite3`, `mysql-connector`) follow this pattern.
 
@@ -325,20 +353,24 @@ for row in cursor.fetchall():
 conn.close()
 ```
 
+> [!CAUTION] **Trailing Comma in Python**
+> When passing a single parameter in Python, you **must** include a trailing comma: `(item,)`. 
+> Without the comma, Python treats `(item)` as a simple parenthesized expression (a string), while the database driver expects a **tuple** (a collection).
+
 ---
 
-## 4. Embedded SQL
+## 5. Embedded SQL
 
 Used in C/C++/COBOL/Fortran. It bridges the **Impedance Mismatch**:
 *   *SQL* works on **Sets** (tables).
 *   *Host Languages* work on **Records/Variables**.
 
-### 4.1 Concepts
+### 5.1 Concepts
 *   **Preprocessor:** Converts `EXEC SQL` commands into native API calls.
 *   **Host Variables:** Declared in a `DECLARE SECTION` and prefixed with `:` in SQL to bind data.
 *   **SQLSTATE:** A variable that holds status codes (e.g., '02000' means "No more data").
 
-### 4.2 Cursors
+### 5.2 Cursors
 A mechanism to process a set of rows one by one.
 
 ```mermaid
@@ -370,28 +402,30 @@ EXEC SQL CLOSE c;
 To update the specific row the cursor is currently pointing to:
 ```sql
 UPDATE instructor SET salary = salary + 1000 WHERE CURRENT OF c;
+--Updates salary for instructor on the row the cursor is currently at
+--Usage: in loop + conditional?
 ```
 
 ---
 
-## 5. PL/pgSQL (Procedural Language for PostgreSQL)
+## 6. PL/pgSQL (Procedural Language for PostgreSQL)
 
 PL/pgSQL allows writing complex business logic (conditions, loops) stored directly inside the database. This reduces network traffic between the app and DB.
 
-### 5.1 Block Structure
+### 6.1 Block Structure
 The basic unit is a block, often defined using "Dollar Quoting" (`$$`) to avoid escaping single quotes.
 
 ```sql
-DO $$ 
+DO $$
 DECLARE
     counter integer := 0;
 BEGIN
     counter := counter + 1;
     RAISE NOTICE 'Counter is %', counter;
-END $$;
+END $$
 ```
 
-### 5.2 Functions vs. Stored Procedures
+### 6.2 Functions vs. Stored Procedures
 
 In database programming, understanding the distinction between a Function and a Procedure is critical for architectural decisions.
 
@@ -425,7 +459,7 @@ flowchart LR
 
 **Function Example (Returns Table):**
 ```sql
-CREATE FUNCTION get_instructors(d_name varchar) 
+CREATE FUNCTION get_instructors(d_name varchar)
 RETURNS TABLE (id varchar, name varchar) AS $$
 BEGIN
     RETURN QUERY 
@@ -445,23 +479,23 @@ END;
 $$;
 ```
 
-### 5.3 Control Structures
+### 6.3 Control Structures
 *   **Conditional:** `IF ... THEN ... ELSIF ... ELSE ... END IF;`
 *   **Loops:** `FOR record IN SELECT ... LOOP ... END LOOP;`
 *   **Assignments:** `SELECT count(*) INTO variable FROM ...`
 
 ---
 
-## 6. Triggers
+## 7. Triggers
 
 Triggers are procedural code blocks that automatically "fire" in response to DB events (`INSERT`, `UPDATE`, `DELETE`).
 
-### 6.1 The ECA Model
+### 7.1 The ECA Model
 *   **Event:** What happened? (e.g., `AFTER UPDATE ON grade`).
 *   **Condition:** Should the trigger run? (e.g., `WHEN NEW.grade IS NOT NULL`).
 *   **Action:** The logic to execute.
 
-### 6.2 Implementation in PostgreSQL
+### 7.2 Implementation in PostgreSQL
 Postgres requires two steps: 
 1. Define a **Function** that returns `TRIGGER`.
 2. Bind it to a table using `CREATE TRIGGER`.
@@ -470,7 +504,7 @@ Postgres requires two steps:
 *   `OLD`: The row *before* the update/delete.
 *   `NEW`: The row *after* the update/insert.
 
-### 6.3 Row-Level vs. Statement-Level
+### 7.3 Row-Level vs. Statement-Level
 
 | Feature | Row-Level (`FOR EACH ROW`) | Statement-Level (`FOR EACH STATEMENT`) |
 | :--- | :--- | :--- |
@@ -503,11 +537,11 @@ EXECUTE FUNCTION add_credits();
 
 ---
 
-## 7. Recursive Queries
+## 8. Recursive Queries
 
 Standard SQL cannot query hierarchies of unknown depth (e.g., "Find all prerequisites of prerequisites..."). SQL:1999 introduced **Common Table Expressions (CTEs)** with `WITH RECURSIVE`.
 
-### 7.1 Structure of Recursion
+### 8.1 Structure of Recursion
 1.  **Base Case:** The starting point (Non-recursive).
 2.  **Union:** Combines results.
 3.  **Recursive Step:** Joins the CTE with the original table to find the next level.
@@ -531,11 +565,11 @@ SELECT * FROM rec_prereq;
 
 ---
 
-## 8. Advanced Aggregation & OLAP
+## 9. Advanced Aggregation & OLAP
 
 Online Analytical Processing (OLAP) involves viewing data across multiple dimensions (Multidimensional Data Cube).
 
-### 8.1 Ranking Functions
+### 9.1 Ranking Functions
 Unlike standard aggregation, ranking assigns a value to each row based on order.
 
 *   `rank()`: Skips numbers for ties (1, 1, 3).
@@ -548,7 +582,7 @@ SELECT ID, rank() OVER (ORDER BY GPA DESC) as s_rank
 FROM student_grades;
 ```
 
-### 8.2 Window Functions
+### 9.2 Window Functions
 Perform calculations across a set of table rows that are related to the current row. Unlike `GROUP BY`, **window functions do not collapse rows**.
 
 **Syntax:**
@@ -570,7 +604,7 @@ FROM transactions;
 ```
 *Logic:* Resets the sum for every new Account ID.
 
-### 8.3 OLAP Cubes (Rollup & Cube)
+### 9.3 OLAP Cubes (Rollup & Cube)
 
 Standard `GROUP BY` produces a 2D table. OLAP extensions generate subtotals automatically.
 
