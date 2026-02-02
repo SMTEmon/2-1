@@ -2,6 +2,8 @@
 **Context:** CSE 4307: Database Management Systems (Chapter 5)
 **Read this instead of Slide?**: Not Recommended 
 						- Extra Details might not be needed for exams 
+						- Checked upto Triggers
+						- Didn't Include if-else, loop in embedded SQL (lazy, check slides)
 
 ---
 
@@ -322,7 +324,6 @@ public class SqljExample {
 | **Performance** | Dynamic overhead | Potential for pre-optimized SQL |
 | **Tooling** | Standard Java Compiler | Requires SQLJ Precompiler |
 
----
 
 ---
 
@@ -492,7 +493,7 @@ Triggers are procedural code blocks that automatically "fire" in response to DB 
 
 ### 7.1 The ECA Model
 *   **Event:** What happened? (e.g., `AFTER UPDATE ON grade`).
-*   **Condition:** Should the trigger run? (e.g., `WHEN NEW.grade IS NOT NULL`).
+*   **Condition:** Should the trigger run? (e.g., `WHEN NEW.grade IS NOT NULL`, run if false or true?).
 *   **Action:** The logic to execute.
 
 ### 7.2 Implementation in PostgreSQL
@@ -506,34 +507,87 @@ Postgres requires two steps:
 
 ### 7.3 Row-Level vs. Statement-Level
 
-| Feature | Row-Level (`FOR EACH ROW`) | Statement-Level (`FOR EACH STATEMENT`) |
-| :--- | :--- | :--- |
-| **Frequency** | Fires once per **tuple** modified. | Fires once per **SQL command**. |
-| **Data Access** | Can access `OLD` and `NEW` row data. | Uses "Transition Tables" (batches). |
-| **Use Case** | Data validation, calculation, audit log per row. | Logging batch jobs, checking table-wide constraints. |
+#### 1. Row-Level Trigger Example
+**Goal:** Log *every individual* salary change.
 
-**Example: Auto-Calculate Credits**
 ```sql
-CREATE FUNCTION add_credits() RETURNS TRIGGER AS $$
+-- 1. The Function
+CREATE FUNCTION log_row() RETURNS TRIGGER AS $$
 BEGIN
-    IF NEW.grade <> 'F' AND NEW.grade IS NOT NULL THEN
-        UPDATE student 
-        SET tot_cred = tot_cred + (SELECT credits FROM course WHERE id = NEW.course_id)
-        WHERE id = NEW.student_id;
-    END IF;
+    INSERT INTO audit_log (msg)
+    VALUES ('Changed salary for ID: ' || NEW.ID);
     RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
+END; $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER on_grade_update
-AFTER UPDATE OF grade ON takes
-FOR EACH ROW
-EXECUTE FUNCTION add_credits();
+-- 2. The Trigger
+CREATE TRIGGER log_salary_change
+AFTER UPDATE ON instructor
+FOR EACH ROW EXECUTE FUNCTION log_row();
 ```
 
-> [!WARNING] **Risks of Triggers**
-> *   **Cascading:** Trigger A updates Table B, which has Trigger B updating Table A (Infinite Loop).
-> *   **Performance:** Trigger overhead can stall bulk loads (e.g., updating 1 million rows fires the function 1 million times).
+**Execution Output (Audit Log Table):**
+
+| Log_ID | Message |
+| :--- | :--- |
+| 1 | Changed salary for ID: 101 |
+| 2 | Changed salary for ID: 102 |
+
+> [!INFO] Result
+> The trigger fired **2 times** (Once per row).
+
+---
+
+#### 2. Statement-Level Trigger Example
+**Goal:** Log that a *transaction* occurred, without listing every ID.
+
+```sql
+-- 1. The Function
+CREATE FUNCTION log_stmt() RETURNS TRIGGER AS $$
+BEGIN
+    INSERT INTO audit_log (msg)
+    VALUES ('Batch update executed at ' || NOW());
+    RETURN NULL; -- Statement triggers ignore return values
+END; $$ LANGUAGE plpgsql;
+
+-- 2. The Trigger
+CREATE TRIGGER log_salary_batch
+AFTER UPDATE ON instructor
+FOR EACH STATEMENT EXECUTE FUNCTION log_stmt();
+```
+
+**Execution Output (Audit Log Table):**
+
+| Log_ID | Message |
+| :--- | :--- |
+| 1 | Salary batch update executed at 12:00:00 |
+
+> [!INFO] Result
+> The trigger fired **1 time** (Once per command), regardless of how many rows changed.
+
+---
+
+### 7.4 Comparison Summary
+
+| Feature | Row-Level (`FOR EACH ROW`) | Statement-Level (`FOR EACH STATEMENT`) |
+| :--- | :--- | :--- |
+| **Frequency** | $N$ times ($N$ = rows affected) | 1 time (per SQL command) |
+| **Data Access** | Can access `NEW.id`, `OLD.sal` | No direct row access (uses Transition Tables) |
+| **Best For...** | Data Validation, Calculation | Auditing, Maintenance |
+
+---
+
+### 7.5 The Risks of Triggers
+
+#### The "Cascading" Danger
+Trigger A updates Table B $\rightarrow$ Trigger B updates Table C $\rightarrow$ Trigger C updates Table A...
+
+> [!WARNING] Result
+> **Infinite Loop** or Stack Overflow.
+
+#### Operational Risks
+*   **Hidden Failures:** A minor error in an auditing trigger can roll back a critical financial transaction.
+*   **Bulk Operations:** Loading 1 million rows from a backup? Triggers will fire 1 million times, slowing the process to a crawl.
+    *   *Best Practice: Disable triggers during bulk loads.*
 
 ---
 
