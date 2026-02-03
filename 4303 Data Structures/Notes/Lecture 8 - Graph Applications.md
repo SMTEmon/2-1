@@ -36,19 +36,13 @@ We use DFS and maintain two arrays for every node $u$:
     *   *Insight:* $low[u]$ indicates if a "secret path" exists connecting descendants back to ancestors.
 
 #### Logic for Updating $low[u]$
-When at node $u$ looking at neighbour $v$:
+When at node $u$ looking at neighbor $v$:
 
-| Case  | Scenario                     | Action                                                   | Reasoning                                                                                                               |
-| :---- | :--------------------------- | :------------------------------------------------------- | :---------------------------------------------------------------------------------------------------------------------- |
-| **A** | $v$ is Parent of $u$         | **Ignore**                                               | Going back to parent doesn't count as a cycle.                                                                          |
-| **B** | $v$ is Visited (Back Edge)   | `low[u] = min(low[u], d[v])`                             | $u$ connects to ancestor $v$. We take $d[v]$ directly because the back-edge is a "tunnel" to that exact discovery time. |
-| **C** | $v$ is Unvisited (Tree Edge) | 1. Recurse DFS($v$)<br>2. `low[u] = min(low[u], low[v])` | Propagate the "highest reach" of the subtree up to $u$.                                                                 |
-
-### Deep Dive: Why Ignore the Parent?
-*   **The Question:** Since $u$ can technically reach its parent $v$ (it's connected), why don't we update `low[u]` using `d[parent]`?
-*   **The Answer:** Because going back the way you came is a **Trivial Cycle**.
-    *   **The Goal:** We want to find a *second*, independent path (a "back door") to an ancestor.
-    *   **The Bridge Check:** If we included the parent, `low[child]` would always become $\le d[parent]$, making the bridge condition (`low > d`) impossible to satisfy. We essentially ask: *"If the path to my parent is cut, can I still reach the rest of the graph?"*
+| Case | Scenario | Action | Reasoning |
+| :--- | :--- | :--- | :--- |
+| **A** | $v$ is Parent of $u$ | **Ignore** | Going back to parent doesn't count as a cycle. |
+| **B** | $v$ is Visited (Back Edge) | `low[u] = min(low[u], d[v])` | $u$ is part of a cycle connecting to ancestor $v$. |
+| **C** | $v$ is Unvisited (Tree Edge) | 1. Recurse DFS($v$)<br>2. `low[u] = min(low[u], low[v])` | Propagate the "highest reach" of the subtree up to $u$. |
 
 ### The Critical Conditions
 A node $u$ is an Articulation Point if:

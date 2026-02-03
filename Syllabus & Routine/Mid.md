@@ -5,9 +5,9 @@
 > | :--- | :--- | :--- |
 > | **01/06/2026** | ~~Theory of Computing (TOC)~~ | 2:30 - 4:30 PM |
 > | **01/07/2026** | ~~Object Oriented Concepts 2 (OOC 2)~~ | 2:30 - 4:30 PM |
-> | **01/09/2026** | ~~Data Structures (DS)~~ | 2:30 - 4:30 PM |
-> | **01/12/2026** | ~~Linear Algebra~~ | 2:30 - 4:30 PM |
-> | **01/14/2026** | ~~Computer Organization and Architecture (COA)~~ | 2:30 - 4:30 PM |
+> | **01/09/2026** | Data Structures (DS) | 2:30 - 4:30 PM |
+> | **01/12/2026** | Linear Algebra | 2:30 - 4:30 PM |
+> | **01/14/2026** | Computer Organization and Architecture (COA) | 2:30 - 4:30 PM |
 > | **01/16/2026** | Database Management Systems (DBMS) | 2:30 - 4:30 PM |
 
 ---

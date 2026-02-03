@@ -1,3 +1,4 @@
+# L3: Introduction to SQL
 
 *Date: December 19, 2025*
 *Course: CSE 4307: Database Management Systems*
@@ -36,15 +37,15 @@ DDL is used to define, create, and manage the structure of database objects, pri
 
 These are SQL's building blocks, defining the kind of data each column can hold.
 
-| Data Type                                      | Description                                                                                                  | Example                                  |     |
-| ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------ | ---------------------------------------- | --- |
-| `char(n)`                                      | **Fixed-length** character string. Always uses `n` bytes of storage. Shorter strings are padded with spaces. | `char(10)` storing "Avi" becomes "Avi "  |     |
-| `varchar(n)`                                   | **Variable-length** character string up to `n` characters. Stores only the actual text length.               | `varchar(10)` storing "Avi" uses 3 chars |     |
-| `int` or `integer`                             | Integer values. The range depends on the database system.                                                    | `12345`                                  |     |
-| `smallint`                                     | A smaller integer, uses less storage. Efficient for smaller numeric values.                                  | `123`                                    |     |
-| `numeric(p, d)<br>` or,<br>`decimal(p,d) <br>` | Fixed-point number with `p` total digits and `d` digits after the decimal point. Exact value.                | `numeric(5, 2)` can hold `123.45`        |     |
-| `real`, `double precision`                     | Floating-point numbers. These are approximations and can have rounding errors.                               | `123.45678`                              |     |
-| `float(n)`                                     | Floating-point number with at least `n` digits of precision.                                                 | `float(8)`                               |     |
+| Data Type             | Description                                                                                               | Example                               | 
+| --------------------- | --------------------------------------------------------------------------------------------------------- | ------------------------------------- |
+| `char(n)`             | **Fixed-length** character string. Always uses `n` bytes of storage. Shorter strings are padded with spaces. | `char(10)` storing "Avi" becomes "Avi " |
+| `varchar(n)`          | **Variable-length** character string up to `n` characters. Stores only the actual text length.             | `varchar(10)` storing "Avi" uses 3 chars |
+| `int` or `integer`    | Integer values. The range depends on the database system.                                                 | `12345`                               |
+| `smallint`            | A smaller integer, uses less storage. Efficient for smaller numeric values.                               | `123`                                 |
+| `numeric(p, d)`       | Fixed-point number with `p` total digits and `d` digits after the decimal point. Exact value.             | `numeric(5, 2)` can hold `123.45`       |
+| `real`, `double precision` | Floating-point numbers. These are approximations and can have rounding errors.                          | `123.45678`                           |
+| `float(n)`            | Floating-point number with at least `n` digits of precision.                                              | `float(8)`                            |
 
 > **Pro Tip**: Use `varchar` instead of `char` in most cases to save space and avoid issues with trailing spaces during string comparison. For multilingual data (like names in different languages), use `nvarchar` if your database supports it.
 
@@ -88,28 +89,6 @@ CREATE TABLE instructor (
     PRIMARY KEY (ID),
     FOREIGN KEY (dept_name) REFERENCES department(dept_name)
 );
-
--- Some ALTER and DROP commands for practice
-
-ALTER TABLE instructor 
-ADD COLUMN bonus NUMERIC(4,2) DEFAULT 0;
-
-ALTER TABLE instructor
-ALTER COLUMN salary TYPE NUMERIC(9,1);
-
-ALTER TABLE instructor
-RENAME COLUMN dept_name TO department;
-
-ALTER TABLE instructor
-RENAME TO instructor;
-
-ALTER TABLE instructor
-DROP COLUMN bonus;
-
-
--- You can combine multiple ALTER Commands, into one by just simply adding ,
-
-DROP TABLE instructor;
 ```
 
 ### 3.2.3 Modifying and Deleting Tables
@@ -264,7 +243,6 @@ SELECT name FROM instructor WHERE salary >= 90000 AND salary <= 100000;
 Set operations combine the results of two compatible queries into a single result set.
 
 -   `UNION`: Combines results and **removes duplicates**.
-		  (column name and domain must be same)
 -   `UNION ALL`: Combines results and **keeps all duplicates**.
 -   `INTERSECT`: Returns only rows that appear in **both** query results, removing duplicates.
 -   `INTERSECT ALL`: Returns common rows, keeping the minimum number of duplicate occurrences from both sides.

@@ -1,22 +1,75 @@
-## Notes Repository Quick Start
+## Setup Guide
 
-1. Install [Obsidian](https://www.obsidian.md) and [Git](https://github.com/git-guides/install-git).
-2. Open a terminal in the folder where you want the notes.
-3. Clone the repo:
-    
-```bash
-git clone https://www.github.com/SMTEmon/2-1
-```
+You can set up this vault on your local machine using either the command line or directly within Obsidian using a community plugin.
 
-4. Open Obsidian → **Open Folder as Vault** → select the cloned folder.
-5. Install and enable the **Git plugin** in Obsidian (Community Plugins).
-6. Use the Git sidebar to **Pull** updates regularly.
-7. You cannot push changes unless you are a collaborator — local edits stay on your device. 
-    
+### Prerequisites
 
-✅ Done! You’re synced and ready to go.
+1.  **Obsidian:** Download and install [Obsidian](https://obsidian.md/download).
+2.  **Git:** Ensure [Git](https://git-scm.com/downloads) is installed on your system.
 
+---
+
+### Method 1: Using Command Line (Recommended)
+
+This is the standard way to clone a repository.
+
+1.  **Clone the Repository**
+    Open your terminal or command prompt and run:
+    ```bash
+    git clone <repository-url>
+    ```
+    *(Replace `<repository-url>` with the actual URL of this GitHub repository)*
+
+2.  **Open in Obsidian**
+    - Launch Obsidian.
+    - Click **"Open folder as vault"**.
+    - Navigate to the folder you just cloned and select it.
+
+You are now ready to browse and edit the notes!
+
+---
+
+### Method 2: Using Obsidian Git Plugin
+
+If you prefer to stay within the Obsidian interface or want to sync changes easily later, you can use the community plugin.
+
+1.  **Create a New Vault**
+    - Open Obsidian.
+    - Click **"Create new vault"**.
+    - Give it a name (e.g., `Uni-Notes`) and pick a location.
+
+2.  **Install Obsidian Git**
+    - Go to **Settings** > **Community plugins**.
+    - Turn off **"Safe mode"** (if enabled) to allow community plugins.
+    - Click **"Browse"** and search for **"Obsidian Git"**.
+    - Install and **Enable** the plugin.
+
+3.  **Clone the Repository**
+    - Open the Command Palette (`Ctrl/Cmd + P`).
+    - Type `Git: Clone existing remote repo` and select it.
+    - Enter the URL of this repository.
+    - (Optional) Follow prompts to authenticate if required.
+    - Restart Obsidian or reload the vault to see the files.
+
+*Note: This method might nest the repo inside your empty vault depending on how you configure it. The CLI method is generally cleaner for initial setup.*
+
+## Structure
+
+- **.obsidian/**: Contains vault settings, plugins, and themes.
+- **Subject Folders**: Each subject has its own folder containing markdown notes.
+
+## PDF Resources
+
+The PDF files associated with these notes are hosted separately due to their size and are not included in this Git repository.
 
 If you would like to access or sync the PDF files, you can use the following SharePoint link:
 
 [**Access PDF Resources (SharePoint/OneDrive)**](https://w16yd-my.sharepoint.com/:f:/g/personal/smtemon_w16yd_onmicrosoft_com/IgAg9x7YMXYLSZSVnWdxmoyqAQK7ICP5C9ua9GPQ3MUwFYI?e=haGCN4)
+
+### Syncing Methods
+
+To keep the PDFs synced with your local vault, you can use one of the following methods:
+
+1.  **Native OneDrive App:** You can "Add shortcut to My files" in SharePoint/OneDrive and use the native OneDrive application to sync the folder to your machine.
+2.  **Rclone:** For more advanced users or Linux environments, you can configure [rclone](https://rclone.org/) to sync the remote OneDrive folder to your local PDF directory.
+3.  **Manual Download:** You can also manually download specific PDFs as needed directly from the link above.
