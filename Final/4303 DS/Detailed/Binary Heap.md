@@ -5,6 +5,7 @@ Checked: No
 
 ---
 
+![[Pasted image 20260224030352.png]]
 ## 1. Introduction: The Priority Queue Problem
 
 ### What is a Priority Queue?
@@ -228,3 +229,4 @@ void heapSort(vector<int>& arr) {
     }
 }
 ```
+
