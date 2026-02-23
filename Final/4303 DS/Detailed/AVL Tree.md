@@ -12,7 +12,7 @@ date: 2023-11-06
 source: PDF Slides, Reema Thareja (Textbook)
 checked: No
 ---
-
+![[Pasted image 20260224033024.png]]
 # Self-Balancing Tree: AVL Tree
 
 ## 1. Introduction
