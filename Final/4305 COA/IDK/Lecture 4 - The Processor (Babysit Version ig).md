@@ -161,9 +161,3 @@ Why don't we use this in modern computers?
 *   **Inefficiency:** Fast instructions (like `add`) have to wait for the clock cycle to finish, wasting time.
 
 **Solution:** Pipelining (covered in future lectures).
-```
-
-### How to use this in Obsidian:
-1.  **Install the "Mermaid" plugin** (usually on by default) to see the flow chart in "Step 1".
-2.  Use the **Callouts** (the `> [!NOTE]` blocks) to focus on definitions.
-3.  If you are preparing for an exam, focus heavily on the **Control Signals Table** (Section 5) and the **Execution Traces** (Section 6). The exam usually asks "What are the control signal values for a `sub` instruction?"

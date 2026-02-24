@@ -9,7 +9,7 @@
 ## 1. The Golden Formula
 $$ \text{CPU Time} = \text{Instruction Count} \times \text{CPI} \times \text{Clock Cycle Time} $$
 *   **Instruction Count:** determined by ISA & Compiler.
-*   **CPI:** determined by Hardware Implementation (Here, CPI = 1).
+*   **CPI:** determined by Hardware Implementation (Here, CPI = 1). (Cycle Per Instruction)
 *   **Cycle Time:** determined by the critical path (slowest instruction).
 
 ---
