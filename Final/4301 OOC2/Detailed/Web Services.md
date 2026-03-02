@@ -331,5 +331,60 @@ Public Class Invoice
             objPackage = value
         End Set
     End Property
-End Class
-```
+    End Class
+    ```
+
+    ### Java Implementation (`Invoice.java`)
+
+    > [!example]- Click to see Java JAXB Implementation
+    > In Java, we use the **JAXB (Java Architecture for XML Binding)** library. Like .NET, it uses **Annotations** to tell the code how to map the class to XML.
+    > 
+    > ```java
+    > import javax.xml.bind.annotation.XmlAttribute;
+    > import javax.xml.bind.annotation.XmlElement;
+    > import javax.xml.bind.annotation.XmlRootElement;
+    > 
+    > @XmlRootElement(name = "invoice")
+    > public class Invoice {
+    >     private String name;
+    >     private Address address;
+    >     private ShippingPackage packageObj;
+    > 
+    >     // No-arg constructor required by JAXB
+    >     public Invoice() {}
+    > 
+    >     public Invoice(String name, Address address, ShippingPackage packageObj) {
+    >         this.name = name;
+    >         this.address = address;
+    >         this.packageObj = packageObj;
+    >     }
+    > 
+    >     @XmlAttribute(name = "name")
+    >     public String getName() { return name; }
+    >     public void setName(String name) { this.name = name; }
+    > 
+    >     @XmlElement(name = "address")
+    >     public Address getAddress() { return address; }
+    >     public void setAddress(Address address) { this.address = address; }
+    > 
+    >     @XmlElement(name = "package")
+    >     public ShippingPackage getPackage() { return packageObj; }
+    >     public void setPackage(ShippingPackage packageObj) { this.packageObj = packageObj; }
+    > }
+    > 
+    > // Helper Classes (Address & Package)
+    > public class Address {
+    >     @XmlAttribute public String street;
+    >     @XmlAttribute public String city;
+    >     @XmlAttribute public String state;
+    >     @XmlAttribute public String zip;
+    >     @XmlAttribute public String country;
+    > }
+    > 
+    > public class ShippingPackage {
+    >     @XmlAttribute public String description;
+    >     @XmlAttribute public int weight;
+    >     @XmlAttribute public boolean priority;
+    >     @XmlAttribute public boolean insured;
+    > }
+    > ```
