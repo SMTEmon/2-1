@@ -73,12 +73,22 @@ Every object in Java has a **lock**. Synchronization ensures only one thread can
 ### Synchronized Blocks
 You can lock on a specific object instead of a whole method:
 ```java
-synchronized(myInstance) {
+synchronized(myInstance) { // myInstance is the object whos key u r gonna grab,
+							// if available
     // critical section
 }
 ```
 
----
+```java
+public synchronized void deposit(int amount) { // kinda like synchronized(this)
+							// locks its own key
+	this.balance += amount;
+}
+```
+
+These two are exactly the same thing. Adding synchronized to a method header is just a shorter way of wrapping the whole method body in synchronized(this).
+
+
 
 ## 5. Inter-Thread Communication
 Threads communicate using `wait()`, `notify()`, and `notifyAll()`. 

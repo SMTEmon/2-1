@@ -1,15 +1,22 @@
-***
+---
+topics:
+  - Multithreading
+  - Concurrency
+  - Synchronization
+  - Locks
+  - Inter-Thread Communication
+language: Java
+tags:
+  - java/multithreading
+---
 
 # Java Multithreading & Concurrency
 
-> [!info] Metadata
-> **Topics**: Multithreading, Concurrency, Synchronization, Locks, Inter-Thread Communication
-> **Language**: Java
-
 ## 1. Introduction to Threads
-**Multithreading** allows a program to perform **multiple tasks concurrently** within a single process. 
-* A **Process** is a program in execution (heavyweight, independent memory).
-* A **Thread** is a single sequential flow of control within a process (a "lightweight process").
+**[[Multithreading]]** allows a program to perform **multiple tasks concurrently** within a single process. 
+
+* A **[[Process]]** is a program in execution (heavyweight, independent memory).
+* A **[[Thread]]** is a single sequential flow of control within a process (a "lightweight process").
 * **Memory Sharing**: Unlike processes, multiple threads belonging to the same process share the same memory space (heap), but each thread has its own execution call stack.
 
 ### Why do we need threads?
@@ -85,6 +92,7 @@ public class MainClass {
 A thread in Java goes through several states, managed by the JVM.
 
 ```mermaid
+
 stateDiagram-v2
     [*] --> New: Thread object created
     New --> Runnable: start() called
@@ -94,6 +102,7 @@ stateDiagram-v2
     Waiting/Blocked --> Runnable: notify(), notifyAll(), sleep finishes, lock acquired
     Running --> Dead: run() method finishes
     Dead --> [*]
+
 ```
 
 1. **New**: A `Thread` object has been created, but `start()` has not been called yet.
@@ -124,6 +133,7 @@ Thread t = new Thread(new MyRunnable());
 t.setPriority(Thread.MAX_PRIORITY); // Set priority to 10
 t.start();
 ```
+
 > [!info] Note on Priority
 > Setting priority is **not a guarantee**. The underlying OS thread scheduler ultimately decides the execution order. It is just a hint.
 
@@ -151,8 +161,34 @@ class NameRunnable implements Runnable {
 }
 ```
 
-### 2. `Thread.yield()`
+### 2. Thread.yield()
 A hint to the scheduler that the current thread is willing to yield its current use of a processor. It moves the thread from **Running** back to **Runnable** to allow other threads of the *same priority* to get their turn.
+
+> [!example]- Click to see Example & Explanation: Thread.yield()
+> ```java
+> class MyThread extends Thread {
+>     public void run() {
+>         for (int i = 0; i < 5; i++) {
+>             System.out.println(Thread.currentThread().getName() + " in control");
+>             // Give a chance to other threads
+>             Thread.yield();
+>         }
+>     }
+> }
+> 
+> public class YieldExample {
+>     public static void main(String[] args) {
+>         MyThread t1 = new MyThread();
+>         MyThread t2 = new MyThread();
+>         t1.start();
+>         t2.start();
+>     }
+> }
+> ```
+> 
+> **What happens here?**
+> - When `t1` calls `yield()`, it tells the JVM: *"I've done a bit of work, I'm okay with stepping back to the 'Ready' line to let `t2` have a go."*
+> - **Important**: This is just a **hint**. The scheduler might ignore it and let `t1` keep running immediately. It does **not** make the thread sleep or block; it just moves it back to the "Runnable" pool.
 
 ### 3. `join()`
 Lets one thread "join onto the end" of another thread. If thread `A` calls `B.join()`, thread `A` will pause execution and wait until thread `B` is completely dead before resuming.
@@ -170,7 +206,7 @@ System.out.println("t1 has finished. Main thread resuming.");
 
 ## 6. Synchronization (Thread Safety)
 
-When multiple threads share access to the same memory/objects, we run into **Race Conditions**. 
+When multiple threads share access to the same memory/objects, we run into **[[Race Conditions]]**. 
 
 ### The Race Condition Problem
 Imagine a `Counter` class being accessed by two threads at the same time.
@@ -228,11 +264,12 @@ public class Counter {
     }
 }
 ```
+
 > [!danger] Common Synchronization Mistake
 > If you have one `static synchronized` method and one non-static `synchronized` method, **they do not block each other**.
 > * The static method places a lock on the `Class` object (`Counter.class`).
 > * The non-static method places a lock on the `Instance` object (`this`).
-> Because they lock on *different objects*, two threads can execute them simultaneously, potentially causing a race condition on shared static data.
+> Because they lock on *different objects*, two threads can execute them simultaneously, potentially causing a [[Race Conditions|race condition]] on shared static data.
 
 ---
 
@@ -253,63 +290,65 @@ To achieve this without race conditions, we use `wait()` and `notify()`.
 
 ### Example: Calculator and Reader
 
-**The Calculator Thread (Does the work and notifies):**
-```java
-class Calculator extends Thread {
-    int total;
+> [!example]- Click to see Example Code & Explanation: wait/notify
+> **The Calculator Thread (Does the work and notifies):**
+> ```java
+> class Calculator extends Thread {
+>     int total;
+> 
+>     @Override
+>     public void run() {
+>         synchronized(this) { // Obtain lock on itself
+>             for(int i = 0; i < 100; i++) {
+>                 total += i;
+>             }
+>             // Work is done, wake up any threads waiting on this Calculator object
+>             notifyAll(); 
+>         }
+>     }
+> }
+> ```
+> 
+> **The Reader Thread (Waits for the calculation):**
+> ```java
+> class Reader extends Thread {
+>     Calculator c;
+> 
+>     public Reader(Calculator calc) {
+>         this.c = calc;
+>     }
+> 
+>     @Override
+>     public void run() {
+>         // Must obtain the lock on the Calculator object to wait on it
+>         synchronized(c) { 
+>             try {
+>                 System.out.println("Waiting for calculation...");
+>                 c.wait(); // Releases the lock on 'c' and pauses execution
+>             } catch (InterruptedException e) {
+>                 e.printStackTrace();
+>             }
+>             System.out.println("Total is: " + c.total);
+>         }
+>     }
+> }
+> 
+> // Main class to run it
+> public class Main {
+>     public static void main(String[] args) {
+>         Calculator calculator = new Calculator();
+> 
+>         // Start 3 readers waiting on the same calculator
+>         new Reader(calculator).start();
+>         new Reader(calculator).start();
+>         new Reader(calculator).start();
+> 
+>         // Start the calculator
+>         calculator.start();
+>     }
+> }
+> ```
 
-    @Override
-    public void run() {
-        synchronized(this) { // Obtain lock on itself
-            for(int i = 0; i < 100; i++) {
-                total += i;
-            }
-            // Work is done, wake up any threads waiting on this Calculator object
-            notifyAll(); 
-        }
-    }
-}
-```
-
-**The Reader Thread (Waits for the calculation):**
-```java
-class Reader extends Thread {
-    Calculator c;
-
-    public Reader(Calculator calc) {
-        this.c = calc;
-    }
-
-    @Override
-    public void run() {
-        // Must obtain the lock on the Calculator object to wait on it
-        synchronized(c) { 
-            try {
-                System.out.println("Waiting for calculation...");
-                c.wait(); // Releases the lock on 'c' and pauses execution
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            System.out.println("Total is: " + c.total);
-        }
-    }
-}
-
-// Main class to run it
-public class Main {
-    public static void main(String[] args) {
-        Calculator calculator = new Calculator();
-        
-        // Start 3 readers waiting on the same calculator
-        new Reader(calculator).start();
-        new Reader(calculator).start();
-        new Reader(calculator).start();
-        
-        // Start the calculator
-        calculator.start();
-    }
-}
-```
 > [!info] `sleep()` vs `wait()`
 > * `Thread.sleep(ms)`: Thread goes to sleep but **KEEPS the lock**.
 > * `object.wait()`: Thread goes to sleep and **RELEASES the lock** so other threads can use the object.
@@ -318,52 +357,177 @@ public class Main {
 
 ## 8. Thread Deadlock
 
-**Deadlock** occurs when two or more threads are blocked forever, each waiting for the other's lock. 
+**[[Deadlock]]** occurs when two or more threads are blocked forever, each waiting for a lock held by the other. It is a "timing trap" that causes your program to hang indefinitely.
 
-### Deadlock Scenario
-* Thread 1 acquires the lock for `Resource A`.
-* Thread 2 acquires the lock for `Resource B`.
-* Thread 1 needs `Resource B` to finish, so it waits.
-* Thread 2 needs `Resource A` to finish, so it waits.
-* **Result**: Neither can run until the other gives up its lock. They sit there forever.
+### The Deadlock Scenario (The "Circle of Waiting")
 
-### Code Example (Deadlock Risk)
+```mermaid
 
-```java
-public class DeadlockRisk {
-    private static class Resource {
-        public int value;
-    }
+graph TD
+    T1[Thread 1] -- holds --> RA(Resource A)
+    T2[Thread 2] -- holds --> RB(Resource B)
+    T1 -- wants --> RB
+    T2 -- wants --> RA
+    style T1 fill:#f96,stroke:#333
+    style T2 fill:#69f,stroke:#333
+    style RA fill:#dfd
+    style RB fill:#dfd
 
-    private Resource resourceA = new Resource();
-    private Resource resourceB = new Resource();
-
-    // Thread 1 calls this
-    public int read() {
-        synchronized(resourceA) { // Locks A
-            // Thread pauses here... Thread 2 locks B
-            synchronized(resourceB) { // Tries to lock B (Blocked!)
-                return resourceB.value + resourceA.value;
-            }
-        }
-    }
-
-    // Thread 2 calls this
-    public void write(int a, int b) {
-        synchronized(resourceB) { // Locks B
-            // Thread pauses here... Thread 1 locked A
-            synchronized(resourceA) { // Tries to lock A (Blocked!)
-                resourceA.value = a;
-                resourceB.value = b;
-            }
-        }
-    }
-}
 ```
 
-### How to prevent Deadlock:
-1. **Lock Ordering**: Ensure that all threads acquire locks in the exact same order (e.g., always lock A, then lock B).
-2. **Timeouts**: Use concurrency utilities (like `ReentrantLock.tryLock(timeout)`) that give up if a lock isn't acquired within a certain timeframe.
+1. **Thread 1** acquires the lock for `Resource A`.
+2. **Thread 2** acquires the lock for `Resource B`.
+3. **Thread 1** needs `Resource B` to finish, so it waits for Thread 2 to release it.
+4. **Thread 2** needs `Resource A` to finish, so it waits for Thread 1 to release it.
+5. **Result**: Neither thread will ever release the lock they already hold because they are waiting for the other.
+
+### Code Example: The Deadlock Risk
+
+> [!bug]- Click to see Example Code: DeadlockRisk
+> ```java
+> public class DeadlockRisk {
+>     private static class Resource {
+>         public int value;
+>     }
+> 
+>     private Resource resourceA = new Resource();
+>     private Resource resourceB = new Resource();
+> 
+>     // Thread 1 calls this
+>     public int read() {
+>         synchronized(resourceA) { // Locks A
+>             System.out.println(Thread.currentThread().getName() + " locked A, waiting for B...");
+>             synchronized(resourceB) { // Tries to lock B (Blocked if T2 holds it)
+>                 return resourceB.value + resourceA.value;
+>             }
+>         }
+>     }
+> 
+>     // Thread 2 calls this
+>     public void write(int a, int b) {
+>         synchronized(resourceB) { // Locks B
+>             System.out.println(Thread.currentThread().getName() + " locked B, waiting for A...");
+>             synchronized(resourceA) { // Tries to lock A (Blocked if T1 holds it)
+>                 resourceA.value = a;
+>                 resourceB.value = b;
+>             }
+>         }
+>     }
+> 
+>     public static void main(String[] args) {
+>         DeadlockRisk risk = new DeadlockRisk();
+> 
+>         // Thread 1: Tries to read
+>         new Thread(() -> risk.read(), "Thread-1").start();
+> 
+>         // Thread 2: Tries to write
+>         new Thread(() -> risk.write(10, 20), "Thread-2").start();
+>     }
+> }
+> ```
+
+> [!info]- Deep Dive: How the Locking Works
+> To understand the [[Deadlock]] above, you must understand the rules of Java's **Monitor Locks**:
+> 
+> 1. **The "One Key" Rule**: Every object in Java has a single "intrinsic lock." Think of it as a **room with only one key**.
+> 2. **`synchronized(obj)` = Grabbing the Key**: 
+>    - When a thread hits this line, it checks if the key for `obj` is available.
+>    - If **YES**, it takes the key and enters the `{ }` block.
+>    - If **NO**, the thread **freezes/waits** right there until the key is returned.
+> 3. **Holding the Key**: While the thread is inside the `{ }` block, it **keeps the key in its pocket**. No other thread can enter *any* code that requires that same key.
+> 4. **Releasing the Key**: The key is only "put back" when the thread reaches the final closing brace `}` of the `synchronized` block.
+> 5. **The Nested Lock Trap**: In the `DeadlockRisk` example, the threads use **nested blocks**. This means a thread is trying to hold **two keys at the same time**.
+>    - **Thread 1** grabs Key A.
+>    - While **holding Key A**, it tries to grab Key B.
+>    - If it can't get Key B, it waits... but it **refuses to let go of Key A** while it waits.
+>    - This "refusal to let go" while waiting for another lock is what creates the infinite hang.
+
+> [!info]- The "Play-by-Play" Breakdown
+> 1. **Thread 1** enters `read()` and grabs the "key" for **A**.
+> 2. **Thread 2** enters `write()` and grabs the "key" for **B**.
+> 3. **Thread 1** reaches the inner `synchronized(resourceB)`. It sees Thread 2 has the key, so it **stops and waits**.
+> 4. **Thread 2** reaches the inner `synchronized(resourceA)`. It sees Thread 1 has the key, so it **stops and waits**.
+> 5. Both threads are now "parked" forever.
+
+### How to Prevent Deadlock
+
+#### 1. Lock Ordering (The Best Solution)
+Always acquire locks in the **exact same order** across all threads. If both threads tried to lock **A** first and then **B**, the deadlock would be impossible.
+
+> [!example]- Click to see Example Code: Lock Ordering Fix
+> ```java
+> // Thread 2 is "Fixed" by matching Thread 1's lock order
+> public void writeFixed(int a, int b) {
+>     synchronized(resourceA) { // Lock A FIRST
+>         synchronized(resourceB) { // Lock B SECOND
+>             resourceA.value = a;
+>             resourceB.value = b;
+>         }
+>     }
+> }
+> ```
+
+#### 2. Avoid Nested Locks
+Try to avoid locking more than one object at a time. If you don't need both locks simultaneously, don't hold them both.
+
+> [!example]- Click to see Example: Avoiding Nested Locks
+> Instead of holding Lock A while waiting for Lock B, perform your work in separate steps:
+> 
+> ```java
+> // BAD: Holding A while waiting for B
+> synchronized(resourceA) {
+>     int val = resourceA.value;
+>     synchronized(resourceB) {
+>         resourceB.value = val;
+>     }
+> }
+> 
+> // BETTER: No nested locks
+> int tempVal;
+> synchronized(resourceA) {
+>     tempVal = resourceA.value; // Get data and release lock immediately
+> }
+> 
+> synchronized(resourceB) {
+>     resourceB.value = tempVal; // Use data in the second lock
+> }
+> ```
+
+#### 3. Use `tryLock()`
+Instead of `synchronized`, use `ReentrantLock.tryLock()`. This allows a thread to say: *"I'll try to get the lock for 5 seconds. If I can't, I'll give up and try again later."* This breaks the "forever" part of the deadlock.
+
+> [!example]- Click to see Example: Using tryLock() with Timeouts
+> This approach uses the `java.util.concurrent.locks` package instead of the `synchronized` keyword.
+> 
+> ```java
+> import java.util.concurrent.locks.ReentrantLock;
+> import java.util.concurrent.TimeUnit;
+> 
+> public class SafeLocking {
+>     private final ReentrantLock lockA = new ReentrantLock();
+>     private final ReentrantLock lockB = new ReentrantLock();
+> 
+>     public void safeMethod() throws InterruptedException {
+>         // Try to get Lock A for 50 milliseconds
+>         if (lockA.tryLock(50, TimeUnit.MILLISECONDS)) {
+>             try {
+>                 // Try to get Lock B for 50 milliseconds
+>                 if (lockB.tryLock(50, TimeUnit.MILLISECONDS)) {
+>                     try {
+>                         // Successfully got both locks! Do work here...
+>                     } finally {
+>                         lockB.unlock(); // Always unlock in finally
+>                     }
+>                 } else {
+>                     System.out.println("Could not get Lock B, giving up Lock A to prevent deadlock");
+>                 }
+>             } finally {
+>                 lockA.unlock();
+>             }
+>         }
+>     }
+> }
+> ```
 
 ---
 ## Further Reading
