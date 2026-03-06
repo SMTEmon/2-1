@@ -61,7 +61,7 @@ Instead of calculating these in every stage, we **calculate all 7 control signal
 ---
 
 ## 4. Pipeline Hazards
-Pipelining is great until instructions get in each other's way. This is called a **Hazard**. There are three main types (your lecture focuses heavily on Data Hazards).
+Pipelining is great until instructions get in each other's way. This is called a **Hazard**. There are three main types.
 
 ### A. Structural Hazards
 The hardware can't support the combination of instructions. 
