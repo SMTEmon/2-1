@@ -8,3 +8,4 @@ sync_to_cloud.ps1
 watch_git.ps1
 sync_hook.log
 .exe
+/copilot/
