@@ -1,4 +1,4 @@
-**Tags:** #data-structures #algorithms #heaps #priority-queue #binary-tree #complexity
+ **Tags:** #data-structures #algorithms #heaps #priority-queue #binary-tree #complexity
 **Course:** CSE 4303 - Data Structures
 **Reference:** *Data Structures Using C*, Reema Thareja (Chapter 12)
 Checked: No

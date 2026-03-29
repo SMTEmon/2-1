@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Linear Algebra — Exam Survival Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #13161e;
+    --surface2: #1a1e2a;
+    --border: #252a38;
+    --accent: #7ee8a2;
+    --accent2: #5bc8f5;
+    --accent3: #f7b731;
+    --accent4: #ff6b6b;
+    --text: #e8eaf0;
+    --text-dim: #8b90a0;
+    --text-dimmer: #4a5060;
+    --l17: #a78bfa;
+    --l18: #34d399;
+    --l16: #60a5fa;
+    --bonus: #fb923c;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Lora', Georgia, serif;
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, #0d0f14 0%, #111827 50%, #0d1117 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 60px 40px 50px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(126,232,162,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -40px; left: 20%;
+    width: 400px; height: 200px;
+    background: radial-gradient(ellipse, rgba(91,200,245,0.05) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .course-tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+    display: inline-block;
+  }
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 800;
+    line-height: 1.1;
+    color: #fff;
+    margin-bottom: 16px;
+  }
+  h1 span { color: var(--accent); }
+  .hero-sub {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    color: var(--text-dim);
+    margin-top: 12px;
+  }
+  .pill-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 24px;
+  }
+  .pill {
+    padding: 5px 14px;
+    border-radius: 100px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    border: 1px solid;
+  }
+  .pill-l16 { border-color: var(--l16); color: var(--l16); background: rgba(96,165,250,0.08); }
+  .pill-l17 { border-color: var(--l17); color: var(--l17); background: rgba(167,139,250,0.08); }
+  .pill-l18 { border-color: var(--l18); color: var(--l18); background: rgba(52,211,153,0.08); }
+  .pill-bonus { border-color: var(--bonus); color: var(--bonus); background: rgba(251,146,60,0.08); }
+
+  /* LAYOUT */
+  .container { max-width: 900px; margin: 0 auto; padding: 0 24px; }
+  .content { padding: 48px 24px 80px; max-width: 900px; margin: 0 auto; }
+
+  /* SECTION HEADERS */
+  .section-block {
+    margin-bottom: 56px;
+    animation: fadeUp 0.5s ease both;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .section-label {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+  .lecture-badge {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+  .badge-l16 { background: rgba(96,165,250,0.15); color: var(--l16); border: 1px solid rgba(96,165,250,0.3); }
+  .badge-l17 { background: rgba(167,139,250,0.15); color: var(--l17); border: 1px solid rgba(167,139,250,0.3); }
+  .badge-l18 { background: rgba(52,211,153,0.15); color: var(--l18); border: 1px solid rgba(52,211,153,0.3); }
+  .badge-bonus { background: rgba(251,146,60,0.15); color: var(--bonus); border: 1px solid rgba(251,146,60,0.3); }
+
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  /* CARDS */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px 28px;
+    margin-bottom: 16px;
+    position: relative;
+  }
+  .card-l16 { border-left: 3px solid var(--l16); }
+  .card-l17 { border-left: 3px solid var(--l17); }
+  .card-l18 { border-left: 3px solid var(--l18); }
+  .card-bonus { border-left: 3px solid var(--bonus); background: rgba(251,146,60,0.04); }
+
+  .card h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 12px;
+  }
+  .card p { color: var(--text-dim); font-size: 0.95rem; margin-bottom: 8px; }
+  .card p:last-child { margin-bottom: 0; }
+
+  /* MATH BLOCK */
+  .math-box {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 14px 0;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.88rem;
+    color: var(--accent2);
+    overflow-x: auto;
+    white-space: pre;
+    line-height: 1.8;
+  }
+
+  /* STEPS */
+  .steps { list-style: none; counter-reset: step; }
+  .steps li {
+    counter-increment: step;
+    position: relative;
+    padding-left: 44px;
+    margin-bottom: 14px;
+    color: var(--text-dim);
+    font-size: 0.95rem;
+  }
+  .steps li::before {
+    content: counter(step);
+    position: absolute;
+    left: 0; top: 1px;
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .steps li strong { color: var(--text); }
+
+  /* HIGHLIGHT */
+  .hl { color: var(--accent); font-weight: 500; }
+  .hl-purple { color: var(--l17); font-weight: 500; }
+  .hl-green { color: var(--l18); font-weight: 500; }
+  .hl-orange { color: var(--bonus); font-weight: 500; }
+  .hl-blue { color: var(--l16); font-weight: 500; }
+
+  /* ALERT / CONCEPTUAL BOX */
+  .insight {
+    background: linear-gradient(135deg, rgba(251,146,60,0.06), rgba(251,146,60,0.02));
+    border: 1px solid rgba(251,146,60,0.25);
+    border-radius: 10px;
+    padding: 18px 22px;
+    margin: 16px 0;
+  }
+  .insight-head {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--bonus);
+    margin-bottom: 8px;
+  }
+  .insight p { color: var(--text-dim); font-size: 0.93rem; }
+
+  /* TABLE */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    margin: 14px 0;
+  }
+  th {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-dimmer);
+    padding: 10px 14px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  td {
+    padding: 10px 14px;
+    border-bottom: 1px solid rgba(37,42,56,0.5);
+    color: var(--text-dim);
+    vertical-align: top;
+  }
+  td:first-child { color: var(--text); font-weight: 500; }
+
+  /* GRID */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media(max-width: 600px) { .two-col { grid-template-columns: 1fr; } }
+
+  /* DIVIDER */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 48px 0;
+  }
+
+  /* NAV TOC */
+  .toc {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px 28px;
+    margin-bottom: 48px;
+  }
+  .toc-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-dimmer);
+    margin-bottom: 16px;
+  }
+  .toc a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text-dim);
+    text-decoration: none;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(37,42,56,0.5);
+    transition: color 0.2s;
+  }
+  .toc a:last-child { border-bottom: none; }
+  .toc a:hover { color: var(--text); }
+  .toc-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+  /* FORMULA GRID */
+  .formula-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 14px 0; }
+  @media(max-width: 550px) { .formula-grid { grid-template-columns: 1fr; } }
+  .formula-item {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+  }
+  .formula-item .label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--text-dimmer);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .formula-item .val {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--accent2);
+  }
+
+  /* CHECKLIST */
+  .checklist { list-style: none; }
+  .checklist li {
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(37,42,56,0.5);
+    color: var(--text-dim);
+    font-size: 0.93rem;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .checklist li:last-child { border-bottom: none; }
+  .check-icon { color: var(--accent); flex-shrink: 0; margin-top: 2px; }
+
+  /* EXAM STRATEGY BOX */
+  .strategy {
+    background: linear-gradient(135deg, rgba(126,232,162,0.06), rgba(91,200,245,0.04));
+    border: 1px solid rgba(126,232,162,0.2);
+    border-radius: 12px;
+    padding: 28px 32px;
+    margin: 32px 0;
+  }
+  .strategy h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+
+  code {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.85em;
+    background: var(--surface2);
+    padding: 2px 7px;
+    border-radius: 4px;
+    color: var(--accent2);
+  }
+
+  .stagger-1 { animation-delay: 0.05s; }
+  .stagger-2 { animation-delay: 0.1s; }
+  .stagger-3 { animation-delay: 0.15s; }
+  .stagger-4 { animation-delay: 0.2s; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="container">
+    <div class="course-tag">Math 4341 · IUT · Linear Algebra</div>
+    <h1>Ace Tomorrow's <span>Exam</span></h1>
+    <p style="color: var(--text-dim); font-size: 1rem; max-width: 520px; margin-top: 10px;">
+      A structured combat guide covering Lectures 16–18: Eigenvalues, Diagonalization, Symmetric Matrices & SVD — with conceptual depth for those bonus marks.
+    </p>
+    <div class="pill-row">
+      <span class="pill pill-l16">L16 · Eigenvalues & Eigenvectors</span>
+      <span class="pill pill-l17">L17 · Diagonalization</span>
+      <span class="pill pill-l18">L18 · Symmetric Matrices & SVD</span>
+      <span class="pill pill-bonus">★ Conceptual Extras</span>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- TOC -->
+  <div class="toc">
+    <div class="toc-title">Contents</div>
+    <a href="#l16"><span class="toc-dot" style="background:var(--l16)"></span>L16 — Eigenvalues & Eigenvectors</a>
+    <a href="#l17"><span class="toc-dot" style="background:var(--l17)"></span>L17 — Diagonalization of Matrices</a>
+    <a href="#l18"><span class="toc-dot" style="background:var(--l18)"></span>L18 — Symmetric Matrices & SVD</a>
+    <a href="#conceptual"><span class="toc-dot" style="background:var(--bonus)"></span>★ Conceptual Bonus Questions</a>
+    <a href="#strategy"><span class="toc-dot" style="background:var(--accent)"></span>Exam Strategy</a>
+  </div>
+
+  <!-- ===== L16 ===== -->
+  <div class="section-block stagger-1" id="l16">
+    <div class="section-label">
+      <span class="lecture-badge badge-l16">Lecture 16</span>
+      <h2 class="section-title">Eigenvalues & Eigenvectors</h2>
+    </div>
+
+    <div class="card card-l16">
+      <h3>The Core Idea</h3>
+      <p>For a matrix <span class="hl-blue">A</span>, an eigenvector <span class="hl-blue">x</span> is a special vector that only gets <em>scaled</em> (not rotated) when multiplied by A. The scaling factor is the eigenvalue <span class="hl-blue">λ</span>.</p>
+      <div class="math-box">Ax = λx   ⟹   (A − λI)x = 0</div>
+      <p>For this to have a <strong>non-trivial</strong> solution (x ≠ 0), the matrix (A − λI) must be <strong>singular</strong>:</p>
+      <div class="math-box">det(A − λI) = 0    ← the characteristic equation</div>
+    </div>
+
+    <div class="card card-l16">
+      <h3>Step-by-Step: Finding Eigenvalues & Eigenvectors</h3>
+      <ol class="steps">
+        <li>Write the characteristic equation: <strong>det(A − λI) = 0</strong></li>
+        <li>Expand and solve for λ (you get the eigenvalues)</li>
+        <li>For each λ, substitute back into <strong>(A − λI)x = 0</strong></li>
+        <li>Row reduce and express the free variable as 1 to get the eigenvector</li>
+      </ol>
+      <p style="margin-top: 12px; color: var(--text-dimmer); font-size: 0.85rem;">From the quiz: for a 2×2 matrix [a b; c d], use the shortcut:</p>
+      <div class="math-box">λ² − trace(A)·λ + det(A) = 0</div>
+    </div>
+
+    <div class="two-col">
+      <div class="card card-l16">
+        <h3>Key Properties</h3>
+        <ul class="checklist">
+          <li><span class="check-icon">→</span><span>An n×n matrix has <strong>n eigenvalues</strong> (counted with multiplicity, possibly complex)</span></li>
+          <li><span class="check-icon">→</span><span><strong>Product</strong> of all eigenvalues = det(A)</span></li>
+          <li><span class="check-icon">→</span><span><strong>Sum</strong> of all eigenvalues = trace(A)</span></li>
+          <li><span class="check-icon">→</span><span>If A is <strong>triangular</strong>, eigenvalues are the diagonal entries</span></li>
+        </ul>
+      </div>
+      <div class="card card-l16">
+        <h3>Adding kI to A</h3>
+        <p>If A has eigenvalue λ with eigenvector x, then <span class="hl-blue">(A + kI)</span> has eigenvalue <span class="hl-blue">λ + k</span> with the <strong>same</strong> eigenvector x.</p>
+        <div class="math-box">(A + kI)x = Ax + kIx
+       = λx + kx
+       = (λ+k)x</div>
+        <p style="font-size:0.85rem; color: var(--text-dimmer);">The eigenvectors don't change — only eigenvalues shift.</p>
+      </div>
+    </div>
+
+    <div class="card card-l16">
+      <h3>Eigenvalues of Special Matrices</h3>
+      <table>
+        <tr><th>Matrix Type</th><th>Eigenvalues</th><th>Eigenvectors</th></tr>
+        <tr>
+          <td>Projection P onto line</td>
+          <td>λ = 1 (in-plane), λ = 0 (perpendicular)</td>
+          <td>Vectors in the plane; vectors ⊥ to plane</td>
+        </tr>
+        <tr>
+          <td>Reflection R across plane</td>
+          <td>λ = 1 (in-plane), λ = −1 (normal)</td>
+          <td>Vectors in mirror plane; normal vector</td>
+        </tr>
+        <tr>
+          <td>Rotation Q by angle θ</td>
+          <td>λ = e^(iθ), e^(−iθ) — complex unless θ = 0, π</td>
+          <td>No real eigenvectors (except at 0° or 180°)</td>
+        </tr>
+      </table>
+      <div class="insight" style="margin-top:14px">
+        <div class="insight-head">⚡ Geometric Intuition</div>
+        <p>A <strong>negative eigenvalue</strong> means the eigenvector gets flipped (points in the opposite direction). For example, reflection has λ = −1 for the normal vector — multiplying by R reverses it.</p>
+      </div>
+    </div>
+
+    <div class="card card-l16">
+      <h3>Not All Matrices Have n Independent Eigenvectors</h3>
+      <p>When an eigenvalue is <strong>repeated</strong> (algebraic multiplicity > 1), there may be fewer independent eigenvectors than expected. This is the case for <strong>defective matrices</strong> — you can't diagonalize them.</p>
+      <div class="math-box">Example: A = [2 1; 0 2]  →  λ = 2 (repeated)
+Only one eigenvector: [1; 0] — NOT diagonalizable!</div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ===== L17 ===== -->
+  <div class="section-block stagger-2" id="l17">
+    <div class="section-label">
+      <span class="lecture-badge badge-l17">Lecture 17</span>
+      <h2 class="section-title">Diagonalization of Matrices</h2>
+    </div>
+
+    <div class="card card-l17">
+      <h3>The Big Idea: A = SΛS⁻¹</h3>
+      <p>If A has <strong>n independent eigenvectors</strong>, you can write:</p>
+      <div class="math-box">A = S Λ S⁻¹
+
+where:
+  S = matrix of eigenvectors as columns  [v₁ | v₂ | ... | vₙ]
+  Λ = diagonal matrix of eigenvalues     diag(λ₁, λ₂, ..., λₙ)
+  S⁻¹ = inverse of the eigenvector matrix</div>
+      <p>This works because: <code>AS = SΛ</code> — each column of AS equals each column of SΛ.</p>
+    </div>
+
+    <div class="card card-l17">
+      <h3>When Can You Diagonalize?</h3>
+      <ul class="checklist">
+        <li><span class="check-icon">✓</span><span>A must have <strong>n linearly independent eigenvectors</strong></span></li>
+        <li><span class="check-icon">✓</span><span>S must be <strong>invertible</strong> (its columns must be independent)</span></li>
+        <li><span class="check-icon">✗</span><span>Two identical eigenvectors → two identical columns in S → S not invertible → <strong>cannot diagonalize</strong></span></li>
+        <li><span class="check-icon">✓</span><span>Matrices with <strong>n distinct eigenvalues</strong> are always diagonalizable</span></li>
+      </ul>
+    </div>
+
+    <div class="card card-l17">
+      <h3>Powers of A Made Easy</h3>
+      <p>Diagonalization shines when computing <span class="hl-purple">Aᵏ</span>:</p>
+      <div class="math-box">Aᵏ = S Λᵏ S⁻¹
+
+And since Λ is diagonal:
+  Λᵏ = diag(λ₁ᵏ, λ₂ᵏ, ..., λₙᵏ)</div>
+      <p>This means raising a matrix to the 100th power just means raising each eigenvalue to the 100th power!</p>
+    </div>
+
+    <div class="card card-l17">
+      <h3>★ Generating Sequence Terms (e.g. Fibonacci)</h3>
+      <p>Any linear recurrence <code>uₙ₊₁ = Auₙ</code> has solution <code>uₙ = Aⁿu₀</code>. With diagonalization:</p>
+      <ol class="steps">
+        <li>Write the recurrence as a matrix equation: e.g. Fibonacci → <strong>u = [Fₙ₊₁; Fₙ]</strong>, A = [1 1; 1 0]</li>
+        <li>Find eigenvalues λ₁, λ₂ of A (for Fibonacci: φ = (1+√5)/2 and ψ = (1−√5)/2)</li>
+        <li>Find eigenvectors, build S and Λ</li>
+        <li>Express u₀ = S·c (solve for constants c₁, c₂)</li>
+        <li><strong>uₙ = c₁λ₁ⁿv₁ + c₂λ₂ⁿv₂</strong></li>
+      </ol>
+      <div class="math-box">Fibonacci closed form:
+Fₙ = (φⁿ − ψⁿ) / √5
+
+where φ = (1+√5)/2 ≈ 1.618  (golden ratio)
+      ψ = (1−√5)/2 ≈ −0.618</div>
+      <div class="insight">
+        <div class="insight-head">⚡ Exam Pattern</div>
+        <p>Your exam is likely to give a 2×2 matrix and a recurrence relation. Set up <code>uₙ = Aⁿu₀</code>, diagonalize A, and express the nth term using eigenvalues. The answer always takes the form <strong>c₁λ₁ⁿ + c₂λ₂ⁿ</strong>.</p>
+      </div>
+    </div>
+
+    <div class="card card-l17">
+      <h3>Worked Mini-Example</h3>
+      <p>Find a formula for the nth term of: <code>aₙ = 3aₙ₋₁ − 2aₙ₋₂</code>, with a₀ = 0, a₁ = 1</p>
+      <div class="math-box">Matrix form: [aₙ₊₁]   [3  -2] [aₙ  ]
+             [aₙ  ] = [1   0] [aₙ₋₁]
+
+Eigenvalues: λ² - 3λ + 2 = 0  →  λ₁=2, λ₂=1
+
+Eigenvectors: v₁=[2;1], v₂=[1;1]
+
+u₀ = [1;0] = c₁[2;1] + c₂[1;1]  →  c₁=1, c₂=-1
+
+∴ aₙ = 1·2ⁿ + (-1)·1ⁿ = 2ⁿ − 1</div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ===== L18 ===== -->
+  <div class="section-block stagger-3" id="l18">
+    <div class="section-label">
+      <span class="lecture-badge badge-l18">Lecture 18</span>
+      <h2 class="section-title">Symmetric Matrices & SVD</h2>
+    </div>
+
+    <div class="card card-l18">
+      <h3>Symmetric Matrices: Aᵀ = A</h3>
+      <p>Symmetric matrices have three beautiful special properties:</p>
+      <ul class="checklist">
+        <li><span class="check-icon">1</span><span>All eigenvalues are <strong>real</strong> (even if you'd expect complex)</span></li>
+        <li><span class="check-icon">2</span><span>Eigenvectors for <em>different</em> eigenvalues are <strong>orthogonal</strong></span></li>
+        <li><span class="check-icon">3</span><span>Always has <strong>n independent eigenvectors</strong> — always diagonalizable</span></li>
+      </ul>
+      <div class="insight">
+        <div class="insight-head">⚡ Proof: Eigenvalues are Real</div>
+        <p>Suppose Ax = λx. Take conjugate transpose: x̄ᵀAᵀ = λ̄x̄ᵀ. Since Aᵀ=A, multiply both sides: x̄ᵀAx = λ̄(x̄ᵀx). But also x̄ᵀAx = λ(x̄ᵀx). Since x̄ᵀx = ||x||² > 0, we get <strong>λ = λ̄</strong>, so λ must be real.</p>
+      </div>
+    </div>
+
+    <div class="card card-l18">
+      <h3>Spectral Theorem</h3>
+      <p>Every real symmetric matrix can be decomposed as:</p>
+      <div class="math-box">A = Q Λ Qᵀ
+
+where Q is an ORTHOGONAL matrix of eigenvectors (Qᵀ = Q⁻¹)
+and Λ = diag(λ₁, λ₂, ..., λₙ)</div>
+      <p>This is the <strong>spectral decomposition</strong>. Expanding it gives:</p>
+      <div class="math-box">A = λ₁q₁q₁ᵀ + λ₂q₂q₂ᵀ + ... + λₙqₙqₙᵀ</div>
+      <p>Each term <span class="hl-green">qᵢqᵢᵀ</span> is a <strong>projection matrix</strong> onto the direction of qᵢ. So every symmetric matrix is literally a weighted sum of projection matrices!</p>
+      <div class="insight">
+        <div class="insight-head">⚡ Proof Sketch: Spectral Theorem</div>
+        <p>Since A is symmetric, eigenvectors for distinct eigenvalues are orthogonal (provable by: if Av₁=λ₁v₁ and Av₂=λ₂v₂, then v₁ᵀAv₂ = λ₂(v₁ᵀv₂) = λ₁(v₁ᵀv₂). Since λ₁≠λ₂, we must have v₁ᵀv₂=0). Normalize them → Q is orthogonal → A = QΛQᵀ.</p>
+      </div>
+    </div>
+
+    <div class="card card-l18">
+      <h3>Positive Definite Symmetric Matrices</h3>
+      <p>A symmetric matrix A is <strong>positive definite</strong> iff any of these equivalent conditions hold:</p>
+      <div class="formula-grid">
+        <div class="formula-item">
+          <div class="label">Eigenvalue Test</div>
+          <div class="val">All λᵢ &gt; 0</div>
+        </div>
+        <div class="formula-item">
+          <div class="label">Pivot Test</div>
+          <div class="val">All pivots &gt; 0</div>
+        </div>
+        <div class="formula-item">
+          <div class="label">Energy Test</div>
+          <div class="val">xᵀAx &gt; 0 for all x ≠ 0</div>
+        </div>
+        <div class="formula-item">
+          <div class="label">Determinant Test</div>
+          <div class="val">All upper-left subdeterminants &gt; 0</div>
+        </div>
+      </div>
+      <div class="insight">
+        <div class="insight-head">⚡ Key Insight: Eigenvalues ↔ Pivots</div>
+        <p>For a symmetric matrix, the <strong>signs</strong> of the eigenvalues match the signs of the pivots. (They're generally not equal in value, but their signs agree.) This is the connection: positive definite ⟺ all eigenvalues positive ⟺ all pivots positive.</p>
+      </div>
+    </div>
+
+    <div class="card card-l18">
+      <h3>SVD — Singular Value Decomposition</h3>
+      <p>SVD works for <em>any</em> matrix (even rectangular m×n). It generalizes diagonalization:</p>
+      <div class="math-box">A = U Σ Vᵀ
+
+  U = m×m orthogonal matrix  (left singular vectors)
+  Σ = m×n diagonal matrix    (singular values σ₁ ≥ σ₂ ≥ ... ≥ 0)
+  V = n×n orthogonal matrix  (right singular vectors)</div>
+    </div>
+
+    <div class="card card-l18">
+      <h3>How to Compute SVD — Step by Step</h3>
+      <ol class="steps">
+        <li>Compute <strong>AᵀA</strong> (an n×n symmetric, positive semidefinite matrix)</li>
+        <li>Find eigenvalues of AᵀA: these are <strong>σᵢ² (squared singular values)</strong></li>
+        <li>The eigenvectors of AᵀA are the columns of <strong>V</strong></li>
+        <li>Compute singular values: <strong>σᵢ = √λᵢ</strong></li>
+        <li>Find U columns: <strong>uᵢ = Avᵢ / σᵢ</strong></li>
+        <li>Assemble: A = UΣVᵀ</li>
+      </ol>
+      <div class="math-box">Key relationships:
+  AᵀA = V Σᵀ Uᵀ U Σ Vᵀ = V Σ² Vᵀ  ← eigendecomp of AᵀA
+  AAᵀ = U Σ Vᵀ V Σᵀ Uᵀ = U Σ² Uᵀ  ← eigendecomp of AAᵀ</div>
+    </div>
+
+    <div class="card card-l18">
+      <h3>Geometry of SVD</h3>
+      <p>SVD says every linear transformation A does 3 things in sequence:</p>
+      <div class="math-box">Input → [Vᵀ: rotate/reflect] → [Σ: stretch along axes] → [U: rotate/reflect] → Output</div>
+      <p>The singular values <span class="hl-green">σᵢ</span> tell you the <strong>stretching factors</strong> along each principal direction. The larger σ₁ is relative to σ₂, the more "squished" or rank-one the transformation is.</p>
+      <div class="insight">
+        <div class="insight-head">⚡ Why SVD is Powerful</div>
+        <p>SVD reveals the true geometry of any matrix. The singular values measure the "energy" in each direction. Truncating to the top k singular values gives the <strong>best rank-k approximation</strong> — this is the math behind image compression, PCA, and recommendation systems.</p>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ===== CONCEPTUAL BONUS ===== -->
+  <div class="section-block stagger-4" id="conceptual">
+    <div class="section-label">
+      <span class="lecture-badge badge-bonus">Bonus</span>
+      <h2 class="section-title">Conceptual Curveballs (Bonus Marks)</h2>
+    </div>
+
+    <p style="color: var(--text-dim); margin-bottom: 24px; font-size: 0.95rem;">Sir likes these. They look simple but need deep understanding. Here are the most likely types:</p>
+
+    <div class="card card-bonus">
+      <h3>★ "What happens to the projection matrix if A is scaled?"</h3>
+      <p>From the quiz: if A is replaced by mA, does the projection matrix P change?</p>
+      <div class="math-box">P = A(AᵀA)⁻¹Aᵀ
+
+P' = (mA)((mA)ᵀ(mA))⁻¹(mA)ᵀ
+   = (mA)(m²AᵀA)⁻¹(mAᵀ)
+   = m · (AᵀA)⁻¹ · m⁻² · mAᵀ ... 
+   = A(AᵀA)⁻¹Aᵀ = P  ✓ UNCHANGED</div>
+      <p><strong>Answer:</strong> The projection matrix is invariant to scaling of the subspace. Intuitively, projecting onto a line is projecting onto a line — stretching the line doesn't change which direction you're projecting onto.</p>
+    </div>
+
+    <div class="card card-bonus">
+      <h3>★ "Can a matrix have the same eigenvalues as another but be different?"</h3>
+      <p>Yes! Two matrices can share eigenvalues but have different eigenvectors — they're called <strong>similar matrices</strong> (related by A = PBP⁻¹). Eigenvalues are a property of the transformation, not the representation.</p>
+      <div class="insight">
+        <div class="insight-head">⚡ Deep Insight</div>
+        <p>The characteristic polynomial det(A − λI) only depends on the linear transformation, not the basis. Similar matrices have the same characteristic polynomial → same eigenvalues. But they can act completely differently on vectors.</p>
+      </div>
+    </div>
+
+    <div class="card card-bonus">
+      <h3>★ "Is every diagonalizable matrix symmetric?"</h3>
+      <p><strong>No.</strong> Symmetry → diagonalizable (over reals, with orthogonal eigenvectors). But diagonalizable does NOT imply symmetric. Example: [1 1; 0 2] is diagonalizable (distinct eigenvalues) but not symmetric.</p>
+      <p style="margin-top: 10px;">The special thing about symmetric matrices is that their eigenvectors can be chosen to be <strong>orthonormal</strong> — non-symmetric diagonalizable matrices generally don't have this.</p>
+    </div>
+
+    <div class="card card-bonus">
+      <h3>★ "Why does SVD always exist but eigendecomposition doesn't?"</h3>
+      <p>Eigendecomposition A = SΛS⁻¹ requires A to be square AND have n independent eigenvectors. SVD works because:</p>
+      <ul class="checklist" style="margin-top: 10px;">
+        <li><span class="check-icon">→</span><span><strong>AᵀA</strong> is always symmetric positive semidefinite → always has real, non-negative eigenvalues → singular values always real and non-negative</span></li>
+        <li><span class="check-icon">→</span><span>The U and V are built from eigenvectors of symmetric matrices → always orthogonal</span></li>
+        <li><span class="check-icon">→</span><span>Works for <strong>rectangular</strong> matrices — eigendecomposition requires square</span></li>
+      </ul>
+    </div>
+
+    <div class="card card-bonus">
+      <h3>★ "What does it mean geometrically if λ &lt; 0?"</h3>
+      <p>A negative eigenvalue means the corresponding eigenvector gets <strong>flipped</strong> — it points in the opposite direction after the transformation. The magnitude |λ| still tells you how much it stretches/shrinks, but the direction reverses.</p>
+      <p style="margin-top: 8px;">Example: Reflection matrix has λ = −1 for the normal direction. Multiplying R by the normal vector gives you the negative of that vector.</p>
+    </div>
+
+    <div class="card card-bonus">
+      <h3>★ "What is the relationship between eigenvalues and the determinant/trace?"</h3>
+      <div class="math-box">For A with eigenvalues λ₁, λ₂, ..., λₙ:
+
+  det(A) = λ₁ · λ₂ · ... · λₙ   (product of all eigenvalues)
+  trace(A) = λ₁ + λ₂ + ... + λₙ  (sum of all eigenvalues)
+
+These come directly from expanding det(A − λI):
+  λⁿ − trace(A)λⁿ⁻¹ + ... + (−1)ⁿdet(A) = 0</div>
+      <p>If any eigenvalue is 0, the determinant is 0 → matrix is singular. This is why eigenvalues and invertibility are deeply connected.</p>
+    </div>
+
+    <div class="card card-bonus">
+      <h3>★ "Every symmetric matrix is a combination of projection matrices — explain."</h3>
+      <p>From the Spectral Theorem: A = λ₁q₁q₁ᵀ + λ₂q₂q₂ᵀ + ...</p>
+      <p style="margin-top: 8px;">Each <span class="hl-orange">qᵢqᵢᵀ</span> is the projection matrix onto the 1D subspace spanned by qᵢ. These projections are orthogonal to each other (the qᵢ are orthonormal). So A literally IS a weighted sum of orthogonal rank-1 projectors, with weights equal to the eigenvalues.</p>
+      <p style="margin-top: 8px;">This gives a beautiful geometric picture: A stretches space by λᵢ in the direction of each eigenvector qᵢ.</p>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- EXAM STRATEGY -->
+  <div id="strategy">
+    <div class="strategy">
+      <h3>⚡ Exam Strategy for Tomorrow</h3>
+      <table>
+        <tr><th>Question Type</th><th>Expected From</th><th>Time Budget</th></tr>
+        <tr>
+          <td>Eigenvalues & eigenvectors of 2×2</td>
+          <td>L16 (but covered in SVD context per suggestion)</td>
+          <td>~6 min</td>
+        </tr>
+        <tr>
+          <td>Diagonalization / nth term of sequence</td>
+          <td>L17</td>
+          <td>~8 min</td>
+        </tr>
+        <tr>
+          <td>Symmetric matrices / SVD</td>
+          <td>L18</td>
+          <td>~10 min</td>
+        </tr>
+        <tr>
+          <td>Conceptual / proof-type bonus</td>
+          <td>Any of the above</td>
+          <td>~6 min</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="two-col" style="margin-top: 16px;">
+      <div class="card" style="border-left: 3px solid var(--accent);">
+        <h3>Must-Memorize Formulas</h3>
+        <div class="math-box" style="font-size:0.8rem;">Eigenvalue:  det(A − λI) = 0
+2×2 shortcut: λ² − tr(A)λ + det(A) = 0
+
+Diagonalization: A = SΛS⁻¹
+Powers:         Aᵏ = SΛᵏS⁻¹
+
+Symmetric:  A = QΛQᵀ  (Q orthogonal)
+Spectral:   A = Σ λᵢqᵢqᵢᵀ
+
+SVD:        A = UΣVᵀ
+            AᵀA v = σ²v  →  u = Av/σ</div>
+      </div>
+      <div class="card" style="border-left: 3px solid var(--accent3);">
+        <h3>Common Mistakes to Avoid</h3>
+        <ul class="checklist">
+          <li><span class="check-icon">✗</span><span>Forgetting to check if S is invertible before diagonalizing</span></li>
+          <li><span class="check-icon">✗</span><span>Using eigendecomposition for a rectangular matrix (use SVD instead)</span></li>
+          <li><span class="check-icon">✗</span><span>Confusing σ (singular values) with eigenvalues — σ = √(eigenvalue of AᵀA)</span></li>
+          <li><span class="check-icon">✗</span><span>Not normalizing eigenvectors when building Q for symmetric matrices</span></li>
+          <li><span class="check-icon">✗</span><span>Forgetting: projection matrix eigenvalues are only 0 and 1</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div style="text-align:center; margin-top: 60px; padding-top: 32px; border-top: 1px solid var(--border);">
+    <p style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text-dimmer);">Math 4341 · IUT · Good luck tomorrow 🎯</p>
+  </div>
+</div>
+
+</body>
+</html>
