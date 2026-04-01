@@ -1,3 +1,5 @@
+### [[Solid Points]]
+
 ### 1. Liskov Substitution Principle (LSP)
 
 **Definition:** Subtypes must be substitutable for their base types without altering the correctness of the program.
@@ -155,3 +157,6 @@ public class NotificationService {
     }
 }
 ```
+
+
+[[Solid Points]]
