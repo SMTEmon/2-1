@@ -5,7 +5,7 @@
 
 ---
 
-# Answer Key: Sipser Practice Set
+# Answer Key: Sipser Practice Set (Corrected)
 
 > [!tip] How to Use
 > - Attempt the problem first. Check answers only to verify logic or unblock yourself.
@@ -26,7 +26,11 @@
 >    - $R$ wraps $S$ with symmetric padding. Thus, $w \in L(G)$ iff $w$ has at least one mismatched symmetric pair $\iff w \neq w^R$.
 
 > [!check] Ex 2.13
-> a. **$L(G)$**: $T$ generates strings with exactly one $\#$ and any number of $0$s. $S \to TT$ generates strings with exactly two $\#$s. $U$ generates $\#$ surrounded by equal numbers of $0$s on left and double on right: $0^n \# 0^{2n}$. So $L(G) = \{x\#y\#z \mid x,y,z \in 0^*\} \cup \{0^n \# 0^{2n} \mid n \geq 0\}$.
+> a. **$L(G)$**: 
+>    - $T$ generates strings with exactly one `#` and any number of `0`s: $\{0^i \# 0^j \mid i,j \geq 0\}$.
+>    - $S \to TT$ generates strings with exactly two `#`s: $\{0^i \# 0^j \# 0^k \mid i,j,k \geq 0\}$.
+>    - $U$ generates $\{0^n \# 0^{2n} \mid n \geq 0\}$.
+>    - $L(G) = \{0^i \# 0^j \# 0^k \mid i,j,k \geq 0\} \cup \{0^n \# 0^{2n} \mid n \geq 0\}$.
 > b. **Not regular**: The subset $\{0^n \# 0^{2n}\}$ requires counting, violating pumping lemma for regular languages.
 
 ---
@@ -34,21 +38,24 @@
 ## 2. CFG Construction
 
 > [!example] Ex 2.4
-> a. $S \to A1A1A1A$, $A \to 0A \mid 1A \mid \epsilon$
-> b. $S \to 0A0 \mid 1A1 \mid 0 \mid 1 \mid \epsilon$, $A \to 0A \mid 1A \mid \epsilon$
-> c. $S \to 00S \mid 11S \mid 0 \mid 1$
-> d. $S \to 00S \mid 11S \mid 0 \mid 00A \mid 01A \mid 10A \mid 11A$, $A \to 0A \mid 1A \mid \epsilon$ *(or simpler: $S \to ASA \mid 0$, $A \to 0 \mid 1$)*
-> e. $S \to 0S0 \mid 1S1 \mid 0 \mid 1 \mid \epsilon$
+> a. $\{w \mid w \text{ has } \geq 3 \text{ 1s}\}$: $S \to A1A1A1A$, $A \to 0A \mid 1A \mid \epsilon$
+> b. $\{w \mid w \text{ starts and ends with same symbol}\}$: $S \to 0A0 \mid 1A1 \mid 0 \mid 1$, $A \to 0A \mid 1A \mid \epsilon$
+> c. $\{w \mid |w| \text{ is odd}\}$: $S \to 00S \mid 11S \mid 0 \mid 1$
+> d. $\{w \mid |w| \text{ is odd, middle is 0}\}$: $S \to 0S0 \mid 0S1 \mid 1S0 \mid 1S1 \mid 0$
+> e. $\{w \mid w = w^R\}$: $S \to 0S0 \mid 1S1 \mid 0 \mid 1 \mid \epsilon$
 
 > [!example] Ex 2.6a
-> **More a's than b's**: $S \to aS \mid bS \mid aA$, $A \to aA \mid bA \mid a$ *(or use balanced + extra a's approach)*. Better: $S \to aS \mid bS \mid a$, but ensure count. Classic: $S \to aS \mid aB \mid Ba$, $B \to aB \mid bB \mid \epsilon$ with careful counting.
+> **More a's than b's**: 
+> Let $B$ generate balanced strings ($|w|_a = |w|_b$): $B \to aBbB \mid bBaB \mid \epsilon$
+> Let $S$ generate strings with more a's: $S \to aS \mid aB \mid Ba$
+> *Explanation:* $B$ ensures equal counts. $S$ adds at least one extra $a$ to a balanced string, or recursively adds more $a$'s.
 
 > [!example] Ex 2.6b
 > **Complement of $a^n b^n$**: Strings that are NOT of form $a^n b^n$. Either not in $a^*b^*$, or in $a^*b^*$ but $i \neq j$.
 > $S \to A \mid B \mid C$
 > $A \to bA \mid aA \mid b$ *(b before a)*
-> $B \to aB \mid a$ *(more a's)*
-> $C \to Cb \mid b$ *(more b's)*
+> $B \to aBb \mid aB \mid a$ *(more a's)*
+> $C \to aCb \mid Cb \mid b$ *(more b's)*
 
 > [!example] Ex 2.9
 > $S \to X \mid Y$
@@ -58,7 +65,12 @@
 > **Ambiguous**: Yes. String $a^n b^n c^n$ can be derived via $X$ (matching $a,b$) or $Y$ (matching $b,c$), giving two parse trees.
 
 > [!example] Ex 2.15
-> **Counterexample**: Let $A = \{a, b\}$. $G: S \to a \mid b$. Add $S \to SS$. $G'$ generates $SS \to aa, ab, ba, bb$, but also $S \to SS \to SSS \to \dots$ which is fine for $A^*$. Wait, the issue is $S \to SS$ allows derivations that don't properly terminate to $\epsilon$ if $A$ doesn't contain it. Better counterexample: $A = \{a\}$. $A^* = \{a^n\}$. $G': S \to a \mid SS$. Generates $a, aa, aaa\dots$ correctly. The actual failure: If $A = \{ab\}$, $A^* = \{(ab)^n\}$. $S \to SS$ can generate $abab$, but also nested $S \to SS \to SSS$ which still works. The real issue: $S \to SS$ doesn't handle $\epsilon$ properly if $S$ wasn't already nullable, and can generate strings not in $A^*$ if grammar has other recursive rules. Standard counterexample: $G: S \to aSb \mid \epsilon$. $L(G) = \{a^n b^n\}$. $A^* = \{(a^{n_1} b^{n_1}) \dots (a^{n_k} b^{n_k})\}$. $G'$ with $S \to SS$ generates this, but also allows mixing: $S \to SS \to aSbS \to abS \to abaSb \to abab$, which IS in $A^*$. Actually, the standard failure is that $S \to SS$ combined with original rules can generate strings where the split doesn't align with concatenation boundaries. E.g., $G: S \to aSb \mid \epsilon$. $S \to SS \to aSbS \to aSSb \to aabSb \to aabb$. Still in $A^*$. The real counterexample requires a grammar where $S$ appears on RHS. If $G: S \to aS \mid \epsilon$, $L=\{a^*\}$. $S \to SS$ still works. The textbook answer: If $G$ has $S \to aSb$, adding $S \to SS$ allows $S \Rightarrow SS \Rightarrow aSbS \Rightarrow aSSb \Rightarrow aaSbSb \Rightarrow aabb$, which is fine. The actual failure is when $A$ doesn't contain $\epsilon$ but $S \to SS$ forces it, or when $S$ is used recursively in ways that break concatenation boundaries.
+> **Why $S \to SS$ fails**: The construction assumes $S$ only appears as the start symbol. If $S$ appears on the RHS of other rules, adding $S \to SS$ allows duplication at arbitrary points in the derivation tree, not just at the "top level" where concatenation should occur.
+> 
+> **Counterexample**: Let $G: S \to aSb \mid \epsilon$. $L(G) = \{a^n b^n\}$. $A^* = \{(a^{n_1} b^{n_1}) \dots (a^{n_k} b^{n_k})\}$.
+> Add $S \to SS$. $G'$ can derive: $S \Rightarrow SS \Rightarrow aSbS \Rightarrow a(SS)b \Rightarrow a(aSb)(\epsilon)b \Rightarrow aabb$. This IS in $A^*$.
+> But $G'$ can also derive: $S \Rightarrow SS \Rightarrow aSbS \Rightarrow a(\epsilon)bS \Rightarrow abS \Rightarrow ab(aSb) \Rightarrow abaSb \Rightarrow abab$. This IS in $A^*$.
+> The real failure occurs when $S$ is used recursively inside other rules. Example: $G: S \to aSb \mid aS \mid \epsilon$. $L(G) = \{a^i b^j \mid i \geq j\}$. Adding $S \to SS$ allows derivations like $S \Rightarrow SS \Rightarrow aSbS \Rightarrow a(aS)bS \Rightarrow aaSbS \Rightarrow aa(SS)b \Rightarrow \dots$ which can generate strings where the "concatenation boundary" cuts through the middle of an $a^i b^j$ block, producing strings not in $A^*$.
 
 ---
 
