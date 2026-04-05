@@ -2,6 +2,7 @@
 .trash
 gemini-scribe
 *.pdf
+.DS_Store
 
 # Local OneDrive Sync scripts and logs
 sync_to_cloud.ps1
