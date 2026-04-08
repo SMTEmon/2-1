@@ -203,7 +203,7 @@ try (Connection conn = DriverManager.getConnection(url, user, password);
 > [!danger] Rule
 > **Never** use `+` or `String.format()` to build SQL queries with user input.
 
-*   [x] **Benefit:** Prepared Statements prevent SQLi completely.
+*   [x] **Benefit:** Prepared Statements prevent SQL injection completely.
 *   [x] **Bonus:** They improve performance via **Query Plan Caching** (the DB parses the query structure once and reuses it).
 *   [x] **Mechanism:** The "Escaping" (Backslashes) is the armor the system puts around the input to ensure quotes are treated as text, not delimiters.
 
@@ -356,7 +356,7 @@ conn.close()
 
 > [!CAUTION] **Trailing Comma in Python**
 > When passing a single parameter in Python, you **must** include a trailing comma: `(item,)`. 
-> Without the comma, Python treats `(item)` as a simple parenthesized expression (a string), while the database driver expects a **tuple** (a collection).
+> Without the comma, Python treats `(item)` as a simple parenthesized expression (a string/ int var), while the database driver expects a **tuple** (a collection).
 
 ---
 
