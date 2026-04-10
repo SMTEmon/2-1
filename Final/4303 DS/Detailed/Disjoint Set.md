@@ -120,11 +120,15 @@ graph TD
     end
 ```
 ```mermaid
-graph TD
-    subgraph After find(7) Path Compression
-    1((1 Root)) --- 2((2))
-    1 --- 3((3))
-    1 --- 7((7))
+graph BT
+    subgraph Before Path Compression
+        B2((2)) --> B1((1 Root))
+        B3((3)) --> B2
+        B4((4)) --> B2
+        B5((5)) --> B3
+        B6((6)) --> B3
+        B7((7)) --> B5
+        B8((8)) --> B6
     end
 ```
 > [!success] The result reduces the depth of the tree, speeding up all future operations drastically.
