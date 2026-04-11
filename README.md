@@ -14,7 +14,7 @@ git clone https://www.github.com/SMTEmon/2-1
 7. You cannot push changes unless you are a collaborator — local edits stay on your device. 
     
 
-✅ Done! You’re synced and ready to go. 
+✅ Done! You’re synced and ready to go.
 
 
 If you would like to access or sync the PDF files, you can use the following SharePoint link:
