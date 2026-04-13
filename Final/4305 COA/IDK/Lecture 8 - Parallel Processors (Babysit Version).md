@@ -112,10 +112,10 @@ Instead of doing 2.5% of the work, **one core gets stuck doing 12.5% of the work
 
 Okay, let's pivot. How does the Operating System organize this work? It uses Processes and Threads.
 
-| Concept | What is it? | Analogy | Memory | Crash Risk |
-| :--- | :--- | :--- | :--- | :--- |
-| **Process** | A whole running program. | Opening the Google Chrome App. | Has its own private memory. Slow to talk to other processes. | Safe. If one process crashes, the computer keeps running. |
-| **Thread** | A mini-task *inside* a process. | Opening multiple Tabs in Chrome. | Shares memory with other threads in the same process. Very fast communication. | Dangerous. If one thread crashes, the whole Process (app) crashes. |
+| Concept     | What is it?                     | Analogy                          | Memory                                                                         | Crash Risk                                                         |
+| :---------- | :------------------------------ | :------------------------------- | :----------------------------------------------------------------------------- | :----------------------------------------------------------------- |
+| **Process** | A whole running program.        | Opening the Google Chrome App.   | Has its own private memory. Slow to talk to other processes.                   | Safe. If one process crashes, the computer keeps running.          |
+| **Thread**  | A mini-task *inside* a process. | Opening multiple Tabs in Chrome. | Shares memory with other threads in the same process. Very fast communication. | Dangerous. If one thread crashes, the whole Process (app) crashes. |
 
 ---
 
